@@ -85,27 +85,24 @@
 
 .todo_items {
     display: flex;
-    justify-content: space-between;
-    padding: 12px;
-
-    input[type="checkbox"] {
-        appearance: none;
-        background-color: var(--form-background);
-        margin: 0;
-        color: currentColor;
-  width: 1.15em;
-  height: 1.15em;
-  border: 0.15em solid currentColor;
-  border-radius: 0.15em;
-  transform: translateY(-0.075em);
-
-  display: grid;
-  place-content: center;
-    }
+    margin: 25px;
 
     .todo__item__elements {
         display: flex;
-        flex-direction: column;
+        margin-left: 32px;
+        width: 100%;
+        justify-content: space-between;
 
+        .todo__elements__cotent {
+            display: flex;
+            flex-direction: column;
+            padding-right: 56px;
+        }
+
+        .todo__elements__info {
+            display: flex;
+            flex-direction: column;
+            margin-right: 20px;
+        }
     }
 }
