@@ -1,78 +1,73 @@
 import autoprefixer from 'autoprefixer'
 import Image from 'next/image'
-// import Style from ''
+import styles from '../styles/Home.module.scss'
+import {Button} from '@nextui-org/button'; 
 
 export default function Home() {
   return (
-    <main className='container mx-auto px-4 h-screen'>
-      <div className='flex items-center justify-center flex-col mt-20'>
+    <main className={styles.container}>
+      <div className={styles.intro}>
 
-        <p className='text-3xl font-bold mar'>
+        <h1>
           First To-Do App Version
-        </p>
+        </h1>
 
-        <p className='text-center'>
+        <p>
           Testing Tailwind properties. <br/>
           How does this work. <br/>
           Starting to have a clue. 
         </p>
 
 
-        <div className='flex items-center justify-center m-10 space-x-12'>
-          <div className='image__wrapper'>
+        <div className={styles.logos}>
+          <div className={styles.logos__logo}>
             <Image src="/Nextjs.png" alt='Next.js logo' layout='fill' className={'image'}/>
           </div>
-          <div className='image__wrapper'>
-            <Image src="/Typescript.png" alt='Tailwind logo' height={120} width={120}></Image>
+          <div className={styles.logos__logo}>
+            <Image src="/Typescript.png" alt='Tailwind logo' layout='fill' className={'image'}></Image>
           </div>
-          <div className='image__wrapper'>
-            <Image src="/Tailwind.png" alt='Tailwind logo' height={120} width={120}></Image>
+          <div className={styles.logos__logo}>
+            <Image src="/Tailwind.png" alt='Tailwind logo' layout='fill' className={'image'}></Image>
           </div>
         </div>
       </div>
 
-      <div className='container mx-auto bg-yellow-200'>
-        <div className='grid grid-cols-12 gap-4 justify-center '>
+      <div className={styles.todo__interface}>
 
-            <div className='
-            col-span-2
-            flex justify-center py-2
-            rounded-tl-2xl bg-lime-400'>
-              <p>In Progress</p>
+        <div className={styles.todo__interface__topbar}>
+
+            <div className={[styles.todo__interface__topbar__element,styles.active].join(" ")}>
+              In Progress
             </div>
-            <div className='col-span-2
-            flex justify-center py-2
-             bg-red-300'>
-              <p>Finished</p>
-
+            <div className={styles.todo__interface__topbar__element}>
+              Finished
             </div>
         </div>
 
-        <div className='flex'>
+        <div className={styles.todo_items}>
 
-          <div className=''>
-            <p>
+          <div className={styles.statuscheck}>
               Status
-            </p>
+              <input type='checkbox'/>
           </div>
 
 
-          <div className=''>
-            <p>
+          <div className={styles.todo__item__elements}>
+            <div className={styles.todo__title}>
               To-Do
-            </p>
+            </div>
+
+            <div className={styles.todo__description}>
+              Description
+            </div>
+            <div className={styles.todo__deadline}>
+              Deadline
+            </div>  
           </div>
 
-          <div className=''>
-            <p>
-              Description
-            </p>
-          </div>
-          <div className=''>
-            <p>
-              Deadline
-            </p>
-          </div>
+          <div>
+      <Button>Click me</Button>
+    </div>
         </div>
       </div>
 
