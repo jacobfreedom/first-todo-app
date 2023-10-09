@@ -7,44 +7,19 @@ import styles from '../styles/Home.module.scss'
 import React from "react";
 
 import {EditIcon} from '../components/icons/edit_icon';
+import {AcmeLogo} from "../components/icons/AcmeLogo";
 
 import {Button, Checkbox, Pagination, 
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
-  DropdownSection,
   DropdownItem,
-  RadioGroup, 
-  Radio,
-  cn
+  cn,
+  Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Avatar
+
 } from "@nextui-org/react";
 
-// create comoponent later
-
-export const CustomRadio = (props) => {
-  const {
-    color = "primary",
-    children, 
-    ...otherProps
-  } = props;
-
-  return (
-    <Radio
-      {...otherProps}
-      classNames={{
-        base: cn(
-          "inline-flex m-0 items-center justify-between",
-          "flex-row-reverse max-w-[300px] cursor-pointer rounded-lg gap-4 p-4 border-2 border-transparent",
-          `data-[selected=true]:border-${color}`
-          // variable selectedColor not working
-        ),
-      }}
-    >
-      {children}
-    </Radio>
-  );
-};
-
+// compnents to be created
 
 // component ends here
 
@@ -55,6 +30,90 @@ export default function Home() {
 
   return (
     <main className={styles.container}>
+      <Navbar>
+        <NavbarBrand>
+          <AcmeLogo />
+          <p className="font-bold text-inherit">ACME</p>
+        </NavbarBrand>
+
+        <NavbarContent className="hidden sm:flex gap-8" justify="center">
+          <NavbarItem isActive>
+            <Link href="#" aria-current="page" color={selectedColor}>
+              To-Do App
+            </Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link color="foreground" href="#">
+              About project
+            </Link>
+          </NavbarItem>
+        </NavbarContent>
+
+        <NavbarContent as="div" justify="end">
+          <p className='text-sm font-thin'>
+            <span className='font-bold'>
+              👋 {selectedColor}
+            </span>
+            , happy to see you here!
+          </p>
+          <Dropdown placement="bottom-end">
+            <DropdownTrigger>
+              <Avatar
+                isBordered
+                as="button"
+                className="transition-transform"
+                color={selectedColor}
+                name="Jason Hughes"
+                size="sm"
+                src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+              />
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Profile Actions" variant="flat" closeOnSelect={false}>
+              <DropdownItem key="profile" className="h-14 gap-2">
+                <p className="font-semibold">Signed in as</p>
+                <p className="font-semibold">zoey@example.com</p>
+              </DropdownItem>
+              <DropdownItem key="settings">My Settings</DropdownItem>
+              <DropdownItem key="color selection" closeOnSelect={false}>
+
+                <div className='flex flex-col gap-3'>
+                  Select your color
+
+                  <div className='flex gap-3 justify-center'>
+                    <Button isIconOnly
+                        className={`bg-primary-200 hover:bg-primary-300 border-2
+                        ${selectedColor == "primary" ? 'border-primary' : 'border-transparent '}`}
+                      onPress={() => setSelectedColor("primary")}
+                    >
+                    </Button>
+
+                    <Button isIconOnly 
+                      className={`bg-success-200 hover:bg-success-300 border-2 border-transparent ${cn({
+                        'border-success': selectedColor === 'success',
+                      })}`}
+                      onPress={() => setSelectedColor("success")}
+                    >
+                    </Button> 
+
+                    <Button isIconOnly 
+                      className={`bg-warning-200 hover:bg-warning-300 border-2 border-transparent ${cn({
+                        'border-warning': selectedColor === 'warning',
+                      })}`}
+                      onPress={() => setSelectedColor("warning")}
+                    >
+                    </Button> 
+                  </div>
+                </div>
+
+              </DropdownItem>
+              <DropdownItem key="logout" color="danger">
+                Log Out
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </NavbarContent>
+      </Navbar>
+
       <div className={styles.intro}>
 
         <h1>
@@ -79,20 +138,6 @@ export default function Home() {
             <Image src="/Tailwind.png" alt='Tailwind logo' layout='fill' className={'image'}></Image>
           </div>
         </div>
-        <div className='flex m-5'>
-          <RadioGroup
-                label="Select your color"
-                orientation="horizontal"
-                color={selectedColor}
-                defaultValue="primary"
-                onValueChange={setSelectedColor}
-              >
-                <CustomRadio color="primary" value="primary" className="bg-primary-200 hover:bg-primary-300">Blue</CustomRadio>
-                <CustomRadio color="secondary" value="secondary" className="bg-secondary-200 hover:bg-secondary-300">Purple</CustomRadio>
-                <CustomRadio color="success" value="success" className="bg-success-200 hover:bg-success-300">Green</CustomRadio>
-                <CustomRadio color="warning" value="warning" className="bg-warning-200 hover:bg-warning-300">Orange</CustomRadio>
-              </RadioGroup>
-          </div>
       </div>
 
       <div className={styles.todo__interface}>
@@ -183,7 +228,29 @@ export default function Home() {
               <div className='font-extralight truncate'>
                 01. 13. 2028
               </div>
-            </div>  
+            </div> 
+            <div className="flex">
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button 
+                    isIconOnly
+                    variant="light"
+                    color={selectedColor} 
+                  >
+                    <EditIcon className={selectedColor}/>
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu 
+                  aria-label="Action event example" 
+                  onAction={(key) => alert(key)}
+                >
+                  <DropdownItem key="edit">Edit file</DropdownItem>
+                  <DropdownItem key="delete" className="text-danger" color="danger">
+                    Delete file
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div> 
           </div>
           
         </div>
@@ -191,7 +258,19 @@ export default function Home() {
         <div className='flex items-center justify-center m-3'>
           <Pagination loop showControls color={selectedColor} total={5} initialPage={1} />
         </div>
+
       </div>
+
+
+    <footer className='mt-8'>
+        <div className='w-full mx-auto max-w-screen p4 flex items-center justify-center my-6'>
+          <p>
+            Made by Jakub ✌️
+          </p>
+
+        </div>
+    </footer>
+
 
     </main>
   )
