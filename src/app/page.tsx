@@ -6,6 +6,8 @@ import styles from '../styles/Home.module.scss'
 
 import React from "react";
 
+import {EditIcon} from '../components/icons/edit_icon';
+
 import {Button, Checkbox, Pagination, 
   Dropdown,
   DropdownTrigger,
@@ -13,8 +15,38 @@ import {Button, Checkbox, Pagination,
   DropdownSection,
   DropdownItem,
   RadioGroup, 
-  Radio
+  Radio,
+  cn
 } from "@nextui-org/react";
+
+// create comoponent later
+
+export const CustomRadio = (props) => {
+  const {
+    color = "primary",
+    children, 
+    ...otherProps
+  } = props;
+
+  return (
+    <Radio
+      {...otherProps}
+      classNames={{
+        base: cn(
+          "inline-flex m-0 items-center justify-between",
+          "flex-row-reverse max-w-[300px] cursor-pointer rounded-lg gap-4 p-4 border-2 border-transparent",
+          `data-[selected=true]:border-${color}`
+          // variable selectedColor not working
+        ),
+      }}
+    >
+      {children}
+    </Radio>
+  );
+};
+
+
+// component ends here
 
 export default function Home() {
 
@@ -47,7 +79,7 @@ export default function Home() {
             <Image src="/Tailwind.png" alt='Tailwind logo' layout='fill' className={'image'}></Image>
           </div>
         </div>
-        <div className=''>
+        <div className='flex m-5'>
           <RadioGroup
                 label="Select your color"
                 orientation="horizontal"
@@ -55,11 +87,10 @@ export default function Home() {
                 defaultValue="primary"
                 onValueChange={setSelectedColor}
               >
-                <Radio value="primary">Primary</Radio>
-                <Radio value="secondary">Secondary</Radio>
-                <Radio value="success">Success</Radio>
-                <Radio value="warning">Warning</Radio>
-                <Radio value="danger">Danger</Radio>
+                <CustomRadio color="primary" value="primary" className="bg-primary-200 hover:bg-primary-300">Blue</CustomRadio>
+                <CustomRadio color="secondary" value="secondary" className="bg-secondary-200 hover:bg-secondary-300">Purple</CustomRadio>
+                <CustomRadio color="success" value="success" className="bg-success-200 hover:bg-success-300">Green</CustomRadio>
+                <CustomRadio color="warning" value="warning" className="bg-warning-200 hover:bg-warning-300">Orange</CustomRadio>
               </RadioGroup>
           </div>
       </div>
@@ -68,7 +99,7 @@ export default function Home() {
 
         <div className={styles.todo__interface__topbar}>
 
-            <div className={[styles.todo__interface__topbar__element,styles.active].join(" ")}>
+            <div className={[styles.todo__interface__topbar__element,styles[selectedColor]].join(" ")}>
               In Progress
             </div>
             <div className={styles.todo__interface__topbar__element}>
@@ -107,10 +138,11 @@ export default function Home() {
               <Dropdown>
                 <DropdownTrigger>
                   <Button 
+                    isIconOnly
                     variant="light"
                     color={selectedColor} 
                   >
-                    Open Menu
+                    <EditIcon className={selectedColor}/>
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu 

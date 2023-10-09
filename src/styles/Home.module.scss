@@ -22,15 +22,31 @@
     }
 }
 
+.icon-color-primary {
+    fill: #0D70F2;
+}
+
+.icon-color-secondary {
+    fill: #7729CB;
+}
+
+.icon-color-success {
+    fill: #20C868;
+}
+
+.icon-color-warning {
+    fill: #F5A629;
+}
+
 .logos {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 40px;
+    margin: 20px;
 
     .logos__logo {
         display: flex;
-        width: 120px;
+        width: 96px;
         position: relative;
         &:not(:first-child) {
             margin-left: 48px;
@@ -64,20 +80,36 @@
         .todo__interface__topbar__element {
             padding: 16px;
             position: relative;
+            &::after {
+                content: "";
+                display: block;
+                width: 100%;
+                height: 3px;
+                left: 0;
+                bottom: -1px;
+                background: none;
+                position: absolute;
+                z-index: 1;
+            }
 
-            &.active {
-                
-
+            &.primary {
                 &::after {
-                    content: "";
-                    display: block;
-                    width: 100%;
-                    height: 3px;
-                    left: 0;
-                    bottom: -1px;
-                    background: black;
-                    position: absolute;
-                    z-index: 1;
+                    background: #0D70F2;
+                }
+            }
+            &.secondary {
+                &::after {
+                    background: #7729CB;
+                }
+            }
+            &.success {
+                &::after {
+                    background: #20C868;
+                }
+            }
+            &.warning {
+                &::after {
+                    background: #F5A629;
                 }
             }
         }
