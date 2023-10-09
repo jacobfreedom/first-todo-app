@@ -66,6 +66,8 @@
             position: relative;
 
             &.active {
+                
+
                 &::after {
                     content: "";
                     display: block;
@@ -75,7 +77,6 @@
                     bottom: -1px;
                     background: black;
                     position: absolute;
-                    align-self: flex-end;
                     z-index: 1;
                 }
             }
@@ -83,19 +84,33 @@
     }
 }
 
-.todo_items {
+.todo__items {
     display: flex;
-    margin: 25px;
+    flex-direction: column;
+    margin: 0 25px;
+    position: relative;
 
     .todo__item__elements {
         display: flex;
-        margin-left: 32px;
         width: 100%;
         justify-content: space-between;
+        margin: 25px 0;
+
+        &::after {
+            content: "";
+            display: block;
+            width: 800px;
+            height: 1px;
+            background: #EDF2F7;
+            position: absolute;
+            align-self: flex-end;
+            margin: 0 0 -25px -25px;
+        }
 
         .todo__elements__cotent {
             display: flex;
             flex-direction: column;
+            margin: 0 56px 0 25px;
             padding-right: 56px;
         }
 
