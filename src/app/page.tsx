@@ -7,6 +7,7 @@ import styles from '../styles/Home.module.scss'
 import React from "react";
 
 import {EditIcon} from '../components/icons/edit_icon';
+import {NewTaskIcon} from '../components/icons/NewTaskIcon';
 import {AcmeLogo} from "../components/icons/AcmeLogo";
 
 import {Button, Checkbox, Pagination, 
@@ -15,8 +16,9 @@ import {Button, Checkbox, Pagination,
   DropdownMenu,
   DropdownItem,
   cn,
-  Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Avatar
-
+  Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Avatar,
+  Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure,
+  Input
 } from "@nextui-org/react";
 
 // compnents to be created
@@ -26,6 +28,7 @@ import {Button, Checkbox, Pagination,
 export default function Home() {
 
   const [selectedColor, setSelectedColor] = React.useState("primary")
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
 
   return (
@@ -154,6 +157,62 @@ export default function Home() {
 
         <div className={styles.todo__items}>
 
+          {/* add new todo */}
+          <div className={styles.todo__item__elements}>
+            <>
+              <Button fullWidth onPress={onOpen} variant='light'
+              className='border-1 border-content3 text-default-400 py-6' startContent={<NewTaskIcon />}
+              >
+                Add Task
+              </Button>
+              <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} backdrop='blur'>
+                <ModalContent>
+                  {(onClose) => (
+                    <>
+                      <ModalHeader className="flex flex-col gap-1 items-center">Your New Task</ModalHeader>
+                      <ModalBody>
+                        <div className="flex flex-col gap-6">
+                            <Input
+                              isRequired
+                              key="outside"
+                              type="text"
+                              label="Title"
+                              labelPlacement="outside"
+                              placeholder="What's the goal?"
+                              className='mt-8'
+                            />
+                            <Input
+                              isRequired
+                              key="outside"
+                              type="text"
+                              label="Description"
+                              labelPlacement="outside"
+                              placeholder="What is it about?"
+                            />
+                            <Input
+                              isRequired
+                              key="outside"
+                              type="date"
+                              label="Date"
+                              labelPlacement="outside"
+                              placeholder="DD/MM/YYYY"
+                            />
+                        </div>
+                      </ModalBody>
+                      <ModalFooter>
+                        <Button color="danger" variant="light" onPress={onClose}>
+                          Close
+                        </Button>
+                        <Button color="primary" onPress={onClose}>
+                          Action
+                        </Button>
+                      </ModalFooter>
+                    </>
+                  )}
+                </ModalContent>
+              </Modal>
+            </>
+          </div>
 
           {/* first item */}
           <div className={styles.todo__item__elements}>
