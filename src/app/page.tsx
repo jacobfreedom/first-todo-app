@@ -4,12 +4,15 @@ import autoprefixer from 'autoprefixer'
 import Image from 'next/image'
 import styles from '../styles/Home.module.scss'
 
-import React from "react";
 
-import {EditIcon} from '../components/icons/edit_icon';
-import {NewTaskIcon} from '../components/icons/NewTaskIcon';
-import {AcmeLogo} from "../components/icons/AcmeLogo";
 
+import {NewTaskIcon} from '@/icons/NewTaskIcon';
+import {AcmeLogo} from "@/icons/AcmeLogo";
+import {EditIcon} from "@/icons/EditIcon";
+import {DeleteIcon} from "@/icons/DeleteIcon";
+import {EyeIcon} from "@/icons/EyeIcon";
+
+import React, { useContext } from "react";
 import {Button, Checkbox, Pagination, 
   Dropdown,
   DropdownTrigger,
@@ -18,131 +21,58 @@ import {Button, Checkbox, Pagination,
   cn,
   Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Avatar,
   Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure,
-  Input
+  Input, Textarea,
+  Tooltip,
+  Select, SelectItem,
+  Chip, ChipProps
 } from "@nextui-org/react";
 
-// compnents to be created
+import Nav from '@/components/navigationbar'
+import { ColorProvider,ColorContext } from './ColorContext'
 
-// component ends here
+
+// priority map
+
+const priorities = [
+  {label: "🤷 None", value: "none"},
+  {label: "🔥 High", value: "high"},
+  {label: "🎭 Medium", value: "medium"},
+  {label: "😴 Low", value: "low"},
+];
 
 export default function Home() {
+  const selectedColor = React.useContext(ColorContext);
 
-  const [selectedColor, setSelectedColor] = React.useState("primary")
+
+  const [taskTitle, setTaskTitle] = React.useState("");
+  const [descriptionValue, setDescriptionValue] = React.useState("");
+  const [priorityValue, setPriorityValue] = React.useState(new Set([]));
+  const [dateValue, setDateValue] = React.useState("");
+
+  const [newTaskValue, setNewTaskValue] = React.useState ([
+    taskTitle,
+    descriptionValue,
+    priorityValue,
+    dateValue
+  ])
+  
+  
+  const statusColorMap: Record<string, ChipProps["color"]>  = {
+    low: "success",
+    medium: "danger",
+    high: "warning",
+  };
+
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
 
   return (
     <main className={styles.container}>
-      <Navbar>
-        <NavbarBrand>
-          <AcmeLogo />
-          <p className="font-bold text-inherit">ACME</p>
-        </NavbarBrand>
-
-        <NavbarContent className="hidden sm:flex gap-8" justify="center">
-          <NavbarItem isActive>
-            <Link href="#" aria-current="page" color={selectedColor}>
-              To-Do App
-            </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Link color="foreground" href="#">
-              About project
-            </Link>
-          </NavbarItem>
-        </NavbarContent>
-
-        <NavbarContent as="div" justify="end">
-          <p className='text-sm font-thin'>
-            <span className='font-bold'>
-              👋 {selectedColor}
-            </span>
-            , happy to see you here!
-          </p>
-          <Dropdown placement="bottom-end">
-            <DropdownTrigger>
-              <Avatar
-                isBordered
-                as="button"
-                className="transition-transform"
-                color={selectedColor}
-                name="Jason Hughes"
-                size="sm"
-                src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
-              />
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Profile Actions" variant="flat" closeOnSelect={false}>
-              <DropdownItem key="profile" className="h-14 gap-2">
-                <p className="font-semibold">Signed in as</p>
-                <p className="font-semibold">zoey@example.com</p>
-              </DropdownItem>
-              <DropdownItem key="settings">My Settings</DropdownItem>
-              <DropdownItem key="color selection" closeOnSelect={false}>
-
-                <div className='flex flex-col gap-3'>
-                  Select your color
-
-                  <div className='flex gap-3 justify-center'>
-                    <Button isIconOnly
-                        className={`bg-primary-200 hover:bg-primary-300 border-2
-                        ${selectedColor == "primary" ? 'border-primary' : 'border-transparent '}`}
-                      onPress={() => setSelectedColor("primary")}
-                    >
-                    </Button>
-
-                    <Button isIconOnly 
-                      className={`bg-success-200 hover:bg-success-300 border-2 border-transparent ${cn({
-                        'border-success': selectedColor === 'success',
-                      })}`}
-                      onPress={() => setSelectedColor("success")}
-                    >
-                    </Button> 
-
-                    <Button isIconOnly 
-                      className={`bg-warning-200 hover:bg-warning-300 border-2 border-transparent ${cn({
-                        'border-warning': selectedColor === 'warning',
-                      })}`}
-                      onPress={() => setSelectedColor("warning")}
-                    >
-                    </Button> 
-                  </div>
-                </div>
-
-              </DropdownItem>
-              <DropdownItem key="logout" color="danger">
-                Log Out
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        </NavbarContent>
-      </Navbar>
-
-      <div className={styles.intro}>
-
-        <h1>
-          First To-Do App Version
-        </h1>
-
-        <p>
-          Testing Tailwind properties. <br/>
-          How does this work. <br/>
-          Starting to have a clue. 
-        </p>
+      <ColorProvider>
+      <Nav />
 
 
-        <div className={styles.logos}>
-          <div className={styles.logos__logo}>
-            <Image src="/Nextjs.png" alt='Next.js logo' layout='fill' className={'image'}/>
-          </div>
-          <div className={styles.logos__logo}>
-            <Image src="/Typescript.png" alt='Tailwind logo' layout='fill' className={'image'}></Image>
-          </div>
-          <div className={styles.logos__logo}>
-            <Image src="/Tailwind.png" alt='Tailwind logo' layout='fill' className={'image'}></Image>
-          </div>
-        </div>
-      </div>
-
+      <div className='mt-10'></div>
       <div className={styles.todo__interface}>
 
         <div className={styles.todo__interface__topbar}>
@@ -163,7 +93,7 @@ export default function Home() {
               <Button fullWidth onPress={onOpen} variant='light'
               className='border-1 border-content3 text-default-400 py-6' startContent={<NewTaskIcon />}
               >
-                Add Task
+                New Task
               </Button>
               <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} backdrop='blur'>
                 <ModalContent>
@@ -180,15 +110,39 @@ export default function Home() {
                               labelPlacement="outside"
                               placeholder="What's the goal?"
                               className='mt-8'
+                              value={taskTitle}
+                              onValueChange={setTaskTitle}
                             />
-                            <Input
+                            <p className="text-default-500 text-small">Task value: {taskTitle}</p>
+
+                            <Textarea
                               isRequired
+                              minRows={2}
                               key="outside"
                               type="text"
                               label="Description"
                               labelPlacement="outside"
-                              placeholder="What is it about?"
+                              placeholder="What is it about? (Min rows 2)"
+                              value={descriptionValue}
+                              onValueChange={setDescriptionValue}
                             />
+                            <p className="text-default-500 text-small">Desc value: {descriptionValue}</p>
+                          
+                            <Select
+                              label="Priority"
+                              placeholder="How important is it?"
+                              selectedKeys={priorityValue}
+                              onSelectionChange={setPriorityValue}
+                            >
+                              {priorities.map((priority) => (
+                                <SelectItem key={priority.value} value={priority.value}>
+                                  {priority.label}
+                                </SelectItem>
+                                ))}
+                              
+                            </Select>
+                            <p className="text-small text-default-500">Selected: {priorityValue}</p>
+
                             <Input
                               isRequired
                               key="outside"
@@ -196,15 +150,18 @@ export default function Home() {
                               label="Date"
                               labelPlacement="outside"
                               placeholder="DD/MM/YYYY"
+                              value={dateValue}
+                              onValueChange={setDateValue}
                             />
+                            <p className="text-small text-default-500">Selected: {dateValue}</p>
                         </div>
                       </ModalBody>
                       <ModalFooter>
                         <Button color="danger" variant="light" onPress={onClose}>
-                          Close
+                          Discard
                         </Button>
-                        <Button color="primary" onPress={onClose}>
-                          Action
+                        <Button color={selectedColor} onPress={onClose}>
+                          Add
                         </Button>
                       </ModalFooter>
                     </>
@@ -237,28 +194,48 @@ export default function Home() {
               <div className='font-extralight truncate'>
                 01. 13. 2028
               </div>
+
+
+              <Chip className='capitalize' color={statusColorMap[priorities.value]} size="sm" variant="flat">
+                    {priorityValue}
+              </Chip>
             </div>  
             <div className="flex">
-              <Dropdown>
-                <DropdownTrigger>
-                  <Button 
-                    isIconOnly
-                    variant="light"
-                    color={selectedColor} 
-                  >
-                    <EditIcon className={selectedColor}/>
-                  </Button>
-                </DropdownTrigger>
-                <DropdownMenu 
-                  aria-label="Action event example" 
-                  onAction={(key) => alert(key)}
-                >
-                  <DropdownItem key="edit">Edit file</DropdownItem>
-                  <DropdownItem key="delete" className="text-danger" color="danger">
-                    Delete file
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
+         
+                  <Tooltip color={selectedColor} content="View">
+                    <Button 
+                      isIconOnly
+                      variant="light"
+                      color={selectedColor} 
+                      className="text-lg"
+                    >
+                      <EyeIcon className={selectedColor}/>
+                    </Button>
+                  </Tooltip>
+                  
+                  <Tooltip color={selectedColor} content="Edit">
+                    <Button 
+                      isIconOnly
+                      variant="light"
+                      color={selectedColor}
+                      className="text-lg" 
+                    >
+                      <EditIcon className={selectedColor}/>
+                    </Button>
+                  </Tooltip>
+
+                  <Tooltip color="danger" content="Delete">
+                    <Button 
+                      isIconOnly
+                      variant="light"
+                      color="danger" 
+                      className="text-lg"
+                    >
+                      <DeleteIcon />
+                    </Button>
+                  </Tooltip>
+
+                
             </div>
           </div>
 
@@ -320,17 +297,12 @@ export default function Home() {
 
       </div>
 
-
-    <footer className='mt-8'>
-        <div className='w-full mx-auto max-w-screen p4 flex items-center justify-center my-6'>
-          <p>
+    <footer className='mt-auto absolute bottom-0 left-0 right-0'>
+        <div className='w-full mx-auto max-w-screen p-4 flex items-center justify-center mt-6'>
             Made by Jakub ✌️
-          </p>
-
         </div>
     </footer>
-
-
+    </ColorProvider>                            
     </main>
   )
 }

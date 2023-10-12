@@ -1,8 +1,9 @@
 .container {
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
     max-width: 1280px;
     margin: 0 auto;
+    padding: 0;
     flex-direction: column;
 }
 
@@ -80,6 +81,11 @@
         .todo__interface__topbar__element {
             padding: 16px;
             position: relative;
+
+            &:first-child {
+                margin-left: 28px;
+            }
+
             &::after {
                 content: "";
                 display: block;
