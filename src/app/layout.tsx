@@ -1,6 +1,6 @@
 import '../styles/globals.css'
 import type { Metadata } from 'next'
-import {Providers} from '../providers/providers.tsx';
+import {Providers} from '../providers/providers';
 
 export const metadata: Metadata = {
   title: 'First To-Do App',

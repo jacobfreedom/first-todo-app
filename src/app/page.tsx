@@ -18,8 +18,6 @@ import {Button, Checkbox, Pagination,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-  cn,
-  Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Avatar,
   Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure,
   Input, Textarea,
   Tooltip,
@@ -28,9 +26,8 @@ import {Button, Checkbox, Pagination,
 } from "@nextui-org/react";
 
 import Nav from '@/components/navigationbar'
-// import { ColorProvider,ColorContext } from './ColorContext'
 
-import { ColorProvider , useColor } from './ColorContext';
+import { useColor } from './ColorContext';
 
 
 // priority map
@@ -43,8 +40,6 @@ const priorities = [
 ];
 
 export default function Home() {
-  console.log("Home component rendered");
-  // const selectedColor = React.useContext(ColorContext);
   const { selectedColor, setSelectedColor } = useColor();
 
   const [taskTitle, setTaskTitle] = React.useState("");
@@ -70,7 +65,6 @@ export default function Home() {
 
 
   return (
-    <ColorProvider>
 
     <main className={styles.container}>
       <Nav />
@@ -215,7 +209,7 @@ export default function Home() {
                       <EyeIcon className={selectedColor}/>
                     </Button>
                   </Tooltip>
-
+ 
                   <Tooltip color={selectedColor} content="Edit">
                     <Button
                       isIconOnly
@@ -307,6 +301,5 @@ export default function Home() {
     </footer>
     
     </main>
-    </ColorProvider>
   )
 }

@@ -1,24 +1,11 @@
 import { AcmeLogo } from "@/icons/AcmeLogo";
 import { Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, 
     Link, Navbar, NavbarBrand, NavbarContent, NavbarItem, cn } from "@nextui-org/react";
-import React, { useContext, useState } from "react";
-// import { ColorThemeContext , useColorThemeContext } from "@/app/ColorContext";
-// import { ColorProvider, Context } from "@/app/ColorContext";
 import { useColor } from "@/app/ColorContext";
 
 function Nav() {
 
-    // const [selectedColor, setSelectedColor] = React.useContext(Context);s
     const { selectedColor, setSelectedColor } = useColor();
-    console.log("Nav component rendered");
-
-    // const [selectedColor, setSelectedColor] = React.useState("blue");
-
-    // const selectedColor = useColorThemeContext(setSelectedColor);
-    // const setSelectedColor  = useState(ColorThemeContext);
-
-    // const selectedColor  = useContext(ColorContext);
-    // const setSelectedColor  = useState(ColorContext);
 
     return (
       
