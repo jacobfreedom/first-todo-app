@@ -13,7 +13,7 @@ import {DeleteIcon} from "@/icons/DeleteIcon";
 import {EyeIcon} from "@/icons/EyeIcon";
 
 import React, { useContext } from "react";
-import {Button, Checkbox, Pagination, 
+import {Button, Checkbox, Pagination,
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
@@ -28,7 +28,9 @@ import {Button, Checkbox, Pagination,
 } from "@nextui-org/react";
 
 import Nav from '@/components/navigationbar'
-import { ColorProvider,ColorContext } from './ColorContext'
+// import { ColorProvider,ColorContext } from './ColorContext'
+
+import { ColorProvider , useColor } from './ColorContext';
 
 
 // priority map
@@ -41,8 +43,9 @@ const priorities = [
 ];
 
 export default function Home() {
-  const selectedColor = React.useContext(ColorContext);
-
+  console.log("Home component rendered");
+  // const selectedColor = React.useContext(ColorContext);
+  const { selectedColor, setSelectedColor } = useColor();
 
   const [taskTitle, setTaskTitle] = React.useState("");
   const [descriptionValue, setDescriptionValue] = React.useState("");
@@ -55,8 +58,8 @@ export default function Home() {
     priorityValue,
     dateValue
   ])
-  
-  
+
+
   const statusColorMap: Record<string, ChipProps["color"]>  = {
     low: "success",
     medium: "danger",
@@ -67,10 +70,10 @@ export default function Home() {
 
 
   return (
-    <main className={styles.container}>
-      <ColorProvider>
-      <Nav />
+    <ColorProvider>
 
+    <main className={styles.container}>
+      <Nav />
 
       <div className='mt-10'></div>
       <div className={styles.todo__interface}>
@@ -127,7 +130,7 @@ export default function Home() {
                               onValueChange={setDescriptionValue}
                             />
                             <p className="text-default-500 text-small">Desc value: {descriptionValue}</p>
-                          
+
                             <Select
                               label="Priority"
                               placeholder="How important is it?"
@@ -139,7 +142,7 @@ export default function Home() {
                                   {priority.label}
                                 </SelectItem>
                                 ))}
-                              
+
                             </Select>
                             <p className="text-small text-default-500">Selected: {priorityValue}</p>
 
@@ -183,7 +186,7 @@ export default function Home() {
               </div>
 
               <div className='font-extralight text-sm h-13'>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris varius enim sed orci pellentesque, ut ornare justo vulputate. Cras tristique ante ut mauris sagittis, sit amet volutpat justo aliquet. Pellentesque pulvinar eleifend dignissim. 
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris varius enim sed orci pellentesque, ut ornare justo vulputate. Cras tristique ante ut mauris sagittis, sit amet volutpat justo aliquet. Pellentesque pulvinar eleifend dignissim.
               </div>
             </div>
 
@@ -199,43 +202,43 @@ export default function Home() {
               <Chip className='capitalize' color={statusColorMap[priorities.value]} size="sm" variant="flat">
                     {priorityValue}
               </Chip>
-            </div>  
+            </div>
             <div className="flex">
-         
+
                   <Tooltip color={selectedColor} content="View">
-                    <Button 
+                    <Button
                       isIconOnly
                       variant="light"
-                      color={selectedColor} 
+                      color={selectedColor}
                       className="text-lg"
                     >
                       <EyeIcon className={selectedColor}/>
                     </Button>
                   </Tooltip>
-                  
+
                   <Tooltip color={selectedColor} content="Edit">
-                    <Button 
+                    <Button
                       isIconOnly
                       variant="light"
                       color={selectedColor}
-                      className="text-lg" 
+                      className="text-lg"
                     >
                       <EditIcon className={selectedColor}/>
                     </Button>
                   </Tooltip>
 
                   <Tooltip color="danger" content="Delete">
-                    <Button 
+                    <Button
                       isIconOnly
                       variant="light"
-                      color="danger" 
+                      color="danger"
                       className="text-lg"
                     >
                       <DeleteIcon />
                     </Button>
                   </Tooltip>
 
-                
+
             </div>
           </div>
 
@@ -253,7 +256,7 @@ export default function Home() {
               </div>
 
               <div className='font-extralight text-sm h-13'>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris varius enim sed orci pellentesque, ut ornare justo vulputate. Cras tristique ante ut mauris sagittis, sit amet volutpat justo aliquet. Pellentesque pulvinar eleifend dignissim. 
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris varius enim sed orci pellentesque, ut ornare justo vulputate. Cras tristique ante ut mauris sagittis, sit amet volutpat justo aliquet. Pellentesque pulvinar eleifend dignissim.
               </div>
             </div>
 
@@ -264,20 +267,20 @@ export default function Home() {
               <div className='font-extralight truncate'>
                 01. 13. 2028
               </div>
-            </div> 
+            </div>
             <div className="flex">
               <Dropdown>
                 <DropdownTrigger>
-                  <Button 
+                  <Button
                     isIconOnly
                     variant="light"
-                    color={selectedColor} 
+                    color={selectedColor}
                   >
                     <EditIcon className={selectedColor}/>
                   </Button>
                 </DropdownTrigger>
-                <DropdownMenu 
-                  aria-label="Action event example" 
+                <DropdownMenu
+                  aria-label="Action event example"
                   onAction={(key) => alert(key)}
                 >
                   <DropdownItem key="edit">Edit file</DropdownItem>
@@ -286,9 +289,9 @@ export default function Home() {
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
-            </div> 
+            </div>
           </div>
-          
+
         </div>
 
         <div className='flex items-center justify-center m-3'>
@@ -302,7 +305,8 @@ export default function Home() {
             Made by Jakub ✌️
         </div>
     </footer>
-    </ColorProvider>                            
+    
     </main>
+    </ColorProvider>
   )
 }

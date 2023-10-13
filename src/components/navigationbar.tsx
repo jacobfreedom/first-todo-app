@@ -2,17 +2,32 @@ import { AcmeLogo } from "@/icons/AcmeLogo";
 import { Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, 
     Link, Navbar, NavbarBrand, NavbarContent, NavbarItem, cn } from "@nextui-org/react";
 import React, { useContext, useState } from "react";
-import { ColorContext } from "@/app/ColorContext";
+// import { ColorThemeContext , useColorThemeContext } from "@/app/ColorContext";
+// import { ColorProvider, Context } from "@/app/ColorContext";
+import { useColor } from "@/app/ColorContext";
 
 function Nav() {
-    const selectedColor  = useContext(ColorContext);
-    const setSelectedColor  = useState(ColorContext);
+
+    // const [selectedColor, setSelectedColor] = React.useContext(Context);s
+    const { selectedColor, setSelectedColor } = useColor();
+    console.log("Nav component rendered");
+
+    // const [selectedColor, setSelectedColor] = React.useState("blue");
+
+    // const selectedColor = useColorThemeContext(setSelectedColor);
+    // const setSelectedColor  = useState(ColorThemeContext);
+
+    // const selectedColor  = useContext(ColorContext);
+    // const setSelectedColor  = useState(ColorContext);
 
     return (
+      
         <Navbar>
         <NavbarBrand>
           <AcmeLogo />
           <p className="font-bold text-inherit">ACME</p>
+
+          <p>Selected Color: {selectedColor}</p>
         </NavbarBrand>
 
         <NavbarContent className="hidden sm:flex gap-8" justify="center">
@@ -80,7 +95,7 @@ function Nav() {
                       })}`}
                       onPress={() => setSelectedColor("warning")}
                     >
-                    </Button> 
+                    </Button>
                   </div>
                 </div>
 
