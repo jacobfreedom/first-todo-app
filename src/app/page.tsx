@@ -7,7 +7,6 @@ import styles from '../styles/Home.module.scss'
 
 
 import {NewTaskIcon} from '@/icons/NewTaskIcon';
-import {AcmeLogo} from "@/icons/AcmeLogo";
 import {EditIcon} from "@/icons/EditIcon";
 import {DeleteIcon} from "@/icons/DeleteIcon";
 import {EyeIcon} from "@/icons/EyeIcon";
@@ -42,27 +41,51 @@ const priorities = [
 export default function Home() {
   const { selectedColor, setSelectedColor } = useColor();
 
-  const [taskTitle, setTaskTitle] = React.useState("");
-  const [descriptionValue, setDescriptionValue] = React.useState("");
-  const [priorityValue, setPriorityValue] = React.useState(new Set([]));
-  const [dateValue, setDateValue] = React.useState("");
+  const initialTaskTitle = '';
+  const initialDescriptionValue = '';
+  const initialPriorityValue = new Set([]);
+  const initialDateValue = '';
 
-  const [newTaskValue, setNewTaskValue] = React.useState ([
-    taskTitle,
-    descriptionValue,
-    priorityValue,
-    dateValue
-  ])
+  const [taskTitle, setTaskTitle] = React.useState(initialTaskTitle);
+  const [descriptionValue, setDescriptionValue] = React.useState(initialDescriptionValue);
+  const [priorityValue, setPriorityValue] = React.useState(initialPriorityValue);
+  const [dateValue, setDateValue] = React.useState(initialDateValue);
 
+  const todoValues = {
+    taskTitle: taskTitle,
+    descriptionValue: descriptionValue,
+    priorityValue: Array.from(priorityValue),
+    dateValue: dateValue,
+  };
+
+  const resetTodoValues = () => {
+    setTaskTitle(initialTaskTitle);
+    setDescriptionValue(initialDescriptionValue);
+    setPriorityValue(initialPriorityValue);
+    setDateValue(initialDateValue);
+  };
+
+  const handlePrioritySelectionChange = (selectedItems) => {
+    const selectedPriorities = selectedItems.map((selectedItem) => {
+      // Find the corresponding priority object based on the label
+      return priorities.find((priority) => priority.label === selectedItem);
+    });
+  
+    setPriorityValue(selectedPriorities);
+  };
+
+  const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
+
+  function CloseModal () {
+    onClose();
+    resetTodoValues();
+  }
 
   const statusColorMap: Record<string, ChipProps["color"]>  = {
     low: "success",
     medium: "danger",
     high: "warning",
   };
-
-  const {isOpen, onOpen, onOpenChange} = useDisclosure();
-
 
   return (
 
@@ -101,7 +124,6 @@ export default function Home() {
                         <div className="flex flex-col gap-6">
                             <Input
                               isRequired
-                              key="outside"
                               type="text"
                               label="Title"
                               labelPlacement="outside"
@@ -115,7 +137,6 @@ export default function Home() {
                             <Textarea
                               isRequired
                               minRows={2}
-                              key="outside"
                               type="text"
                               label="Description"
                               labelPlacement="outside"
@@ -127,12 +148,12 @@ export default function Home() {
 
                             <Select
                               label="Priority"
-                              placeholder="How important is it?"
+                              placeholder={priorities[0].label}
                               selectedKeys={priorityValue}
                               onSelectionChange={setPriorityValue}
                             >
                               {priorities.map((priority) => (
-                                <SelectItem key={priority.value} value={priority.value}>
+                                <SelectItem key={priority.value} value={priority.label}>
                                   {priority.label}
                                 </SelectItem>
                                 ))}
@@ -142,7 +163,6 @@ export default function Home() {
 
                             <Input
                               isRequired
-                              key="outside"
                               type="date"
                               label="Date"
                               labelPlacement="outside"
@@ -154,10 +174,21 @@ export default function Home() {
                         </div>
                       </ModalBody>
                       <ModalFooter>
-                        <Button color="danger" variant="light" onPress={onClose}>
+                        <Button color="danger" variant="light" onPress={CloseModal}>
                           Discard
                         </Button>
-                        <Button color={selectedColor} onPress={onClose}>
+                        <Button color={selectedColor} 
+                        onPress={() => {
+                          
+                        
+                          // Do something with the 'allValues' object, for example, pass it to a function or log it.
+                          console.log(todoValues);
+                        
+                          // Close the modal or perform other actions as needed
+                          CloseModal();
+                        }}>
+
+                          
                           Add
                         </Button>
                       </ModalFooter>
