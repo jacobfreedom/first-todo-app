@@ -11,7 +11,7 @@ import {EditIcon} from "@/icons/EditIcon";
 import {DeleteIcon} from "@/icons/DeleteIcon";
 import {EyeIcon} from "@/icons/EyeIcon";
 
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useEffect } from "react";
 import {Button, Checkbox, Pagination,
   Dropdown,
   DropdownTrigger,
@@ -24,9 +24,10 @@ import {Button, Checkbox, Pagination,
   Chip, ChipProps
 } from "@nextui-org/react";
 
-import Nav from '@/components/navigationbar'
+import Nav from '@/components/navigationbar';
 
 import { useColor } from './ColorContext';
+import { todo } from 'node:test';
 
 
 // priority map
@@ -51,6 +52,7 @@ export default function Home() {
   const [priorityValue, setPriorityValue] = React.useState(initialPriorityValue);
   const [dateValue, setDateValue] = React.useState(initialDateValue);
 
+
   const todoValues = {
     taskTitle: taskTitle,
     descriptionValue: descriptionValue,
@@ -67,15 +69,162 @@ export default function Home() {
 
   const onPriorityChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedPriority = priorities.find(priority => priority.value === e.target.value)
-    setPriorityValue(selectedPriority)
+    setPriorityValue(selectedPriority!)
   }
 
   const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
 
-  function CloseModal () {
+  const CloseModal = () => {
     onClose();
     resetTodoValues();
   }
+
+  const NewTodoSaving = () => {
+    // Generate a unique key based on a timestamp
+    const timestamp = new Date().getTime();
+    const key = `todoValues_${timestamp}`;
+
+      // Save the current todoValues to local storage
+    // localStorage.setItem('todoValues', JSON.stringify(todoValues));
+
+      // Save the current todoValues to local storage with the unique key
+    localStorage.setItem(key, JSON.stringify(todoValues));
+  }
+
+  // Define the unique key you want to retrieve
+const keyToRetrieve = 'todoValues_123456789'; // Replace with the actual unique key
+
+// Retrieve the item from local storage
+const storedItemString = localStorage.getItem(keyToRetrieve);
+
+if (storedItemString) {
+  // Parse the stored item from JSON
+  const storedTodoValues = JSON.parse(storedItemString);
+  
+  // Log the retrieved todoValues
+  console.log(storedTodoValues);
+} else {
+  console.log("Item not found in local storage.");
+}
+  
+
+  // Initialize todoValues from local storage if it exists, otherwise, use the initial values
+  // const storedTodoValuesString = localStorage.getItem('todoValues');
+  // const initialTodoValues = storedTodoValuesString ? JSON.parse(storedTodoValuesString) : todoValues;
+
+  // Function to save todoValues to local storage
+  // const saveTodoValuesToLocalStorage = () => {
+  //   localStorage.setItem('todoValues', JSON.stringify(todoValues));
+  // };
+
+  // // Call saveTodoValuesToLocalStorage whenever todoValues change
+  // React.useEffect(() => {
+  //   saveTodoValuesToLocalStorage();
+  // }, [todoValues]);
+
+  // localStorage.getItem(taskTitle, descriptionValue, priorityValue, dateValue)
+  
+  // const saveData = (todoValues: object) => {
+
+  //   localStorage.setItem("todos", JSON.stringify(todoValues));
+
+  // };
+
+
+//   Indian medium todo
+
+
+//   const [todoItems, setNewTodoItems] = React.useState([]);
+
+//   const saveData = (newTodoValues) => {
+//     localStorage.setItem("todos", JSON.stringify(newTodoValues));
+//   };
+
+//   useEffect(() => {
+//     if (localStorage.getItem("todos")) {
+//       todoValues(JSON.parse(localStorage.getItem("todos")));
+//     }
+//   }, []);
+
+//   const onAddTodo = () => { //add new todo button action
+//     if (newTodo.trim()) {
+//       let newTodos = [...todos, { todo: newTodo.trim(), id: Date.now() }];
+//       setTodos(newTodoValues);
+//       setNewTodo("");
+//       saveData(newTodoValues);
+//     }
+//   };
+
+//   function Todo() {
+//     const [todos, setTodos] = useState([]); //todoValues in my case
+//     const [newTodo, setNewTodo] = useState(""); //todoItems in my case, just created it
+  
+//     const saveData = (newTodos) => {
+//       localStorage.setItem("todos", JSON.stringify(newTodos));
+//     };
+  
+//     useEffect(() => {
+//       if (localStorage.getItem("todos")) {
+//         setTodos(JSON.parse(localStorage.getItem("todos")));
+//       }
+//     }, []);
+  
+//     const onAddTodo = () => {
+//       if (newTodo.trim()) {
+//         let newTodos = [...todos, { todo: newTodo.trim(), id: Date.now() }];
+//         setTodos(newTodos);
+//         setNewTodo("");
+//         saveData(newTodos);
+//       }
+//     };
+  
+//     const deleteTodo = (id) => {
+//       let newTodos = todos.filter((todo) => todo.id !== id);
+//       setTodos(newTodos);
+  
+//       saveData(newTodos);
+//     };
+
+//     <input
+//                 type="text"
+//                 id="todoInput"
+//                 className="form-control"
+//                 placeholder="add todo"
+//                 value={newTodo}
+//                 onChange={(e) => setNewTodo(e.target.value)}
+//               />
+
+//     <button className="btn btn-primary btn-block" onClick={onAddTodo}>
+//                 {" "}
+//                 Add
+//               </button>
+
+// <tbody id="table">
+// {todos.map((todo) => (
+//   <tr key={todo.id}>
+//     <td>{todo.todo}</td>
+//     <td>
+//       <button
+//         className="btn btn-danger"
+//         onClick={() => deleteTodo(todo.id)}
+//       >
+//         {" "}
+//         Delete{" "}
+//       </button>{" "}
+//     </td>
+//   </tr>
+// ))}
+// </tbody>
+// </table>
+// </div>
+
+
+
+
+  // useEffect(() => {
+  //   // storing input name
+  //   localStorage.setItem("todoItemValues", JSON.stringify(todoValues));
+  // }, [todoValues]);
 
   const statusColorMap: Record<string, ChipProps["color"]>  = {
     low: "success",
@@ -174,6 +323,15 @@ export default function Home() {
                         </Button>
                         <Button color={selectedColor} 
                         onPress={() => {
+                          
+                        
+                          // Do something with the 'allValues' object, for example, pass it to a function or log it.
+                          console.log(todoValues);
+
+                          NewTodoSaving();
+
+                        
+                          // Close the modal or perform other actions as needed
                           CloseModal();
                         }}>
 
