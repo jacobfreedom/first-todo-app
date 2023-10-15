@@ -91,8 +91,9 @@ export default function Home() {
     localStorage.setItem(key, JSON.stringify(todoValues));
   }
 
-  // Define the unique key you want to retrieve
-const keyToRetrieve = 'todoValues_123456789'; // Replace with the actual unique key
+  const NewTodoGrabbing =  () => {
+// Define the unique key you want to retrieve
+const keyToRetrieve = 'todoValues_1697375449592'; // Replace with the actual unique key
 
 // Retrieve the item from local storage
 const storedItemString = localStorage.getItem(keyToRetrieve);
@@ -105,8 +106,9 @@ if (storedItemString) {
   console.log(storedTodoValues);
 } else {
   console.log("Item not found in local storage.");
-}
-  
+}  
+  }
+
 
   // Initialize todoValues from local storage if it exists, otherwise, use the initial values
   // const storedTodoValuesString = localStorage.getItem('todoValues');
@@ -329,6 +331,7 @@ if (storedItemString) {
                           console.log(todoValues);
 
                           NewTodoSaving();
+                          NewTodoGrabbing();
 
                         
                           // Close the modal or perform other actions as needed
