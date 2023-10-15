@@ -11,7 +11,7 @@ import {EditIcon} from "@/icons/EditIcon";
 import {DeleteIcon} from "@/icons/DeleteIcon";
 import {EyeIcon} from "@/icons/EyeIcon";
 
-import React, { ChangeEvent, useContext } from "react";
+import React, { ChangeEvent } from "react";
 import {Button, Checkbox, Pagination,
   Dropdown,
   DropdownTrigger,
@@ -27,7 +27,6 @@ import {Button, Checkbox, Pagination,
 import Nav from '@/components/navigationbar'
 
 import { useColor } from './ColorContext';
-import { setPriority } from 'os';
 
 
 // priority map
@@ -70,35 +69,6 @@ export default function Home() {
     const selectedPriority = priorities.find(priority => priority.value === e.target.value)
     setPriorityValue(selectedPriority)
   }
-
-  // const handleSelectPriorities = (e :string) => {
-  //   // find the object in array
-  //    const find = priorities.find((priority) => priority.value === e);
-  //   if(find){
-  //            setPriorityValue((previousData) => {
-  //               return [...previousData , find];
-  //          });
-  //    }
-  //  }
-
-//    {priorities.map((priority) => (
-//     <SelectItem key={priority.value} value={priority.label}>
-//               {priority.label}
-//       </SelectItem>
-// ))}
-   
-  //  <Select
-  //      label="Priority"
-  //      placeholder={priorities[0].label}
-  //      selectedKeys={priorityValue}
-  //      onSelectionChange={handleSelectPriorities}
-  //       >
-  //        {priorities.map((priority) => (
-  //               <SelectItem key={priority.value} value={priority.label}>
-  //                         {priority.label}
-  //                 </SelectItem>
-  //         ))}
-  //  </Select>
 
   const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
 
@@ -204,12 +174,6 @@ export default function Home() {
                         </Button>
                         <Button color={selectedColor} 
                         onPress={() => {
-                          
-                        
-                          // Do something with the 'allValues' object, for example, pass it to a function or log it.
-                          console.log(todoValues);
-                        
-                          // Close the modal or perform other actions as needed
                           CloseModal();
                         }}>
 
