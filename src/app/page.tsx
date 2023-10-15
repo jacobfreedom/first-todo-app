@@ -11,7 +11,7 @@ import {EditIcon} from "@/icons/EditIcon";
 import {DeleteIcon} from "@/icons/DeleteIcon";
 import {EyeIcon} from "@/icons/EyeIcon";
 
-import React, { useContext } from "react";
+import React, { ChangeEvent, useContext } from "react";
 import {Button, Checkbox, Pagination,
   Dropdown,
   DropdownTrigger,
@@ -27,6 +27,7 @@ import {Button, Checkbox, Pagination,
 import Nav from '@/components/navigationbar'
 
 import { useColor } from './ColorContext';
+import { setPriority } from 'os';
 
 
 // priority map
@@ -43,7 +44,7 @@ export default function Home() {
 
   const initialTaskTitle = '';
   const initialDescriptionValue = '';
-  const initialPriorityValue = new Set([]);
+  const initialPriorityValue = priorities[0];
   const initialDateValue = '';
 
   const [taskTitle, setTaskTitle] = React.useState(initialTaskTitle);
@@ -54,7 +55,7 @@ export default function Home() {
   const todoValues = {
     taskTitle: taskTitle,
     descriptionValue: descriptionValue,
-    priorityValue: Array.from(priorityValue),
+    priorityValue: priorityValue,
     dateValue: dateValue,
   };
 
@@ -65,14 +66,39 @@ export default function Home() {
     setDateValue(initialDateValue);
   };
 
-  const handlePrioritySelectionChange = (selectedItems) => {
-    const selectedPriorities = selectedItems.map((selectedItem) => {
-      // Find the corresponding priority object based on the label
-      return priorities.find((priority) => priority.label === selectedItem);
-    });
-  
-    setPriorityValue(selectedPriorities);
-  };
+  const onPriorityChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const selectedPriority = priorities.find(priority => priority.value === e.target.value)
+    setPriorityValue(selectedPriority)
+  }
+
+  // const handleSelectPriorities = (e :string) => {
+  //   // find the object in array
+  //    const find = priorities.find((priority) => priority.value === e);
+  //   if(find){
+  //            setPriorityValue((previousData) => {
+  //               return [...previousData , find];
+  //          });
+  //    }
+  //  }
+
+//    {priorities.map((priority) => (
+//     <SelectItem key={priority.value} value={priority.label}>
+//               {priority.label}
+//       </SelectItem>
+// ))}
+   
+  //  <Select
+  //      label="Priority"
+  //      placeholder={priorities[0].label}
+  //      selectedKeys={priorityValue}
+  //      onSelectionChange={handleSelectPriorities}
+  //       >
+  //        {priorities.map((priority) => (
+  //               <SelectItem key={priority.value} value={priority.label}>
+  //                         {priority.label}
+  //                 </SelectItem>
+  //         ))}
+  //  </Select>
 
   const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
 
@@ -149,17 +175,16 @@ export default function Home() {
                             <Select
                               label="Priority"
                               placeholder={priorities[0].label}
-                              selectedKeys={priorityValue}
-                              onSelectionChange={setPriorityValue}
+                              onChange={e => onPriorityChange(e)}
                             >
                               {priorities.map((priority) => (
-                                <SelectItem key={priority.value} value={priority.label}>
+                                <SelectItem key={priority.value} value={priority.value}>
                                   {priority.label}
                                 </SelectItem>
                                 ))}
 
                             </Select>
-                            <p className="text-small text-default-500">Selected: {priorityValue}</p>
+                            <p className="text-small text-default-500">Selected: {priorityValue.label}</p>
 
                             <Input
                               isRequired
@@ -225,7 +250,7 @@ export default function Home() {
 
 
               <Chip className='capitalize' color={statusColorMap[priorities.value]} size="sm" variant="flat">
-                    {priorityValue}
+                  {todoValues.priorityValue.label}
               </Chip>
             </div>
             <div className="flex">
