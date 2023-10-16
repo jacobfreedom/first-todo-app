@@ -24,44 +24,49 @@ import {Button, Checkbox, Pagination,
   Chip, ChipProps
 } from "@nextui-org/react";
 
+import { useForm, SubmitHandler } from "react-hook-form"
+
 import Nav from '@/components/navigationbar';
+
 
 import { useColor } from './ColorContext';
 import { todo } from 'node:test';
+import { type } from 'node:os';
+import NewTodoForm from '@/components/TodoInterface_Creation/TodoModal';
 
 
 // priority map
 
 const priorities = [
   {label: "🤷 None", value: "none"},
-  {label: "🔥 High", value: "high"},
-  {label: "🎭 Medium", value: "medium"},
   {label: "😴 Low", value: "low"},
+  {label: "🎭 Medium", value: "medium"},
+  {label: "🔥 High", value: "high"},
 ];
 
 export default function Home() {
   const { selectedColor, setSelectedColor } = useColor();
 
-  const initialTaskTitle = '';
+  const initialTaskTitleValue = '';
   const initialDescriptionValue = '';
   const initialPriorityValue = priorities[0];
   const initialDateValue = '';
 
-  const [taskTitle, setTaskTitle] = React.useState(initialTaskTitle);
+  const [taskTitleValue, setTaskTitleValue] = React.useState(initialTaskTitleValue);
   const [descriptionValue, setDescriptionValue] = React.useState(initialDescriptionValue);
   const [priorityValue, setPriorityValue] = React.useState(initialPriorityValue);
   const [dateValue, setDateValue] = React.useState(initialDateValue);
 
 
   const todoValues = {
-    taskTitle: taskTitle,
+    taskTitleValue: taskTitleValue,
     descriptionValue: descriptionValue,
     priorityValue: priorityValue,
     dateValue: dateValue,
   };
 
   const resetTodoValues = () => {
-    setTaskTitle(initialTaskTitle);
+    setTaskTitleValue(initialTaskTitleValue);
     setDescriptionValue(initialDescriptionValue);
     setPriorityValue(initialPriorityValue);
     setDateValue(initialDateValue);
@@ -72,14 +77,17 @@ export default function Home() {
     setPriorityValue(selectedPriority!)
   }
 
-  const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
+  const statusColorMap: Record<string, ChipProps["color"]>  = {
+    none: "default",
+    low: "success",
+    medium: "warning",
+    high: "danger",
+  };
 
-  const CloseModal = () => {
-    onClose();
-    resetTodoValues();
-  }
+//localstorage set up
 
-  const NewTodoSaving = () => {
+
+  const NewTodoItemSaving = () => {
     // Generate a unique key based on a timestamp
     const timestamp = new Date().getTime();
     const key = `todoValues_${timestamp}`;
@@ -91,148 +99,79 @@ export default function Home() {
     localStorage.setItem(key, JSON.stringify(todoValues));
   }
 
-  const NewTodoGrabbing =  () => {
-// Define the unique key you want to retrieve
-const keyToRetrieve = 'todoValues_1697375449592'; // Replace with the actual unique key
-
-// Retrieve the item from local storage
-const storedItemString = localStorage.getItem(keyToRetrieve);
-
-if (storedItemString) {
-  // Parse the stored item from JSON
-  const storedTodoValues = JSON.parse(storedItemString);
-  
-  // Log the retrieved todoValues
-  console.log(storedTodoValues);
-} else {
-  console.log("Item not found in local storage.");
-}  
+  interface TodoTypes {
+    taskTitleValue: string;
+    descriptionValue: string;
+    priorityValue: { label: string, value: string };
+    dateValue: string;
   }
 
+  const [storedTodoItem, setStoredTodoItem] = React.useState<TodoTypes>({
+    taskTitleValue: '',
+    descriptionValue: '',
+    priorityValue: { label: '', value: '' },
+    dateValue: '',
+  });
 
-  // Initialize todoValues from local storage if it exists, otherwise, use the initial values
-  // const storedTodoValuesString = localStorage.getItem('todoValues');
-  // const initialTodoValues = storedTodoValuesString ? JSON.parse(storedTodoValuesString) : todoValues;
+  const NewTodoGrabbing =  () => {
 
-  // Function to save todoValues to local storage
-  // const saveTodoValuesToLocalStorage = () => {
-  //   localStorage.setItem('todoValues', JSON.stringify(todoValues));
-  // };
+    //prints all the items stored in local storage -> use for printing todo items
 
-  // // Call saveTodoValuesToLocalStorage whenever todoValues change
-  // React.useEffect(() => {
-  //   saveTodoValuesToLocalStorage();
-  // }, [todoValues]);
+    const storageKeys = Object.keys(localStorage);
 
-  // localStorage.getItem(taskTitle, descriptionValue, priorityValue, dateValue)
+    // Iterate through the keys and retrieve and log each item
+    storageKeys.forEach((key) => {
+      const storedItemString = localStorage.getItem(key);
+      if (storedItemString) {
+        const storedTodoValues = JSON.parse(storedItemString);
+        console.log(`Key: ${key}, Value:`, storedTodoValues.descriptionValue);
+      }
+    });
+
+
+//will be used for removing
+
+    // Define the unique key you want to retrieve
+    const keyToRetrieve = 'todoValues_1697470760955'; // Replace with the actual unique key
+
+    // Retrieve the item from local storage
+    const storedItemString = localStorage.getItem(keyToRetrieve);
+
+    if (storedItemString) {
+      // Parse the stored item from JSON
+      const storedTodoValues = JSON.parse(storedItemString);
+      
+      // Log the retrieved todoValues
+      console.log(storedTodoValues);
+
+      // Set the priority label from the storedTodoValues in state
+      setStoredTodoItem(storedTodoValues);
+    } else {
+      console.log("Item not found in local storage.");
+    }  
+  }
+
+  useEffect(() => {
+    // Call NewTodoGrabbing to retrieve and set the priority label when the component mounts
+    NewTodoGrabbing();
+  }, []);
+
+
+  //form checker + modal
   
-  // const saveData = (todoValues: object) => {
-
-  //   localStorage.setItem("todos", JSON.stringify(todoValues));
-
-  // };
-
-
-//   Indian medium todo
-
-
-//   const [todoItems, setNewTodoItems] = React.useState([]);
-
-//   const saveData = (newTodoValues) => {
-//     localStorage.setItem("todos", JSON.stringify(newTodoValues));
-//   };
-
-//   useEffect(() => {
-//     if (localStorage.getItem("todos")) {
-//       todoValues(JSON.parse(localStorage.getItem("todos")));
-//     }
-//   }, []);
-
-//   const onAddTodo = () => { //add new todo button action
-//     if (newTodo.trim()) {
-//       let newTodos = [...todos, { todo: newTodo.trim(), id: Date.now() }];
-//       setTodos(newTodoValues);
-//       setNewTodo("");
-//       saveData(newTodoValues);
-//     }
-//   };
-
-//   function Todo() {
-//     const [todos, setTodos] = useState([]); //todoValues in my case
-//     const [newTodo, setNewTodo] = useState(""); //todoItems in my case, just created it
   
-//     const saveData = (newTodos) => {
-//       localStorage.setItem("todos", JSON.stringify(newTodos));
-//     };
-  
-//     useEffect(() => {
-//       if (localStorage.getItem("todos")) {
-//         setTodos(JSON.parse(localStorage.getItem("todos")));
-//       }
-//     }, []);
-  
-//     const onAddTodo = () => {
-//       if (newTodo.trim()) {
-//         let newTodos = [...todos, { todo: newTodo.trim(), id: Date.now() }];
-//         setTodos(newTodos);
-//         setNewTodo("");
-//         saveData(newTodos);
-//       }
-//     };
-  
-//     const deleteTodo = (id) => {
-//       let newTodos = todos.filter((todo) => todo.id !== id);
-//       setTodos(newTodos);
-  
-//       saveData(newTodos);
-//     };
+  const CloseModal = () => {
+    onClose();
+    resetTodoValues();
+  }
 
-//     <input
-//                 type="text"
-//                 id="todoInput"
-//                 className="form-control"
-//                 placeholder="add todo"
-//                 value={newTodo}
-//                 onChange={(e) => setNewTodo(e.target.value)}
-//               />
+  //sting value todo elements
 
-//     <button className="btn btn-primary btn-block" onClick={onAddTodo}>
-//                 {" "}
-//                 Add
-//               </button>
+  const descriptionStringChecker = () => {
+    {storedTodoItem.descriptionValue.length > 120 ?
+      `${storedTodoItem.descriptionValue.substring(0, 120)}...` :storedTodoItem.descriptionValue}
+  }
 
-// <tbody id="table">
-// {todos.map((todo) => (
-//   <tr key={todo.id}>
-//     <td>{todo.todo}</td>
-//     <td>
-//       <button
-//         className="btn btn-danger"
-//         onClick={() => deleteTodo(todo.id)}
-//       >
-//         {" "}
-//         Delete{" "}
-//       </button>{" "}
-//     </td>
-//   </tr>
-// ))}
-// </tbody>
-// </table>
-// </div>
-
-
-
-
-  // useEffect(() => {
-  //   // storing input name
-  //   localStorage.setItem("todoItemValues", JSON.stringify(todoValues));
-  // }, [todoValues]);
-
-  const statusColorMap: Record<string, ChipProps["color"]>  = {
-    low: "success",
-    medium: "danger",
-    high: "warning",
-  };
 
   return (
 
@@ -254,99 +193,74 @@ if (storedItemString) {
 
         <div className={styles.todo__items}>
 
-          {/* add new todo */}
+          <NewTodoForm />
+
+          {/* testing item */}
           <div className={styles.todo__item__elements}>
-            <>
-              <Button fullWidth onPress={onOpen} variant='light'
-              className='border-1 border-content3 text-default-400 py-6' startContent={<NewTaskIcon />}
-              >
-                New Task
-              </Button>
-              <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} backdrop='blur'>
-                <ModalContent>
-                  {(onClose) => (
-                    <>
-                      <ModalHeader className="flex flex-col gap-1 items-center">Your New Task</ModalHeader>
-                      <ModalBody>
-                        <div className="flex flex-col gap-6">
-                            <Input
-                              isRequired
-                              type="text"
-                              label="Title"
-                              labelPlacement="outside"
-                              placeholder="What's the goal?"
-                              className='mt-8'
-                              value={taskTitle}
-                              onValueChange={setTaskTitle}
-                            />
-                            <p className="text-default-500 text-small">Task value: {taskTitle}</p>
 
-                            <Textarea
-                              isRequired
-                              minRows={2}
-                              type="text"
-                              label="Description"
-                              labelPlacement="outside"
-                              placeholder="What is it about? (Min rows 2)"
-                              value={descriptionValue}
-                              onValueChange={setDescriptionValue}
-                            />
-                            <p className="text-default-500 text-small">Desc value: {descriptionValue}</p>
+            <div className="flex items-center">
+              <Checkbox color={selectedColor} radius="full" />
+            </div>
+            <div className={styles.todo__elements__cotent}>
+              <div className='font-semibold'>
+                {storedTodoItem.taskTitleValue}
+              </div>
 
-                            <Select
-                              label="Priority"
-                              placeholder={priorities[0].label}
-                              onChange={e => onPriorityChange(e)}
-                            >
-                              {priorities.map((priority) => (
-                                <SelectItem key={priority.value} value={priority.value}>
-                                  {priority.label}
-                                </SelectItem>
-                                ))}
+              <div className='font-extralight text-sm h-13'>
+                {storedTodoItem.descriptionValue}
+              </div>
+            </div>
 
-                            </Select>
-                            <p className="text-small text-default-500">Selected: {priorityValue.label}</p>
+            <div className={styles.todo__elements__info}>
+              <div className='font-medium'>
+                Deadline
+              </div>
+              <div className='font-extralight truncate'>
+                {storedTodoItem.dateValue}
+              </div>
 
-                            <Input
-                              isRequired
-                              type="date"
-                              label="Date"
-                              labelPlacement="outside"
-                              placeholder="DD/MM/YYYY"
-                              value={dateValue}
-                              onValueChange={setDateValue}
-                            />
-                            <p className="text-small text-default-500">Selected: {dateValue}</p>
-                        </div>
-                      </ModalBody>
-                      <ModalFooter>
-                        <Button color="danger" variant="light" onPress={CloseModal}>
-                          Discard
-                        </Button>
-                        <Button color={selectedColor} 
-                        onPress={() => {
-                          
-                        
-                          // Do something with the 'allValues' object, for example, pass it to a function or log it.
-                          console.log(todoValues);
 
-                          NewTodoSaving();
-                          NewTodoGrabbing();
+              <Chip className='capitalize' color={statusColorMap[storedTodoItem.priorityValue.value]} size="sm" variant="flat">
+                  {storedTodoItem.priorityValue.label}
+              </Chip>
+            </div>
+            <div className="flex">
 
-                        
-                          // Close the modal or perform other actions as needed
-                          CloseModal();
-                        }}>
+                  <Tooltip color={selectedColor} content="View">
+                    <Button
+                      isIconOnly
+                      variant="light"
+                      color={selectedColor}
+                      className="text-lg"
+                    >
+                      <EyeIcon className={selectedColor}/>
+                    </Button>
+                  </Tooltip>
+ 
+                  <Tooltip color={selectedColor} content="Edit">
+                    <Button
+                      isIconOnly
+                      variant="light"
+                      color={selectedColor}
+                      className="text-lg"
+                    >
+                      <EditIcon className={selectedColor}/>
+                    </Button>
+                  </Tooltip>
 
-                          
-                          Add
-                        </Button>
-                      </ModalFooter>
-                    </>
-                  )}
-                </ModalContent>
-              </Modal>
-            </>
+                  <Tooltip color="danger" content="Delete">
+                    <Button
+                      isIconOnly
+                      variant="light"
+                      color="danger"
+                      className="text-lg"
+                    >
+                      <DeleteIcon />
+                    </Button>
+                  </Tooltip>
+
+
+            </div>
           </div>
 
           {/* first item */}
@@ -375,7 +289,7 @@ if (storedItemString) {
 
 
               <Chip className='capitalize' color={statusColorMap[priorities.value]} size="sm" variant="flat">
-                  {todoValues.priorityValue.label}
+                  {storedTodoItem.priorityValue.label}
               </Chip>
             </div>
             <div className="flex">
