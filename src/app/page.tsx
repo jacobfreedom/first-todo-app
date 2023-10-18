@@ -28,11 +28,10 @@ import { useForm, SubmitHandler } from "react-hook-form"
 
 import Nav from '@/components/navigationbar';
 
-
 import { useColor } from './ColorContext';
 import { todo } from 'node:test';
 import { type } from 'node:os';
-import NewTodoForm from '@/components/TodoInterface_Creation/TodoModal';
+import NewTaskForm from '@/components/TodoInterface_Creation/TodoModal';
 
 
 // priority map
@@ -113,7 +112,7 @@ export default function Home() {
     dateValue: '',
   });
 
-  const NewTodoGrabbing =  () => {
+  const todoGrabbing =  () => {
 
     //prints all the items stored in local storage -> use for printing todo items
 
@@ -124,7 +123,7 @@ export default function Home() {
       const storedItemString = localStorage.getItem(key);
       if (storedItemString) {
         const storedTodoValues = JSON.parse(storedItemString);
-        console.log(`Key: ${key}, Value:`, storedTodoValues.descriptionValue);
+        console.log(`Key: ${key}, Value:`, storedTodoValues);
       }
     });
 
@@ -153,13 +152,14 @@ export default function Home() {
 
   useEffect(() => {
     // Call NewTodoGrabbing to retrieve and set the priority label when the component mounts
-    NewTodoGrabbing();
+    todoGrabbing();
   }, []);
 
 
   //form checker + modal
   
-  
+  const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
+
   const CloseModal = () => {
     onClose();
     resetTodoValues();
@@ -167,11 +167,22 @@ export default function Home() {
 
   //sting value todo elements
 
-  const descriptionStringChecker = () => {
-    {storedTodoItem.descriptionValue.length > 120 ?
-      `${storedTodoItem.descriptionValue.substring(0, 120)}...` :storedTodoItem.descriptionValue}
-  }
+  const descriptionStringChecker = (descriptionString: string) => {
+    descriptionString = descriptionString.length > 120
+      ? `${descriptionString.substring(0, 120)}...`
+      : descriptionString;
+  
+    return descriptionString;
+  };
+  
 
+  // var num00 = 100;
+  // ahoj(num00); //101
+  // ahoj(4); //5
+  // function ahoj(getNum) {
+  //   var returnedNum = 1 + getNum;
+  //   return returnedNum;
+  // }
 
   return (
 
@@ -193,7 +204,34 @@ export default function Home() {
 
         <div className={styles.todo__items}>
 
-          <NewTodoForm />
+          {/* add new todo */}
+          <div className={styles.todo__item__elements}>
+            <>
+              <Button fullWidth onPress={onOpen} variant='light'
+              className='border-1 border-content3 text-default-400 py-6' startContent={<NewTaskIcon />}
+              >
+                New Task
+              </Button>
+              <NewTaskForm
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                onClose={onClose}
+                taskTitleValue={taskTitleValue}
+                setTaskTitleValue={setTaskTitleValue}
+                descriptionValue={descriptionValue}
+                setDescriptionValue={setDescriptionValue}
+                priorities={priorities}
+                onPriorityChange={onPriorityChange}
+                dateValue={dateValue}
+                setDateValue={setDateValue}
+                selectedColor={selectedColor}
+                todoValues={todoValues}
+                NewTodoItemSaving={NewTodoItemSaving}
+                todoGrabbing={todoGrabbing}
+                CloseModal={CloseModal}
+              />
+            </>
+          </div>
 
           {/* testing item */}
           <div className={styles.todo__item__elements}>
@@ -207,7 +245,8 @@ export default function Home() {
               </div>
 
               <div className='font-extralight text-sm h-13'>
-                {storedTodoItem.descriptionValue}
+                
+                {descriptionStringChecker(storedTodoItem.descriptionValue)}
               </div>
             </div>
 
@@ -389,11 +428,11 @@ export default function Home() {
 
       </div>
 
-    <footer className='mt-auto absolute bottom-0 left-0 right-0'>
+    {/* <footer className='mt-auto absolute bottom-0 left-0 right-0'>
         <div className='w-full mx-auto max-w-screen p-4 flex items-center justify-center mt-6'>
             Made by Jakub ✌️
         </div>
-    </footer>
+    </footer> */}
     
     </main>
   )
