@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
 
-
-
 export interface ColorContextType {
   selectedColor: string;
   setSelectedColor: (color: string) => void;

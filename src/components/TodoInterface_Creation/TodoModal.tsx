@@ -13,7 +13,6 @@ import {
 } from "@nextui-org/react";
 import { useColor } from '@/app/ColorContext';
 import { useTaskContext } from '@/providers/Context/TaskContext';
-import styles from '@/styles/Home.module.scss'
 
 
 const NewTaskForm = ({
@@ -37,6 +36,9 @@ const NewTaskForm = ({
   } = useTaskContext();
   
   const { selectedColor } = useColor();
+
+  console.log(todoValues);
+  console.log(taskTitleValue);
 
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} backdrop='blur'>
