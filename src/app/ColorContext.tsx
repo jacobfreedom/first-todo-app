@@ -10,7 +10,7 @@ export interface ColorContextType {
 const ColorContext = createContext<ColorContextType | undefined>(undefined);
 
 export function ColorProvider({ children }: { children: React.ReactNode }) {
-  const [selectedColor, setSelectedColor] = useState("blue");
+  const [selectedColor, setSelectedColor] = useState("primary");
 
   return (
     <ColorContext.Provider value={{ selectedColor, setSelectedColor }}>
