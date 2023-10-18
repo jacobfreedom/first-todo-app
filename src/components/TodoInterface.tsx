@@ -5,10 +5,8 @@ import {Button, Checkbox, Pagination,
     DropdownTrigger,
     DropdownMenu,
     DropdownItem,
-    Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure,
-    Input, Textarea,
+    useDisclosure,
     Tooltip,
-    Select, SelectItem,
     Chip, ChipProps
   } from "@nextui-org/react";
 

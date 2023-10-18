@@ -17,6 +17,7 @@ import styles from '@/styles/Home.module.scss'
 
 
 const NewTaskForm = ({
+    isOpen,
     onOpenChange,
     onClose,
     CloseModal
@@ -35,7 +36,7 @@ const NewTaskForm = ({
     todoGrabbing,
   } = useTaskContext();
   
-  const { selectedColor, setSelectedColor } = useColor();
+  const { selectedColor } = useColor();
 
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} backdrop='blur'>
