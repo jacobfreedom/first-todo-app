@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, ChangeEvent } from "react";
+import React, { createContext, useContext, useState, ChangeEvent, ReactNode } from "react";
+
 
 // Define your priorities
 const priorities = [
@@ -46,8 +47,12 @@ export const useTaskContext = () => {
   return context;
 };
 
-export const TaskProvider: React.FC = ({ children }) => {
-  const [taskTitleValue, setTaskTitleValue] = useState<string>('');
+interface TaskProviderProps {
+    children: ReactNode;
+  }
+
+export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
+    const [taskTitleValue, setTaskTitleValue] = useState<string>('');
   const [descriptionValue, setDescriptionValue] = useState<string>('');
   const [priorityValue, setPriorityValue] = useState(priorities[0]);
   const [dateValue, setDateValue] = useState<string>('');
@@ -140,3 +145,4 @@ export const TaskProvider: React.FC = ({ children }) => {
     </TaskContext.Provider>
   );
 };
+  

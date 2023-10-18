@@ -11,25 +11,32 @@ import {
   SelectItem,
   Button,
 } from "@nextui-org/react";
+import { useColor } from '@/app/ColorContext';
+import { useTaskContext } from '@/providers/Context/TaskContext';
+import styles from '@/styles/Home.module.scss'
+
 
 const NewTaskForm = ({
-  isOpen,
-  onOpenChange,
-  onClose,
-  taskTitleValue,
-  setTaskTitleValue,
-  descriptionValue,
-  setDescriptionValue,
-  priorities,
-  onPriorityChange,
-  dateValue,
-  setDateValue,
-  selectedColor,
-  todoValues,
-  NewTodoItemSaving,
-  todoGrabbing,
-  CloseModal,
+    onOpenChange,
+    onClose,
+    CloseModal
 }) => {
+  const {
+    taskTitleValue,
+    setTaskTitleValue,
+    descriptionValue,
+    setDescriptionValue,
+    priorities,
+    onPriorityChange,
+    dateValue,
+    setDateValue,
+    todoValues,
+    NewTodoItemSaving,
+    todoGrabbing,
+  } = useTaskContext();
+  
+  const { selectedColor, setSelectedColor } = useColor();
+
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} backdrop='blur'>
       <ModalContent>
