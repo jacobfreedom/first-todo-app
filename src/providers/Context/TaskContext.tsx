@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ChangeEvent, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ChangeEvent, ReactNode } from "react";
 
 
 // Define your priorities
@@ -52,7 +52,7 @@ interface TaskProviderProps {
   }
 
 export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
-    const [taskTitleValue, setTaskTitleValue] = useState<string>('');
+  const [taskTitleValue, setTaskTitleValue] = useState<string>('');
   const [descriptionValue, setDescriptionValue] = useState<string>('');
   const [priorityValue, setPriorityValue] = useState(priorities[0]);
   const [dateValue, setDateValue] = useState<string>('');
@@ -114,6 +114,11 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       console.log("Item not found in local storage.");
     }
   };
+
+  useEffect(() => {
+    // Call NewTodoGrabbing to retrieve and set the priority label when the component mounts
+    todoGrabbing();
+  }, []);
 
   const descriptionStringChecker = (descriptionString: string) => {
     return descriptionString.length > 120
