@@ -37,15 +37,6 @@ const TodoInterface = () => {
     high: "danger",
   };
 
-    //form checker + modal
-  
-    const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
-
-    const CloseModal = () => {
-      onClose();
-      resetTodoValues();
-    }
-
   return (
     <>
     <div className='mt-10'></div>
@@ -66,16 +57,7 @@ const TodoInterface = () => {
           {/* add new todo */}
           <div className={styles.todo__item__elements}>
             <>
-              <Button fullWidth onPress={onOpen} variant='light'
-              className='border-1 border-content3 text-default-400 py-6' startContent={<NewTaskIcon />}
-              >
-                New Task
-              </Button>
               <NewTaskForm
-                isOpen={isOpen}
-                onOpenChange={onOpenChange}
-                onClose={onClose}
-                CloseModal={CloseModal}
               />
             </>
           </div>

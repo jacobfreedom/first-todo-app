@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState } from "react";
 
 export interface ColorContextType {
-  selectedColor: string;
+  selectedColor: any;
   setSelectedColor: (color: string) => void;
 }
+
 
 const ColorContext = createContext<ColorContextType | undefined>(undefined);
 

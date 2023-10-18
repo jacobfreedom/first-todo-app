@@ -24,7 +24,7 @@ interface TaskContextType {
     dateValue: string;
   };
   resetTodoValues: () => void;
-  statusColorMap: Record<string, string>;
+  statusColorMap: Record<string, any>;
   NewTodoItemSaving: () => void;
   storedTodoItem: {
     taskTitleValue: string;

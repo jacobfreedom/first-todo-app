@@ -10,17 +10,14 @@ import {
   Select,
   SelectItem,
   Button,
+  useDisclosure
 } from "@nextui-org/react";
 import { useColor } from '@/app/ColorContext';
 import { useTaskContext } from '@/providers/Context/TaskContext';
+import { NewTaskIcon } from '@/icons/NewTaskIcon';
 
 
-const NewTaskForm = ({
-    isOpen,
-    onOpenChange,
-    onClose,
-    CloseModal
-}) => {
+const NewTaskForm = ({}) => {
   const {
     taskTitleValue,
     setTaskTitleValue,
@@ -33,14 +30,28 @@ const NewTaskForm = ({
     todoValues,
     NewTodoItemSaving,
     todoGrabbing,
+    resetTodoValues
   } = useTaskContext();
   
   const { selectedColor } = useColor();
+
+  const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
+
+  const CloseModal = () => {
+    onClose();
+    resetTodoValues();
+  }
 
   console.log(todoValues);
   console.log(taskTitleValue);
 
   return (
+    <>
+    <Button fullWidth onPress={onOpen} variant='light'
+              className='border-1 border-content3 text-default-400 py-6' startContent={<NewTaskIcon />}
+              >
+                New Task
+              </Button>
     <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} backdrop='blur'>
       <ModalContent>
         {(onClose) => (
@@ -115,6 +126,7 @@ const NewTaskForm = ({
         )}
       </ModalContent>
     </Modal>
+    </>
   );
 };
 
