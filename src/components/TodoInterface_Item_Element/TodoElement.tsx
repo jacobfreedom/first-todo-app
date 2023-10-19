@@ -25,6 +25,10 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData }> = ({ todoItemData }) =>
 
   const { selectedColor} = useColor();
 
+  if (!todoItemData || !todoItemData.priorityValue) {
+    return null; // Handle missing or invalid data
+  }
+
   return (
     <div className={styles.todo__item__elements}>
       <div className='flex'>
@@ -36,8 +40,8 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData }> = ({ todoItemData }) =>
             {todoItemData.taskTitleValue}
           </div>
           <div className='font-extralight text-sm h-13'>
-            {/* {descriptionStringChecker(todoItemData.descriptionValue)} */}
-            {todoItemData.descriptionValue}
+            {descriptionStringChecker(todoItemData.descriptionValue)}
+            {/* {todoItemData.descriptionValue} */}
           </div>
         </div>
       </div>

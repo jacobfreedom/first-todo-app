@@ -16,8 +16,12 @@ import { useColor } from '@/app/ColorContext';
 import { useTaskContext } from '@/providers/Context/TaskContext';
 import { NewTaskIcon } from '@/icons/NewTaskIcon';
 
+interface NewTaskFormProps {
+  onTaskAdded: () => void; // Define the prop as a function that takes no arguments and returns void
+}
 
-const NewTaskForm = ({}) => {
+const NewTaskForm: React.FC<NewTaskFormProps> = ({ onTaskAdded }) => {
+
   const {
     taskTitleValue,
     setTaskTitleValue,
@@ -42,12 +46,18 @@ const NewTaskForm = ({}) => {
     resetTodoValues();
   }
 
-  const handleAddTask = async () => {
-    // Do something with the 'allValues' object, for example, pass it to a function or log it.
-    await NewTodoItemSaving(); // Wait for the new task to be saved
-    todoGrabbing(); // Retrieve all tasks after the new task is saved
+  // const handleAddTask = async () => {
+  //   // Do something with the 'allValues' object, for example, pass it to a function or log it.
+  //   await NewTodoItemSaving(); // Wait for the new task to be saved
+  //   todoGrabbing(); // Retrieve all tasks after the new task is saved
 
-    // Close the modal or perform other actions as needed
+  //   // Close the modal or perform other actions as needed
+  //   CloseModal();
+  // };
+
+  const handleAddTask = async () => {
+    await NewTodoItemSaving();
+    onTaskAdded(); // Notify the parent component that a task has been added
     CloseModal();
   };
 

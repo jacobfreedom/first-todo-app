@@ -20,54 +20,37 @@ const TodoInterface = () => {
   
   const [todoItems, setTodoItems] = useState<React.ReactNode[]>([]);
 
+  const refreshTaskList = () => {
+    const storageKeys = Object.keys(localStorage);
+    const newTodoItems: React.ReactNode[] = [];
+
+    storageKeys.forEach((key) => {
+      const storedItemString = localStorage.getItem(key);
+      if (storedItemString) {
+        const storedTodoValues = JSON.parse(storedItemString);
+        newTodoItems.push(
+          <TodoItem
+            key={key}
+            todoItemData={storedTodoValues}
+          />
+        );
+      } else {
+        console.log("Item not found in local storage.");
+      }
+    });
+
+    setTodoItems(newTodoItems);
+  };
+
   useEffect(() => {
-    // Function to retrieve and update the list of tasks
-    const refreshTaskList = () => {
-      const storageKeys = Object.keys(localStorage);
-      const newTodoItems: React.ReactNode[] = [];
-
-      storageKeys.forEach((key) => {
-        const storedItemString = localStorage.getItem(key);
-        if (storedItemString) {
-          const storedTodoValues = JSON.parse(storedItemString);
-          newTodoItems.push(
-            <TodoItem
-              key={key}
-              todoItemData={storedTodoValues} // Pass the data as a prop
-            />
-          );
-        } else {
-          console.log("Item not found in local storage.");
-        }
-      });
-
-      setTodoItems(newTodoItems);
-    };
-
-    // Call the refreshTaskList function initially and whenever a new task is added
+    // Call the refreshTaskList function initially
     refreshTaskList();
-  }, []); // Empty dependency array means this effect runs once after initial render and on every new render
+  }, []);
 
-
-  // // Retrieve all the keys from local storage
-  // const storageKeys = Object.keys(localStorage);
-
-  // const todoItems: React.ReactNode[] = [];
-
-  // storageKeys.forEach((key) => {
-  //   const storedItemString = localStorage.getItem(key);
-  //   if (storedItemString) {
-  //     const storedTodoValues = JSON.parse(storedItemString);
-  //     todoItems.push(
-  //       <TodoItem
-  //         key={key}
-  //         todoItemData={storedTodoValues} // Pass the data as a prop
-  //       />
-  //     );
-  //   } else {
-  //     console.log("Item not found in local storage.");
-  //   }
-  // });
+  const handleTaskAdded = () => {
+    // Trigger the refresh of the task list
+    refreshTaskList();
+  };
 
 
   return (
@@ -90,7 +73,7 @@ const TodoInterface = () => {
           {/* add new todo */}
           <div className={styles.todo__item__elements}>
             <>
-              <NewTaskForm />
+              <NewTaskForm onTaskAdded={handleTaskAdded} />
             </>
           </div>
             {todoItems} {/* Render the array of TodoItem components */}
