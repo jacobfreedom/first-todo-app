@@ -42,8 +42,14 @@ const NewTaskForm = ({}) => {
     resetTodoValues();
   }
 
-  console.log(todoValues);
-  console.log(taskTitleValue);
+  const handleAddTask = async () => {
+    // Do something with the 'allValues' object, for example, pass it to a function or log it.
+    await NewTodoItemSaving(); // Wait for the new task to be saved
+    todoGrabbing(); // Retrieve all tasks after the new task is saved
+
+    // Close the modal or perform other actions as needed
+    CloseModal();
+  };
 
   return (
     <>
@@ -109,16 +115,7 @@ const NewTaskForm = ({}) => {
               <Button color="danger" variant="light" onPress={CloseModal}>
                 Discard
               </Button>
-              <Button color={selectedColor} onPress={() => {
-                // Do something with the 'allValues' object, for example, pass it to a function or log it.
-                console.log(todoValues);
-
-                NewTodoItemSaving();
-                todoGrabbing();
-
-                // Close the modal or perform other actions as needed
-                CloseModal();
-              }}>
+              <Button color={selectedColor} onPress={handleAddTask}>
                 Add
               </Button>
             </ModalFooter>

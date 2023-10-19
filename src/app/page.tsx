@@ -1,4 +1,3 @@
-"use client"
 
 import autoprefixer from 'autoprefixer'
 import styles from '../styles/Home.module.scss'

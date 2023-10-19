@@ -131,8 +131,9 @@
     .todo__item__elements {
         display: flex;
         width: 100%;
-        justify-content: space-between;
+        // justify-content: space-between;
         margin: 25px 0;
+        justify-content: space-between;
 
         &::after {
             content: "";
@@ -155,6 +156,7 @@
             display: flex;
             flex-direction: column;
             margin-right: 20px;
+            align-items: center;
         }
     }
 }

@@ -1,3 +1,5 @@
+"use client"
+
 import React, { createContext, useContext, useState, useEffect, ChangeEvent, ReactNode } from "react";
 
 // Define your priorities
@@ -64,12 +66,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     dateValue: dateValue,
   };
 
-  //   const todoValues = {
-//     taskTitleValue: taskTitleValue,
-//     descriptionValue: descriptionValue,
-//     priorityValue: priorityValue,
-//     dateValue: dateValue,
-//   };
 
   const [storedTodoItem, setStoredTodoItem] = useState({
     taskTitleValue: '',
@@ -125,76 +121,48 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     localStorage.setItem(key, JSON.stringify(todoValues));
   };
 
-  //   const NewTodoItemSaving = () => {
-//     // Generate a unique key based on a timestamp
-//     const timestamp = new Date().getTime();
-//     const key = `todoValues_${timestamp}`;
 
-//       // Save the current todoValues to local storage
-//     // localStorage.setItem('todoValues', JSON.stringify(todoValues));
-
-//       // Save the current todoValues to local storage with the unique key
-//     localStorage.setItem(key, JSON.stringify(todoValues));
-//   }
 
   const todoGrabbing = () => {
+
+    //prints all the items stored in local storage -> use for printing todo items
+
     const storageKeys = Object.keys(localStorage);
+
+    // Iterate through the keys and retrieve and log each item
+
     storageKeys.forEach((key) => {
       const storedItemString = localStorage.getItem(key);
       if (storedItemString) {
         const storedTodoValues = JSON.parse(storedItemString);
         console.log(`Key: ${key}, Value:`, storedTodoValues);
+
+        setStoredTodoItem(storedTodoValues);
+      } else {
+        console.log("Item not found in local storage.");
       }
     });
 
-    const keyToRetrieve = 'todoValues_1697647052891'; // Replace with the actual unique key
-    const storedItemString = localStorage.getItem(keyToRetrieve);
-    if (storedItemString) {
-      const storedTodoValues = JSON.parse(storedItemString);
-      console.log(storedTodoValues);
-      setStoredTodoItem(storedTodoValues);
-    } else {
-      console.log("Item not found in local storage.");
-    }
+    //will be used for removing
+
+    // // Define the unique key you want to retrieve
+    // const keyToRetrieve = 'todoValues_1697647052891'; // Replace with the actual unique key
+    // const storedItemString = localStorage.getItem(keyToRetrieve);
+    // if (storedItemString) {
+    //   const storedTodoValues = JSON.parse(storedItemString);
+    //   console.log(storedTodoValues);
+
+    //   // Set the priority label from the storedTodoValues in state
+    //   setStoredTodoItem(storedTodoValues);
+    // } else {
+    //   console.log("Item not found in local storage.");
+    // }
   };
 
-  //   const todoGrabbing =  () => {
-
-//     //prints all the items stored in local storage -> use for printing todo items
-
-//     const storageKeys = Object.keys(localStorage);
-
-//     // Iterate through the keys and retrieve and log each item
-//     storageKeys.forEach((key) => {
-//       const storedItemString = localStorage.getItem(key);
-//       if (storedItemString) {
-//         const storedTodoValues = JSON.parse(storedItemString);
-//         console.log(`Key: ${key}, Value:`, storedTodoValues);
-//       }
-//     });
+  
 
 
-// //will be used for removing
 
-//     // Define the unique key you want to retrieve
-//     const keyToRetrieve = 'todoValues_1697470760955'; // Replace with the actual unique key
-
-//     // Retrieve the item from local storage
-//     const storedItemString = localStorage.getItem(keyToRetrieve);
-
-//     if (storedItemString) {
-//       // Parse the stored item from JSON
-//       const storedTodoValues = JSON.parse(storedItemString);
-      
-//       // Log the retrieved todoValues
-//       console.log(storedTodoValues);
-
-//       // Set the priority label from the storedTodoValues in state
-//       setStoredTodoItem(storedTodoValues);
-//     } else {
-//       console.log("Item not found in local storage.");
-//     }  
-//   }
 
   useEffect(() => {
     // Call NewTodoGrabbing to retrieve and set the priority label when the component mounts
@@ -266,6 +234,48 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 //   //   var returnedNum = 1 + getNum;
 //   //   return returnedNum;
 //   // }
+
+
+
+
+
+  //   const todoGrabbing =  () => {
+
+//     //prints all the items stored in local storage -> use for printing todo items
+
+//     const storageKeys = Object.keys(localStorage);
+
+//     // Iterate through the keys and retrieve and log each item
+//     storageKeys.forEach((key) => {
+//       const storedItemString = localStorage.getItem(key);
+//       if (storedItemString) {
+//         const storedTodoValues = JSON.parse(storedItemString);
+//         console.log(`Key: ${key}, Value:`, storedTodoValues);
+//       }
+//     });
+
+
+// //will be used for removing
+
+//     // Define the unique key you want to retrieve
+//     const keyToRetrieve = 'todoValues_1697470760955'; // Replace with the actual unique key
+
+//     // Retrieve the item from local storage
+//     const storedItemString = localStorage.getItem(keyToRetrieve);
+
+//     if (storedItemString) {
+//       // Parse the stored item from JSON
+//       const storedTodoValues = JSON.parse(storedItemString);
+      
+//       // Log the retrieved todoValues
+//       console.log(storedTodoValues);
+
+//       // Set the priority label from the storedTodoValues in state
+//       setStoredTodoItem(storedTodoValues);
+//     } else {
+//       console.log("Item not found in local storage.");
+//     }  
+//   }
 
   return (
     <TaskContext.Provider

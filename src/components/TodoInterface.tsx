@@ -1,41 +1,74 @@
-import React from 'react';
-// import { Checkbox, Chip, Button, Tooltip, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Pagination, useDisclosure } from "@nextui-org/react";
-import {Button, Checkbox, Pagination,
-    Dropdown,
-    DropdownTrigger,
-    DropdownMenu,
-    DropdownItem,
-    useDisclosure,
-    Tooltip,
-    Chip, ChipProps
-  } from "@nextui-org/react";
+"use client"
+
+import React, {useState, useEffect} from 'react';
+import { Pagination } from "@nextui-org/react";
 
 
-import { NewTaskIcon } from '@/icons/NewTaskIcon';
-import { useTaskContext } from '@/providers/Context/TaskContext';
 import { useColor } from '@/app/ColorContext';
 import styles from '@/styles/Home.module.scss'
 
 import NewTaskForm from './TodoInterface_Creation/TodoModal';
 import TodoItem from './TodoInterface_Item_Element/TodoElement';
 
+
+
+
 const TodoInterface = () => {
-  const {
-    storedTodoItem,
-    descriptionStringChecker,
-    priorities,
-    resetTodoValues,
-    
-  } = useTaskContext();
 
-  const { selectedColor} = useColor();
+  const {selectedColor} = useColor();
 
-  const statusColorMap = {
-    none: "default",
-    low: "success",
-    medium: "warning",
-    high: "danger",
-  };
+  
+  const [todoItems, setTodoItems] = useState<React.ReactNode[]>([]);
+
+  useEffect(() => {
+    // Function to retrieve and update the list of tasks
+    const refreshTaskList = () => {
+      const storageKeys = Object.keys(localStorage);
+      const newTodoItems: React.ReactNode[] = [];
+
+      storageKeys.forEach((key) => {
+        const storedItemString = localStorage.getItem(key);
+        if (storedItemString) {
+          const storedTodoValues = JSON.parse(storedItemString);
+          newTodoItems.push(
+            <TodoItem
+              key={key}
+              todoItemData={storedTodoValues} // Pass the data as a prop
+            />
+          );
+        } else {
+          console.log("Item not found in local storage.");
+        }
+      });
+
+      setTodoItems(newTodoItems);
+    };
+
+    // Call the refreshTaskList function initially and whenever a new task is added
+    refreshTaskList();
+  }, []); // Empty dependency array means this effect runs once after initial render and on every new render
+
+
+  // // Retrieve all the keys from local storage
+  // const storageKeys = Object.keys(localStorage);
+
+  // const todoItems: React.ReactNode[] = [];
+
+  // storageKeys.forEach((key) => {
+  //   const storedItemString = localStorage.getItem(key);
+  //   if (storedItemString) {
+  //     const storedTodoValues = JSON.parse(storedItemString);
+  //     todoItems.push(
+  //       <TodoItem
+  //         key={key}
+  //         todoItemData={storedTodoValues} // Pass the data as a prop
+  //       />
+  //     );
+  //   } else {
+  //     console.log("Item not found in local storage.");
+  //   }
+  // });
+
 
   return (
     <>
@@ -57,12 +90,11 @@ const TodoInterface = () => {
           {/* add new todo */}
           <div className={styles.todo__item__elements}>
             <>
-              <NewTaskForm
-              />
+              <NewTaskForm />
             </>
           </div>
-
-          <TodoItem />
+            {todoItems} {/* Render the array of TodoItem components */}
+            {/* <TodoItem /> */}
         </div>
 
         <div className='flex items-center justify-center m-3'>
