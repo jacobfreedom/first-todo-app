@@ -1,6 +1,7 @@
 "use client"
 
 import React, { createContext, useContext, useState, useEffect, ChangeEvent, ReactNode } from "react";
+import TodoItem from "@/components/TodoInterface_Item_Element/TodoElement";
 
 // Define your priorities
 const priorities = [
@@ -36,6 +37,8 @@ interface TaskContextType {
   };
   todoGrabbing: () => void;
   descriptionStringChecker: (descriptionString: string) => string;
+  todoItems: React.ReactNode[]; // Add todoItems here
+  handleTaskAdded: () => void; // Add handleTaskAdded here
 }
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
@@ -79,6 +82,40 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     setDescriptionValue('');
     setPriorityValue(priorities[0]);
     setDateValue('');
+  };
+
+  const [todoItems, setTodoItems] = useState<React.ReactNode[]>([]);
+
+  const refreshTaskList = () => {
+    const storageKeys = Object.keys(localStorage);
+    const newTodoItems: React.ReactNode[] = [];
+
+    storageKeys.forEach((key) => {
+      const storedItemString = localStorage.getItem(key);
+      if (storedItemString) {
+        const storedTodoValues = JSON.parse(storedItemString);
+        newTodoItems.push(
+          <TodoItem
+            key={key}
+            todoItemData={storedTodoValues}
+          />
+        );
+      } else {
+        console.log("Item not found in local storage.");
+      }
+    });
+
+    setTodoItems(newTodoItems);
+  };
+
+  useEffect(() => {
+    // Call the refreshTaskList function initially
+    refreshTaskList();
+  }, []);
+
+  const handleTaskAdded = () => {
+    // Trigger the refresh of the task list
+    refreshTaskList();
   };
 
   //   const resetTodoValues = () => {
@@ -295,6 +332,8 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         storedTodoItem,
         todoGrabbing,
         descriptionStringChecker,
+        todoItems,
+        handleTaskAdded
       }}
     >
       {children}

@@ -9,6 +9,7 @@ import styles from '@/styles/Home.module.scss'
 
 import NewTaskForm from './TodoInterface_Creation/TodoModal';
 import TodoItem from './TodoInterface_Item_Element/TodoElement';
+import { useTaskContext } from '@/providers/Context/TaskContext';
 
 
 
@@ -16,41 +17,42 @@ import TodoItem from './TodoInterface_Item_Element/TodoElement';
 const TodoInterface = () => {
 
   const {selectedColor} = useColor();
+  const {todoItems, handleTaskAdded} = useTaskContext();
 
   
-  const [todoItems, setTodoItems] = useState<React.ReactNode[]>([]);
+  // const [todoItems, setTodoItems] = useState<React.ReactNode[]>([]);
 
-  const refreshTaskList = () => {
-    const storageKeys = Object.keys(localStorage);
-    const newTodoItems: React.ReactNode[] = [];
+  // const refreshTaskList = () => {
+  //   const storageKeys = Object.keys(localStorage);
+  //   const newTodoItems: React.ReactNode[] = [];
 
-    storageKeys.forEach((key) => {
-      const storedItemString = localStorage.getItem(key);
-      if (storedItemString) {
-        const storedTodoValues = JSON.parse(storedItemString);
-        newTodoItems.push(
-          <TodoItem
-            key={key}
-            todoItemData={storedTodoValues}
-          />
-        );
-      } else {
-        console.log("Item not found in local storage.");
-      }
-    });
+  //   storageKeys.forEach((key) => {
+  //     const storedItemString = localStorage.getItem(key);
+  //     if (storedItemString) {
+  //       const storedTodoValues = JSON.parse(storedItemString);
+  //       newTodoItems.push(
+  //         <TodoItem
+  //           key={key}
+  //           todoItemData={storedTodoValues}
+  //         />
+  //       );
+  //     } else {
+  //       console.log("Item not found in local storage.");
+  //     }
+  //   });
 
-    setTodoItems(newTodoItems);
-  };
+  //   setTodoItems(newTodoItems);
+  // };
 
-  useEffect(() => {
-    // Call the refreshTaskList function initially
-    refreshTaskList();
-  }, []);
+  // useEffect(() => {
+  //   // Call the refreshTaskList function initially
+  //   refreshTaskList();
+  // }, []);
 
-  const handleTaskAdded = () => {
-    // Trigger the refresh of the task list
-    refreshTaskList();
-  };
+  // const handleTaskAdded = () => {
+  //   // Trigger the refresh of the task list
+  //   refreshTaskList();
+  // };
 
 
   return (
