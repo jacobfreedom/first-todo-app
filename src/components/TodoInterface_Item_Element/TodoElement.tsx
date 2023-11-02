@@ -7,20 +7,20 @@ import styles from '@/styles/Home.module.scss'
 
 import { useTaskContext } from '@/providers/Context/TaskContext';
 import { useColor } from '@/app/ColorContext';
+import { TodoItemData } from '@/providers/Types/Types';
 
-interface TodoItemData {
-  taskTitleValue: string;
-  descriptionValue: string;
-  priorityValue: { label: string; value: string };
-  dateValue: string;
-}
+
 
 const TodoItem: React.FC<{ todoItemData: TodoItemData }> = ({ todoItemData }) => {
-  // ... rest of your component remains the same
+  // const TodoItem = ({ todoItemData }) => {
+
 
   const {
     descriptionStringChecker,
-    statusColorMap
+    statusColorMap,
+    onViewTask, 
+    onEditTask, 
+    onDeleteTask
   } = useTaskContext();
 
   const { selectedColor} = useColor();
@@ -40,8 +40,7 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData }> = ({ todoItemData }) =>
             {todoItemData.taskTitleValue}
           </div>
           <div className='font-extralight text-sm h-13'>
-            {/* {descriptionStringChecker(todoItemData.descriptionValue)} */}
-            {todoItemData.descriptionValue}
+            {descriptionStringChecker(todoItemData.descriptionValue)}
           </div>
         </div>
       </div>
@@ -69,6 +68,7 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData }> = ({ todoItemData }) =>
               variant="light"
               color={selectedColor}
               className="text-lg"
+              onClick={() => onViewTask(todoItemData)} // Call view task function
             >
               <EyeIcon className={selectedColor}/>
             </Button>
@@ -79,6 +79,7 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData }> = ({ todoItemData }) =>
               variant="light"
               color={selectedColor}
               className="text-lg"
+              onClick={() => onEditTask(todoItemData)} // Call edit task function
             >
               <EditIcon className={selectedColor}/>
             </Button>
@@ -89,6 +90,7 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData }> = ({ todoItemData }) =>
               variant="light"
               color="danger"
               className="text-lg"
+              onClick={() => onDeleteTask(todoItemData)} // Call delete task function
             >
               <DeleteIcon />
             </Button>

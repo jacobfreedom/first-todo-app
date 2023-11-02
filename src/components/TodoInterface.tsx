@@ -19,41 +19,6 @@ const TodoInterface = () => {
   const {selectedColor} = useColor();
   const {todoItems, handleTaskAdded} = useTaskContext();
 
-  
-  // const [todoItems, setTodoItems] = useState<React.ReactNode[]>([]);
-
-  // const refreshTaskList = () => {
-  //   const storageKeys = Object.keys(localStorage);
-  //   const newTodoItems: React.ReactNode[] = [];
-
-  //   storageKeys.forEach((key) => {
-  //     const storedItemString = localStorage.getItem(key);
-  //     if (storedItemString) {
-  //       const storedTodoValues = JSON.parse(storedItemString);
-  //       newTodoItems.push(
-  //         <TodoItem
-  //           key={key}
-  //           todoItemData={storedTodoValues}
-  //         />
-  //       );
-  //     } else {
-  //       console.log("Item not found in local storage.");
-  //     }
-  //   });
-
-  //   setTodoItems(newTodoItems);
-  // };
-
-  // useEffect(() => {
-  //   // Call the refreshTaskList function initially
-  //   refreshTaskList();
-  // }, []);
-
-  // const handleTaskAdded = () => {
-  //   // Trigger the refresh of the task list
-  //   refreshTaskList();
-  // };
-
 
   return (
     <>
