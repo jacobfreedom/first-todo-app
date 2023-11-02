@@ -1,6 +1,5 @@
 import React from 'react';
 import { Checkbox, Button, Tooltip, Chip } from '@nextui-org/react';
-import { EyeIcon } from '@/icons/EyeIcon';
 import { EditIcon } from '@/icons/EditIcon';
 import { DeleteIcon } from '@/icons/DeleteIcon';
 import styles from '@/styles/Home.module.scss'
@@ -8,11 +7,11 @@ import styles from '@/styles/Home.module.scss'
 import { useTaskContext } from '@/providers/Context/TaskContext';
 import { useColor } from '@/app/ColorContext';
 import { TodoItemData } from '@/providers/Types/Types';
+import TaskViewModal from './Events/TaskViewModal';
 
 
 
 const TodoItem: React.FC<{ todoItemData: TodoItemData }> = ({ todoItemData }) => {
-  // const TodoItem = ({ todoItemData }) => {
 
 
   const {
@@ -63,15 +62,7 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData }> = ({ todoItemData }) =>
         </div>
         <div className="flex">
           <Tooltip color={selectedColor} content="View">
-            <Button
-              isIconOnly
-              variant="light"
-              color={selectedColor}
-              className="text-lg"
-              onClick={() => onViewTask(todoItemData)} // Call view task function
-            >
-              <EyeIcon className={selectedColor}/>
-            </Button>
+            <TaskViewModal task={todoItemData} />
           </Tooltip>
           <Tooltip color={selectedColor} content="Edit">
             <Button

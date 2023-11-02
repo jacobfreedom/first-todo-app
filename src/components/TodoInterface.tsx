@@ -1,6 +1,5 @@
 "use client"
 
-import React, {useState, useEffect} from 'react';
 import { Pagination } from "@nextui-org/react";
 
 
@@ -8,7 +7,6 @@ import { useColor } from '@/app/ColorContext';
 import styles from '@/styles/Home.module.scss'
 
 import NewTaskForm from './TodoInterface_Creation/TodoModal';
-import TodoItem from './TodoInterface_Item_Element/TodoElement';
 import { useTaskContext } from '@/providers/Context/TaskContext';
 
 
