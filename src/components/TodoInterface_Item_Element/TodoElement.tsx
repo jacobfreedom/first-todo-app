@@ -1,6 +1,5 @@
 import React from 'react';
 import { Checkbox, Button, Tooltip, Chip } from '@nextui-org/react';
-import { EditIcon } from '@/icons/EditIcon';
 import { DeleteIcon } from '@/icons/DeleteIcon';
 import styles from '@/styles/Home.module.scss'
 
@@ -8,6 +7,7 @@ import { useTaskContext } from '@/providers/Context/TaskContext';
 import { useColor } from '@/app/ColorContext';
 import { TodoItemData } from '@/providers/Types/Types';
 import TaskViewModal from './Events/TaskViewModal';
+import TaskEditModal from './Events/TaskEditModal';
 
 
 
@@ -17,14 +17,13 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData }> = ({ todoItemData }) =>
   const {
     descriptionStringChecker,
     statusColorMap,
-    onViewTask, 
     onEditTask, 
     onDeleteTask
   } = useTaskContext();
 
   const { selectedColor} = useColor();
 
-    if (!todoItemData || !todoItemData.priorityValue) {
+  if (!todoItemData || !todoItemData.priorityValue) {
     return null; // Handle missing or invalid data
   }
 
@@ -65,15 +64,8 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData }> = ({ todoItemData }) =>
             <TaskViewModal task={todoItemData} />
           </Tooltip>
           <Tooltip color={selectedColor} content="Edit">
-            <Button
-              isIconOnly
-              variant="light"
-              color={selectedColor}
-              className="text-lg"
-              onClick={() => onEditTask(todoItemData)} // Call edit task function
-            >
-              <EditIcon className={selectedColor}/>
-            </Button>
+            <TaskEditModal task={todoItemData} />
+            
           </Tooltip>
           <Tooltip color="danger" content="Delete">
             <Button

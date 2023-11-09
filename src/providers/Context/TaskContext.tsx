@@ -82,9 +82,9 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   //   // Iterate through the keys and retrieve and log each item
 
   //   storageKeys.forEach((key) => {
-  //     const storedItemString = localStorage.getItem(key);
-  //     if (storedItemString) {
-  //       const storedTodoValues = JSON.parse(storedItemString);
+  //     const storedItem = localStorage.getItem(key);
+  //     if (storedItem) {
+  //       const storedTodoValues = JSON.parse(storedItem);
   //       console.log(`Key: ${key}, Value:`, storedTodoValues);
 
   //       setStoredTodoItem(storedTodoValues);
@@ -97,9 +97,9 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 
   //   // // Define the unique key you want to retrieve
   //   // const keyToRetrieve = 'todoValues_1697647052891'; // Replace with the actual unique key
-  //   // const storedItemString = localStorage.getItem(keyToRetrieve);
-  //   // if (storedItemString) {
-  //   //   const storedTodoValues = JSON.parse(storedItemString);
+  //   // const storedItem = localStorage.getItem(keyToRetrieve);
+  //   // if (storedItem) {
+  //   //   const storedTodoValues = JSON.parse(storedItem);
   //   //   console.log(storedTodoValues);
 
   //   //   // Set the priority label from the storedTodoValues in state
@@ -108,16 +108,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   //   //   console.log("Item not found in local storage.");
   //   // }
   // };
-
-  
-
-
-
-
-  // useEffect(() => {
-  //   // Call NewTodoGrabbing to retrieve and set the priority label when the component mounts
-  //   todoGrabbing();
-  // }, []);
 
 
   const descriptionStringChecker = (descriptionString: string) => {
@@ -131,9 +121,9 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     const newTodoItems: React.ReactNode[] = [];
 
     storageKeys.forEach((key) => {
-      const storedItemString = localStorage.getItem(key);
-      if (storedItemString) {
-        const storedTodoValues = JSON.parse(storedItemString);
+      const storedItem = localStorage.getItem(key);
+      if (storedItem) {
+        const storedTodoValues = JSON.parse(storedItem);
         newTodoItems.push(
           <TodoItem
             key={key}
@@ -161,12 +151,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   
   const [selectedTask, setSelectedTask] = useState<TodoItemData | null>(null);
 
-  // Define the functions to view, edit, and delete tasks
-  const onViewTask = (task: TodoItemData) => {
-    // Implement the logic to view the task, e.g., open a modal or show details
-    // You can set the selected task in the state to display it.
-    setSelectedTask(task);
-  };
+
 
   const onEditTask = (task: TodoItemData) => {
     // Implement the logic to edit the task, e.g., open a modal with a form pre-filled with task data
@@ -200,7 +185,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         todoItems,
         handleTaskAdded,
         // Provide the new functions
-        onViewTask,
         onEditTask,
         onDeleteTask,
       }}

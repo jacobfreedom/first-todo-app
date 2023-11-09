@@ -39,7 +39,6 @@ const priorities = [
     descriptionStringChecker: (descriptionString: string) => string;
     todoItems: React.ReactNode[];
     handleTaskAdded: () => void;
-    onViewTask: (task: TodoItemData) => void; // Include these new properties
     onEditTask: (task: TodoItemData) => void;
     onDeleteTask: (task: TodoItemData) => void;
   }
