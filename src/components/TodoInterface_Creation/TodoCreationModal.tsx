@@ -46,17 +46,8 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onTaskAdded }) => {
     resetTodoValues();
   }
 
-  // const handleAddTask = async () => {
-  //   // Do something with the 'allValues' object, for example, pass it to a function or log it.
-  //   await NewTodoItemSaving(); // Wait for the new task to be saved
-  //   todoGrabbing(); // Retrieve all tasks after the new task is saved
-
-  //   // Close the modal or perform other actions as needed
-  //   CloseModal();
-  // };
-
   const handleAddTask = async () => {
-    await NewTodoItemSaving();
+    await NewTodoItemSaving(); // Wait for the new task to be saved
     onTaskAdded(); // Notify the parent component that a task has been added
     CloseModal();
   };
@@ -64,10 +55,10 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onTaskAdded }) => {
   return (
     <>
     <Button fullWidth onPress={onOpen} variant='light'
-              className='border-1 border-content3 text-default-400 py-6' startContent={<NewTaskIcon />}
-              >
-                New Task
-              </Button>
+    className='border-1 border-content3 text-default-400 py-6' startContent={<NewTaskIcon />}
+    >
+      New Task
+    </Button>
     <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} backdrop='blur'>
       <ModalContent>
         {(onClose) => (

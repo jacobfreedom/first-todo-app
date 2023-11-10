@@ -41,6 +41,7 @@ const priorities = [
     handleTaskAdded: () => void;
     onEditTask: (task: TodoItemData) => void;
     onDeleteTask: (task: TodoItemData) => void;
+    refreshTaskList: () => void;
   }
   
   // Types related to the TodoItem

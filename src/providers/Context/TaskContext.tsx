@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useState, useEffect, ChangeEvent, ReactNode } from "react";
 import TodoItem from "@/components/TodoInterface_Item_Element/TodoElement";
 import { priorities, TaskContextType, TodoItemData } from "../Types/Types";
-import TaskViewModal from "@/components/TodoInterface_Item_Element/Events/TaskViewModal";
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
@@ -128,6 +127,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
           <TodoItem
             key={key}
             todoItemData={storedTodoValues}
+            taskKey={key} // Pass the unique key to the TodoItem
           />
         );
       } else {
@@ -146,21 +146,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const handleTaskAdded = () => {
     // Trigger the refresh of the task list
     refreshTaskList();
-  };
-
-  
-  const [selectedTask, setSelectedTask] = useState<TodoItemData | null>(null);
-
-
-
-  const onEditTask = (task: TodoItemData) => {
-    // Implement the logic to edit the task, e.g., open a modal with a form pre-filled with task data
-    // You can set the selected task in the state to edit it.
-  };
-
-  const onDeleteTask = (task: TodoItemData) => {
-    // Implement the logic to delete the task, e.g., make an API call or remove it from the state
-    // You can refresh the task list after deletion.
   };
 
 
@@ -184,9 +169,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         descriptionStringChecker,
         todoItems,
         handleTaskAdded,
-        // Provide the new functions
-        onEditTask,
-        onDeleteTask,
+        refreshTaskList
       }}
     >
       {children}

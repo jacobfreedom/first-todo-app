@@ -8,24 +8,19 @@ import { useColor } from '@/app/ColorContext';
 import { TodoItemData } from '@/providers/Types/Types';
 import TaskViewModal from './Events/TaskViewModal';
 import TaskEditModal from './Events/TaskEditModal';
+import TaskDeleteModal from './Events/TaskDeleteModal';
 
 
 
-const TodoItem: React.FC<{ todoItemData: TodoItemData }> = ({ todoItemData }) => {
+const TodoItem: React.FC<{ todoItemData: TodoItemData; taskKey: string }> = ({ todoItemData, taskKey }) => {
 
 
   const {
     descriptionStringChecker,
     statusColorMap,
-    onEditTask, 
-    onDeleteTask
   } = useTaskContext();
 
   const { selectedColor} = useColor();
-
-  if (!todoItemData || !todoItemData.priorityValue) {
-    return null; // Handle missing or invalid data
-  }
 
   return (
     <div className={styles.todo__item__elements}>
@@ -64,19 +59,11 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData }> = ({ todoItemData }) =>
             <TaskViewModal task={todoItemData} />
           </Tooltip>
           <Tooltip color={selectedColor} content="Edit">
-            <TaskEditModal task={todoItemData} />
+            <TaskEditModal task={todoItemData} taskKey={taskKey} />
             
           </Tooltip>
           <Tooltip color="danger" content="Delete">
-            <Button
-              isIconOnly
-              variant="light"
-              color="danger"
-              className="text-lg"
-              onClick={() => onDeleteTask(todoItemData)} // Call delete task function
-            >
-              <DeleteIcon />
-            </Button>
+            <TaskDeleteModal taskKey={taskKey} />
           </Tooltip>
         </div>
       </div>
