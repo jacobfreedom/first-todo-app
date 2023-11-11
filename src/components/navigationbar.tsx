@@ -3,7 +3,7 @@
 import { AcmeLogo } from "@/icons/AcmeLogo";
 import { Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, 
     Link, Navbar, NavbarBrand, NavbarContent, NavbarItem, cn } from "@nextui-org/react";
-import { useColor } from "@/app/ColorContext";
+import { useColor } from "@/providers/Context/ColorContext";
 
 function Nav() {
 

@@ -1,9 +1,7 @@
 import React from 'react';
 import { Checkbox, Chip } from '@nextui-org/react';
-import styles from '@/styles/Home.module.scss'
-
 import { useTaskContext } from '@/providers/Context/TaskContext';
-import { useColor } from '@/app/ColorContext';
+import { useColor } from '@/providers/Context/ColorContext';
 import { TodoItemData } from '@/providers/Types/Types';
 import TaskViewModal from './Events/TaskViewModal';
 import TaskEditModal from './Events/TaskEditModal';

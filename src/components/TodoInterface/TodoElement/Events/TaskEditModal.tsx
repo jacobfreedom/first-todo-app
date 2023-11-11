@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Modal, ModalContent, ModalFooter, ModalHeader, useDisclosure, Input, Select, ModalBody, Textarea, SelectItem } from '@nextui-org/react';
 import { useTaskContext } from '@/providers/Context/TaskContext';
 import { TodoItemData } from '@/providers/Types/Types';
-import { useColor } from '@/app/ColorContext';
+import { useColor } from '@/providers/Context/ColorContext';
 import { EditIcon } from '@/icons/EditIcon';
 import { priorities } from '@/providers/Types/Types';
 

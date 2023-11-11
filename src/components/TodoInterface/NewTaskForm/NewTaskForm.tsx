@@ -12,7 +12,7 @@ import {
   Button,
   useDisclosure
 } from "@nextui-org/react";
-import { useColor } from '@/app/ColorContext';
+import { useColor } from '@/providers/Context/ColorContext';
 import { useTaskContext } from '@/providers/Context/TaskContext';
 import { NewTaskIcon } from '@/icons/NewTaskIcon';
 

@@ -3,7 +3,7 @@ import { TodoItemData } from '@/providers/Types/Types';
 import { Button, Chip, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react';
 import { EyeIcon } from '@/icons/EyeIcon';
 import { useTaskContext } from '@/providers/Context/TaskContext';
-import { useColor } from '@/app/ColorContext';
+import { useColor } from '@/providers/Context/ColorContext';
 
 const TaskViewModal: React.FC<{ task: TodoItemData }> = ({ task }) => {
 

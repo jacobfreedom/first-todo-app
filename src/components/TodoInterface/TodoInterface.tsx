@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useState } from "react";
-import { Pagination, Tabs, Tab, Card, CardBody, CardHeader, Select, SelectItem } from "@nextui-org/react";
-import { useColor } from '@/app/ColorContext';
+import { Pagination, Tabs, Tab, Select, SelectItem } from "@nextui-org/react";
+import { useColor } from '@/providers/Context/ColorContext';
 import styles from '@/styles/Home.module.scss'
 import NewTaskForm from './NewTaskForm/NewTaskForm';
 import { useTaskContext } from '@/providers/Context/TaskContext';

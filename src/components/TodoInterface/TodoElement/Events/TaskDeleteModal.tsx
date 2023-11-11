@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Modal, ModalContent, ModalFooter, ModalHeader, useDisclosure, Input, Select, ModalBody, Textarea, SelectItem } from '@nextui-org/react';
 import { useTaskContext } from '@/providers/Context/TaskContext';
-import { useColor } from '@/app/ColorContext';
+import { useColor } from '@/providers/Context/ColorContext';
 import { DeleteIcon } from '@/icons/DeleteIcon';
 
 const TaskDeleteModal: React.FC<{ taskKey: string }> = ({ taskKey }) => {
