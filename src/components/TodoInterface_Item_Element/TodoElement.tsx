@@ -1,6 +1,5 @@
 import React from 'react';
-import { Checkbox, Button, Tooltip, Chip } from '@nextui-org/react';
-import { DeleteIcon } from '@/icons/DeleteIcon';
+import { Checkbox, Chip } from '@nextui-org/react';
 import styles from '@/styles/Home.module.scss'
 
 import { useTaskContext } from '@/providers/Context/TaskContext';
@@ -55,16 +54,11 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData; taskKey: string }> = ({ t
           </Chip>
         </div>
         <div className="flex">
-          <Tooltip color={selectedColor} content="View">
-            <TaskViewModal task={todoItemData} />
-          </Tooltip>
-          <Tooltip color={selectedColor} content="Edit">
-            <TaskEditModal task={todoItemData} taskKey={taskKey} />
+          <TaskViewModal task={todoItemData} />
+
+          <TaskEditModal task={todoItemData} taskKey={taskKey} />
             
-          </Tooltip>
-          <Tooltip color="danger" content="Delete">
-            <TaskDeleteModal taskKey={taskKey} />
-          </Tooltip>
+          <TaskDeleteModal taskKey={taskKey} />
         </div>
       </div>
     </div>

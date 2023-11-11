@@ -30,18 +30,12 @@ const priorities = [
     resetTodoValues: () => void;
     statusColorMap: Record<string, any>;
     NewTodoItemSaving: () => void;
-    storedTodoItem: {
-      taskTitleValue: string;
-      descriptionValue: string;
-      priorityValue: Priority;
-      dateValue: string;
-    };
     descriptionStringChecker: (descriptionString: string) => string;
     todoItems: React.ReactNode[];
     handleTaskAdded: () => void;
-    onEditTask: (task: TodoItemData) => void;
-    onDeleteTask: (task: TodoItemData) => void;
     refreshTaskList: () => void;
+    sortByPriority: () => void;
+    handleSortChange: (sortOption: string) => void;
   }
   
   // Types related to the TodoItem
@@ -50,6 +44,7 @@ const priorities = [
     descriptionValue: string;
     priorityValue: Priority;
     dateValue: string;
+    createdTimestamp: number; // New property for creation timestamp
   }
   
 // Export all types

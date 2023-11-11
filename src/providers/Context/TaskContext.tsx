@@ -32,14 +32,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     dateValue: dateValue,
   };
 
-
-  const [storedTodoItem, setStoredTodoItem] = useState({
-    taskTitleValue: '',
-    descriptionValue: '',
-    priorityValue: { label: '', value: '' },
-    dateValue: '',
-  });
-
   const resetTodoValues = () => {
     setTaskTitleValue('');
     setDescriptionValue('');
@@ -66,48 +58,14 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     const timestamp = new Date().getTime();
     const key = `todoValues_${timestamp}`;
 
+    const todoValuesWithTimestamp = {
+      ...todoValues,
+      createdTimestamp: timestamp, // Add createdTimestamp to todoValues
+    };
+
     // Save the current todoValues to local storage with the unique key
-    localStorage.setItem(key, JSON.stringify(todoValues));
+    localStorage.setItem(key, JSON.stringify(todoValuesWithTimestamp));
   };
-
-
-
-  // const todoGrabbing = () => {
-
-  //   //prints all the items stored in local storage -> use for printing todo items
-
-  //   const storageKeys = Object.keys(localStorage);
-
-  //   // Iterate through the keys and retrieve and log each item
-
-  //   storageKeys.forEach((key) => {
-  //     const storedItem = localStorage.getItem(key);
-  //     if (storedItem) {
-  //       const storedTodoValues = JSON.parse(storedItem);
-  //       console.log(`Key: ${key}, Value:`, storedTodoValues);
-
-  //       setStoredTodoItem(storedTodoValues);
-  //     } else {
-  //       console.log("Item not found in local storage.");
-  //     }
-  //   });
-
-  //   //will be used for removing
-
-  //   // // Define the unique key you want to retrieve
-  //   // const keyToRetrieve = 'todoValues_1697647052891'; // Replace with the actual unique key
-  //   // const storedItem = localStorage.getItem(keyToRetrieve);
-  //   // if (storedItem) {
-  //   //   const storedTodoValues = JSON.parse(storedItem);
-  //   //   console.log(storedTodoValues);
-
-  //   //   // Set the priority label from the storedTodoValues in state
-  //   //   setStoredTodoItem(storedTodoValues);
-  //   // } else {
-  //   //   console.log("Item not found in local storage.");
-  //   // }
-  // };
-
 
   const descriptionStringChecker = (descriptionString: string) => {
     return descriptionString.length > 120
@@ -115,28 +73,232 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       : descriptionString;
   };
 
+  // const refreshTaskList = () => {
+  //   const storageKeys = Object.keys(localStorage);
+  //   const newTodoItems: React.ReactNode[] = [];
+
+  //   storageKeys.forEach((key) => {
+  //     const storedItem = localStorage.getItem(key);
+  //     if (storedItem) {
+  //       const storedTodoValues = JSON.parse(storedItem);
+  //       newTodoItems.push(
+  //         <TodoItem
+  //           key={key}
+  //           todoItemData={storedTodoValues}
+  //           taskKey={key} // Pass the unique key to the TodoItem
+  //         />
+  //       );
+  //     } else {
+  //       console.log("Item not found in local storage.");
+  //     }
+  //   });
+
+
+  //   // // Sort the tasks by creation date
+  //   // newTodoItems.sort((a, b) => a.todoItemData.createdTimestamp - b.todoItemData.createdTimestamp);
+
+  //   // // Render sorted tasks in TodoItem components
+  //   // const sortedTodoItems = newTodoItems.map((item) => (
+  //   //   <TodoItem key={item.key} todoItemData={item.todoItemData} taskKey={item.key} />
+  //   // ));
+
+  //   // setTodoItems(newTodoItems);
+
+  //     // Sort the tasks by creation date
+  // newTodoItems.sort((a, b) => {
+  //   if (a && b && a.todoItemData && b.todoItemData) {
+  //     return a.todoItemData.createdTimestamp - b.todoItemData.createdTimestamp;
+  //   }
+  //   return 0;
+  // });
+
+  // // Render sorted tasks in TodoItem components
+  // const sortedTodoItems = newTodoItems
+  //   .filter(item => item && item.key && item.todoItemData) // Filtering out null/undefined items
+  //   .map((item) => (
+  //     <TodoItem key={item.key} todoItemData={item.todoItemData} taskKey={item.key} />
+  //   ));
+
+  // setTodoItems(sortedTodoItems);
+  // };
+
   const refreshTaskList = () => {
     const storageKeys = Object.keys(localStorage);
-    const newTodoItems: React.ReactNode[] = [];
-
+    const newTodoItems: { key: string, todoItemData: TodoItemData }[] = [];
+  
     storageKeys.forEach((key) => {
       const storedItem = localStorage.getItem(key);
       if (storedItem) {
         const storedTodoValues = JSON.parse(storedItem);
-        newTodoItems.push(
-          <TodoItem
-            key={key}
-            todoItemData={storedTodoValues}
-            taskKey={key} // Pass the unique key to the TodoItem
-          />
-        );
+        if (storedTodoValues.createdTimestamp) {
+          const todoItem = { key, todoItemData: storedTodoValues };
+          newTodoItems.push(todoItem);
+        }
       } else {
         console.log("Item not found in local storage.");
       }
     });
-
-    setTodoItems(newTodoItems);
+  
+    newTodoItems.sort((a, b) => {
+      // Ensure to check if timestamps exist and handle null values
+      const timestampA = a.todoItemData.createdTimestamp || 0;
+      const timestampB = b.todoItemData.createdTimestamp || 0;
+  
+      return timestampB - timestampA;
+    });
+  
+    const sortedTodoItems = newTodoItems.map((item) => (
+      <TodoItem key={item.key} todoItemData={item.todoItemData} taskKey={item.key} />
+    ));
+  
+    setTodoItems(sortedTodoItems);
   };
+  
+  type TodoItem = React.ReactElement<{ todoItemData: TodoItemData; key: string }>;
+
+  const sortWithDirection = (
+    items: TodoItem[],
+    accessor: (data: TodoItemData) => number | string,
+    direction: 'asc' | 'desc'
+  ): TodoItem[] => {
+    return items
+      .filter(
+        item =>
+          React.isValidElement(item) &&
+          item.props.todoItemData &&
+          accessor(item.props.todoItemData) !== undefined
+      )
+      .sort((a, b) => {
+        const valA = accessor(a.props.todoItemData);
+        const valB = accessor(b.props.todoItemData);
+        if (valA && valB) {
+          return direction === 'asc' ? +valA - +valB : +valB - +valA;
+        }
+        return 0;
+      });
+  };
+  
+  const sortByCreatedTimestamp = () => {
+    // Ensure todoItems is of type TodoItem[] and contains valid React.ReactElement items
+    const sortedByTimestamp = sortWithDirection(todoItems, data => data.createdTimestamp, 'asc');
+    setTodoItems(sortedByTimestamp);
+  };
+  
+  const sortByTitle = () => {
+    const sortedByTitle = sortWithDirection(todoItems, data => data.taskTitleValue, 'asc');
+    setTodoItems(sortedByTitle);
+  };
+  
+  const sortByPriority = () => {
+    const sortedByPriority = sortWithDirection(todoItems, data => data.priorityValue.value, 'asc');
+    setTodoItems(sortedByPriority);
+  };
+  
+  const sortByDate = () => {
+    const sortedByDate = sortWithDirection(todoItems, data => new Date(data.dateValue).getTime(), 'asc');
+    setTodoItems(sortedByDate);
+  };
+
+  // const sortByCreatedTimestamp = () => {
+  //   const sortedByTimestamp = todoItems
+  //     .filter(item => React.isValidElement(item) && item.props.todoItemData && item.props.todoItemData.createdTimestamp !== undefined)
+  //     .sort((a, b) => {
+  //       if (
+  //         React.isValidElement(a) &&
+  //         React.isValidElement(b) &&
+  //         a.props.todoItemData &&
+  //         b.props.todoItemData &&
+  //         a.props.todoItemData.createdTimestamp &&
+  //         b.props.todoItemData.createdTimestamp
+  //       ) {
+  //         return a.props.todoItemData.createdTimestamp - b.props.todoItemData.createdTimestamp;
+  //       }
+  //       return 0;
+  //     });
+  //   setTodoItems(sortedByTimestamp);
+  // };
+
+  // const sortByTitle = () => {
+  //   const sortedByTitle = todoItems
+  //     .filter(item => React.isValidElement(item) && item.props.todoItemData && item.props.todoItemData.taskTitleValue !== undefined)
+  //     .sort((a, b) => {
+  //       if (
+  //         React.isValidElement(a) &&
+  //         React.isValidElement(b) &&
+  //         a.props.todoItemData &&
+  //         b.props.todoItemData &&
+  //         a.props.todoItemData.taskTitleValue &&
+  //         b.props.todoItemData.taskTitleValue
+  //       ) {
+  //         return a.props.todoItemData.taskTitleValue.localeCompare(b.props.todoItemData.taskTitleValue);
+  //       }
+  //       return 0;
+  //     });
+  //   setTodoItems(sortedByTitle);
+  // };
+  
+  // const sortByPriority = () => {
+  //   const sortedByPriority = todoItems
+  //     .filter(item => React.isValidElement(item) && item.props.todoItemData && item.props.todoItemData.priorityValue !== undefined)
+  //     .sort((a, b) => {
+  //       if (
+  //         React.isValidElement(a) &&
+  //         React.isValidElement(b) &&
+  //         a.props.todoItemData &&
+  //         b.props.todoItemData &&
+  //         a.props.todoItemData.priorityValue &&
+  //         b.props.todoItemData.priorityValue
+  //       ) {
+  //         const priorityA = a.props.todoItemData.priorityValue.value;
+  //         const priorityB = b.props.todoItemData.priorityValue.value;
+          
+  //         // Assuming priorities is an array of objects with label and value
+  //         return priorities.findIndex(p => p.value === priorityA) - priorities.findIndex(p => p.value === priorityB);
+  //       }
+  //       return 0;
+  //     });
+  //   setTodoItems(sortedByPriority);
+  // };
+  
+  
+  // const sortByDate = () => {
+  //   const sortedByDate = todoItems
+  //     .filter(item => React.isValidElement(item) && item.props.todoItemData && item.props.todoItemData.dateValue !== undefined)
+  //     .sort((a, b) => {
+  //       if (
+  //         React.isValidElement(a) &&
+  //         React.isValidElement(b) &&
+  //         a.props.todoItemData &&
+  //         b.props.todoItemData &&
+  //         a.props.todoItemData.dateValue &&
+  //         b.props.todoItemData.dateValue
+  //       ) {
+  //         return new Date(a.props.todoItemData.dateValue).getTime() - new Date(b.props.todoItemData.dateValue).getTime();
+  //       }
+  //       return 0;
+  //     });
+  //   setTodoItems(sortedByDate);
+  // };
+  
+  const handleSortChange = (sortOption: string) => {
+    switch (sortOption) {
+      case 'createdTimestamp':
+        sortByCreatedTimestamp();
+        break;
+      case 'title':
+        sortByTitle();
+        break;
+      case 'priority':
+        sortByPriority();
+        break;
+      case 'date':
+        sortByDate();
+        break;
+      default:
+        break;
+    }
+  };
+  
 
   useEffect(() => {
     // Call the refreshTaskList function initially
@@ -147,7 +309,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     // Trigger the refresh of the task list
     refreshTaskList();
   };
-
 
   return (
     <TaskContext.Provider
@@ -164,12 +325,12 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         resetTodoValues,
         statusColorMap,
         NewTodoItemSaving,
-        storedTodoItem,
-        // todoGrabbing,
         descriptionStringChecker,
         todoItems,
         handleTaskAdded,
-        refreshTaskList
+        refreshTaskList,
+        sortByPriority,
+        handleSortChange
       }}
     >
       {children}

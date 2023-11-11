@@ -31,9 +31,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onTaskAdded }) => {
     onPriorityChange,
     dateValue,
     setDateValue,
-    todoValues,
     NewTodoItemSaving,
-    // todoGrabbing,
     resetTodoValues
   } = useTaskContext();
   

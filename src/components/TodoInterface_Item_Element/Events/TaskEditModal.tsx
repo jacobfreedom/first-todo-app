@@ -53,8 +53,6 @@ const TaskEditModal: React.FC<{ task: TodoItemData; taskKey: string }> = ({ task
       }
     }
   };
-  
-  
 
   return (
     <>

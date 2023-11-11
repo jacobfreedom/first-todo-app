@@ -1,10 +1,7 @@
 import React from 'react';
 import { Button, Modal, ModalContent, ModalFooter, ModalHeader, useDisclosure, Input, Select, ModalBody, Textarea, SelectItem } from '@nextui-org/react';
 import { useTaskContext } from '@/providers/Context/TaskContext';
-import { TodoItemData } from '@/providers/Types/Types';
 import { useColor } from '@/app/ColorContext';
-import { EditIcon } from '@/icons/EditIcon';
-import { priorities } from '@/providers/Types/Types';
 import { DeleteIcon } from '@/icons/DeleteIcon';
 
 const TaskDeleteModal: React.FC<{ taskKey: string }> = ({ taskKey }) => {
@@ -12,23 +9,13 @@ const TaskDeleteModal: React.FC<{ taskKey: string }> = ({ taskKey }) => {
   const { handleTaskAdded } = useTaskContext();
   const { selectedColor } = useColor();
 
-//   const onSaveChanges = async () => {
-//     if (editedTask) {
-//       localStorage.setItem(taskKey, JSON.stringify(editedTask)); // Update the task using its specific key
-//       handleTaskAdded(); // This triggers the refresh after an edit
-//       onClose();
-//     }
-//   };
-
-const onDeleteTask = () => {
-    if (taskKey) {
-      localStorage.removeItem(taskKey); // Remove the task using its specific key
-      handleTaskAdded(); // Refresh the tasks list after deletion
-      onClose();
-    }
-  };
-  
-  
+    const onDeleteTask = () => {
+        if (taskKey) {
+        localStorage.removeItem(taskKey); // Remove the task using its specific key
+        handleTaskAdded(); // Refresh the tasks list after deletion
+        onClose();
+        }
+    };
 
   return (
     <>
