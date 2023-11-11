@@ -61,6 +61,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     const todoValuesWithTimestamp = {
       ...todoValues,
       createdTimestamp: timestamp, // Add createdTimestamp to todoValues
+      taskChecked: false,
     };
 
     // Save the current todoValues to local storage with the unique key
@@ -72,55 +73,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       ? `${descriptionString.substring(0, 120)}...`
       : descriptionString;
   };
-
-  // const refreshTaskList = () => {
-  //   const storageKeys = Object.keys(localStorage);
-  //   const newTodoItems: React.ReactNode[] = [];
-
-  //   storageKeys.forEach((key) => {
-  //     const storedItem = localStorage.getItem(key);
-  //     if (storedItem) {
-  //       const storedTodoValues = JSON.parse(storedItem);
-  //       newTodoItems.push(
-  //         <TodoItem
-  //           key={key}
-  //           todoItemData={storedTodoValues}
-  //           taskKey={key} // Pass the unique key to the TodoItem
-  //         />
-  //       );
-  //     } else {
-  //       console.log("Item not found in local storage.");
-  //     }
-  //   });
-
-
-  //   // // Sort the tasks by creation date
-  //   // newTodoItems.sort((a, b) => a.todoItemData.createdTimestamp - b.todoItemData.createdTimestamp);
-
-  //   // // Render sorted tasks in TodoItem components
-  //   // const sortedTodoItems = newTodoItems.map((item) => (
-  //   //   <TodoItem key={item.key} todoItemData={item.todoItemData} taskKey={item.key} />
-  //   // ));
-
-  //   // setTodoItems(newTodoItems);
-
-  //     // Sort the tasks by creation date
-  // newTodoItems.sort((a, b) => {
-  //   if (a && b && a.todoItemData && b.todoItemData) {
-  //     return a.todoItemData.createdTimestamp - b.todoItemData.createdTimestamp;
-  //   }
-  //   return 0;
-  // });
-
-  // // Render sorted tasks in TodoItem components
-  // const sortedTodoItems = newTodoItems
-  //   .filter(item => item && item.key && item.todoItemData) // Filtering out null/undefined items
-  //   .map((item) => (
-  //     <TodoItem key={item.key} todoItemData={item.todoItemData} taskKey={item.key} />
-  //   ));
-
-  // setTodoItems(sortedTodoItems);
-  // };
 
   const refreshTaskList = () => {
     const storageKeys = Object.keys(localStorage);

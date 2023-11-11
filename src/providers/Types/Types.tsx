@@ -45,8 +45,18 @@ const priorities = [
     priorityValue: Priority;
     dateValue: string;
     createdTimestamp: number; // New property for creation timestamp
+    taskChecked: boolean;
   }
   
+  interface UserContextType {
+    selectedColor: any;
+    setSelectedColor: (color: string) => void;
+    selectedSortingOption: string;
+    setSelectedSortingOption: (option: string) => void;
+    selectedTab: string;
+    setSelectedTab: (tab: string) => void;
+  }
+
 // Export all types
 export {
   priorities
@@ -54,6 +64,7 @@ export {
 
 export type {
   TaskContextType,
+  UserContextType,
   TodoItemData
 };
   

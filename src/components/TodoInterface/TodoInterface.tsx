@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Pagination, Tabs, Tab, Select, SelectItem } from "@nextui-org/react";
-import { useColor } from '@/providers/Context/ColorContext';
+import { useUserContext } from '@/providers/Context/UserContext';
 import styles from '@/styles/Home.module.scss'
 import NewTaskForm from './NewTaskForm/NewTaskForm';
 import { useTaskContext } from '@/providers/Context/TaskContext';
@@ -12,7 +12,7 @@ import { useTaskContext } from '@/providers/Context/TaskContext';
 
 const TodoInterface = () => {
 
-  const {selectedColor} = useColor();
+  const {selectedColor} = useUserContext();
   const {todoItems, handleTaskAdded, handleSortChange} = useTaskContext();
   const [sortOption, setSortOption] = useState(''); // State to track selected sorting option
   const [activeTab, setActiveTab] = useState('In Progress');
@@ -21,6 +21,24 @@ const TodoInterface = () => {
     setSortOption(selectedOption); // Update the state with the selected sorting option
     handleSortChange(selectedOption); // Call the sorting function from the context based on the selected option
   };
+
+    // Filter the items based on their checked status
+    const uncheckedItems = todoItems.filter((item) => {
+      if (React.isValidElement(item)) {
+        const todoData = item.props.todoItemData;
+        return todoData && !todoData.taskChecked;
+      }
+      return false;
+    });
+
+    const checkedItems = todoItems.filter((item) => {
+      if (React.isValidElement(item)) {
+        const todoData = item.props.todoItemData;
+        return todoData && todoData.taskChecked;
+      }
+      return false;
+    });
+
 
   return (
     <>
@@ -78,18 +96,15 @@ const TodoInterface = () => {
             </div>
             {activeTab === 'In Progress' && (
               <>
-              {todoItems} {/* Render the array of TodoItem components */}
+              {uncheckedItems} {/* Render the array of TodoItem components */}
               </>
             )}
+            {activeTab === 'Finished' && (
+            <>
+            {checkedItems}
+            </>
+            )}
           </div>
-
-          
-          {activeTab === 'Finished' && (
-            <div className="">
-              This is when Finished is clicked
-            </div>
-          )}
-
         <div className='flex items-center justify-center m-3'>
           <Pagination loop showControls color={selectedColor} total={5} initialPage={1} />
         </div>

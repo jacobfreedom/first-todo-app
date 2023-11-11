@@ -2,14 +2,14 @@ import React from 'react';
 import { Button, Modal, ModalContent, ModalFooter, ModalHeader, useDisclosure, Input, Select, ModalBody, Textarea, SelectItem } from '@nextui-org/react';
 import { useTaskContext } from '@/providers/Context/TaskContext';
 import { TodoItemData } from '@/providers/Types/Types';
-import { useColor } from '@/providers/Context/ColorContext';
+import { useUserContext } from '@/providers/Context/UserContext';
 import { EditIcon } from '@/icons/EditIcon';
 import { priorities } from '@/providers/Types/Types';
 
 const TaskEditModal: React.FC<{ task: TodoItemData; taskKey: string }> = ({ task, taskKey }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const { handleTaskAdded } = useTaskContext();
-  const { selectedColor } = useColor();
+  const { selectedColor } = useUserContext();
 
   const onSaveChanges = async () => {
     if (editedTask) {

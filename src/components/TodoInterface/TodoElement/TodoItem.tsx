@@ -1,7 +1,7 @@
 import React from 'react';
 import { Checkbox, Chip } from '@nextui-org/react';
 import { useTaskContext } from '@/providers/Context/TaskContext';
-import { useColor } from '@/providers/Context/ColorContext';
+import { useUserContext } from '@/providers/Context/UserContext';
 import { TodoItemData } from '@/providers/Types/Types';
 import TaskViewModal from './Events/TaskViewModal';
 import TaskEditModal from './Events/TaskEditModal';
@@ -17,7 +17,25 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData; taskKey: string }> = ({ t
     statusColorMap,
   } = useTaskContext();
 
-  const { selectedColor} = useColor();
+  const { selectedColor} = useUserContext();
+
+  const [isChecked, setIsChecked] = React.useState(() => {
+    const storedItem = localStorage.getItem(taskKey);
+    return storedItem ? JSON.parse(storedItem).taskChecked : false;
+  });
+
+  const handleCheckboxChange = (checked: boolean) => {
+    setIsChecked(checked);
+    const storedItemString = localStorage.getItem(taskKey);
+    const storedItem = storedItemString ? JSON.parse(storedItemString) : {};
+    storedItem.taskChecked = checked;
+    localStorage.setItem(taskKey, JSON.stringify(storedItem));
+  };
+
+  const handleStatusChange = (status: boolean) => {
+      // Update the task status here using your context or state
+      // e.g., updateTaskStatus(taskKey, status);
+  };
 
   return (
     <div className="flex w-full my-6 justify-between
@@ -25,7 +43,12 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData; taskKey: string }> = ({ t
       {/* todo__item__elements  */}
       <div className='flex ml-6'>
         <div className='flex items-center'>
-          <Checkbox color={selectedColor} radius="full" />
+          <Checkbox 
+          color={selectedColor} 
+          radius="full" 
+          isSelected={isChecked} 
+          onValueChange={handleCheckboxChange}
+          />
         </div>
         <div className='flex flex-col my-0 mr-14 ml-6'>
         {/* display: flex;
@@ -61,7 +84,12 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData; taskKey: string }> = ({ t
           </Chip>
         </div>
         <div className="flex mr-6">
-          <TaskViewModal task={todoItemData} />
+          <TaskViewModal   
+          task={todoItemData}
+          onUpdateStatus={(status) => handleCheckboxChange(status)}
+          setIsChecked={setIsChecked}
+          taskKey={taskKey}
+          />
 
           <TaskEditModal task={todoItemData} taskKey={taskKey} />
             

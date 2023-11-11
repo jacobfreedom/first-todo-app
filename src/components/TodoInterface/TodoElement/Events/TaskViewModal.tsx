@@ -3,13 +3,27 @@ import { TodoItemData } from '@/providers/Types/Types';
 import { Button, Chip, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react';
 import { EyeIcon } from '@/icons/EyeIcon';
 import { useTaskContext } from '@/providers/Context/TaskContext';
-import { useColor } from '@/providers/Context/ColorContext';
+import { useUserContext } from '@/providers/Context/UserContext';
 
-const TaskViewModal: React.FC<{ task: TodoItemData }> = ({ task }) => {
+const TaskViewModal: React.FC<{
+    task: TodoItemData;
+    onUpdateStatus: (status: boolean) => void;
+    setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
+    taskKey: string;
+  }> = ({ task, onUpdateStatus, setIsChecked, taskKey }) => {
 
-  const {isOpen, onOpen, onOpenChange} = useDisclosure();
-  const {statusColorMap} = useTaskContext();
-  const {selectedColor} = useColor();
+  const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
+  const {statusColorMap, handleTaskAdded} = useTaskContext();
+  const {selectedColor} = useUserContext();
+
+  const handleStatusChange = () => {
+    const updatedStatus = !task.taskChecked;
+    onUpdateStatus(updatedStatus);
+    setIsChecked(updatedStatus);
+    handleTaskAdded(); // This triggers the refresh after an edit
+    onClose();
+  };
+  
 
   return (
     <>
@@ -55,8 +69,12 @@ const TaskViewModal: React.FC<{ task: TodoItemData }> = ({ task }) => {
               </ModalBody>
 
               <ModalFooter>
-                <Button color={selectedColor} onPress={onClose}>
+                <Button variant="light" onPress={onClose}>
                   Close
+                </Button>
+
+                <Button color={selectedColor} onPress={handleStatusChange}>
+                  Move to {task.taskChecked ? 'In Progress' : 'Finished'}
                 </Button>
               </ModalFooter>
             </>

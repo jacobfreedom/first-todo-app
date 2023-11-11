@@ -2,14 +2,14 @@
 'use client'
 
 import {NextUIProvider} from '@nextui-org/react'
-import { ColorProvider } from '@/providers/Context/ColorContext'
+import { UserProvider } from '@/providers/Context/UserContext'
 
 export function Providers({children}: { children: React.ReactNode }) {
   return (
     <NextUIProvider>
-      <ColorProvider>
+      <UserProvider>
       {children}
-      </ColorProvider>
+      </UserProvider>
     </NextUIProvider>
   )
 }

@@ -3,11 +3,11 @@
 import { AcmeLogo } from "@/icons/AcmeLogo";
 import { Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, 
     Link, Navbar, NavbarBrand, NavbarContent, NavbarItem, cn } from "@nextui-org/react";
-import { useColor } from "@/providers/Context/ColorContext";
+import { useUserContext } from "@/providers/Context/UserContext";
 
 function Nav() {
 
-    const { selectedColor, setSelectedColor } = useColor();
+    const { selectedColor, setSelectedColor } = useUserContext();
 
     return (
       
