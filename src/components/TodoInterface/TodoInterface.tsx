@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Pagination, Tabs, Tab, Card, CardBody, CardHeader, Select, SelectItem } from "@nextui-org/react";
 import { useColor } from '@/app/ColorContext';
 import styles from '@/styles/Home.module.scss'
-import NewTaskForm from './TodoInterface_Creation/TodoCreationModal';
+import NewTaskForm from './NewTaskForm/NewTaskForm';
 import { useTaskContext } from '@/providers/Context/TaskContext';
 
 
@@ -67,54 +67,28 @@ const TodoInterface = () => {
               <SelectItem key="date" value="date">Date</SelectItem>
           </Select>
         </div>
-
-
-
-          <div className="flex flex-col mx-6 relative">
-      
-            {/* styles.todo__items
-              display: flex;
-              flex-direction: column;
-              margin: 0 25px;
-              position: relative; */}
-            
+        
+          <div className="flex flex-col relative">
             {/* add new todo */}
-            <div className="flex w-full m-0 my-6 justify-between
-            after:absolute after:block after:h-px after:w-full after:self-end after:bg-[#EDF2F7] 
-            after:m-0 after:-mb-6 after:-ml-6">
-
-
-            {/* .todo__item__elements
-            display: flex;
-            width: 100%;
-            // justify-content: space-between;
-            margin: 25px 0;
-            justify-content: space-between; 
-
-            after
-                        content: "";
-                display: block;
-                width: 800px;
-                height: 1px;
-                background: #EDF2F7;
-                position: absolute;
-                align-self: flex-end;
-                margin: 0 0 -25px -25px;
-            */}
+            <div className="flex w-full my-6 justify-between
+            after:absolute after:block after:h-px after:w-full after:self-end after:bg-[#EDF2F7] after:-mb-6">
               <>
                 <NewTaskForm onTaskAdded={handleTaskAdded} />
               </>
             </div>
+            {activeTab === 'In Progress' && (
+              <>
               {todoItems} {/* Render the array of TodoItem components */}
-              {/* <TodoItem /> */}
+              </>
+            )}
           </div>
 
           
-          {/* {activeTab === 'Finished' && (
+          {activeTab === 'Finished' && (
             <div className="">
               This is when Finished is clicked
             </div>
-          )} */}
+          )}
 
         <div className='flex items-center justify-center m-3'>
           <Pagination loop showControls color={selectedColor} total={5} initialPage={1} />

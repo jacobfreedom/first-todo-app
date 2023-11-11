@@ -53,7 +53,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onTaskAdded }) => {
   return (
     <>
     <Button fullWidth onPress={onOpen} variant='light'
-    className='border-1 border-content3 text-default-400 py-6' startContent={<NewTaskIcon />}
+    className='border-1 border-content3 text-default-400 py-6 mx-6' startContent={<NewTaskIcon />}
     >
       New Task
     </Button>

@@ -22,10 +22,10 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData; taskKey: string }> = ({ t
   const { selectedColor} = useColor();
 
   return (
-    <div className="flex w-full mx-0 my-6 justify-between
-    after:absolute after:block after:h-px after:w-full after:self-end after:bg-[#EDF2F7] after:m-0 after:-mb-6 after:-ml-6">
+    <div className="flex w-full my-6 justify-between
+    after:absolute after:block after:h-px after:w-full after:self-end after:bg-[#EDF2F7] after:-mb-6">
       {/* todo__item__elements  */}
-      <div className='flex'>
+      <div className='flex ml-6'>
         <div className='flex items-center'>
           <Checkbox color={selectedColor} radius="full" />
         </div>
@@ -62,7 +62,7 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData; taskKey: string }> = ({ t
             {todoItemData.priorityValue.label}
           </Chip>
         </div>
-        <div className="flex">
+        <div className="flex mr-6">
           <TaskViewModal task={todoItemData} />
 
           <TaskEditModal task={todoItemData} taskKey={taskKey} />

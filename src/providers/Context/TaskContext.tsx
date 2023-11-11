@@ -1,7 +1,7 @@
 "use client"
 
 import React, { createContext, useContext, useState, useEffect, ChangeEvent, ReactNode } from "react";
-import TodoItem from "@/components/TodoInterface_Item_Element/TodoElement";
+import TodoItem from "@/components/TodoInterface/TodoElement/TodoItem";
 import { priorities, TaskContextType, TodoItemData } from "../Types/Types";
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);

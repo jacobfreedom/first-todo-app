@@ -3,7 +3,7 @@ import autoprefixer from 'autoprefixer'
 import styles from '../styles/Home.module.scss'
 
 import Nav from '@/components/NavigationBar';
-import TodoInterface from '@/components/TodoInterface';
+import TodoInterface from '@/components/TodoInterface/TodoInterface';
 import { TaskProvider } from '@/providers/Context/TaskContext';
 
 
