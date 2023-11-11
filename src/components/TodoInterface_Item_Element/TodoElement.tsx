@@ -22,12 +22,17 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData; taskKey: string }> = ({ t
   const { selectedColor} = useColor();
 
   return (
-    <div className={styles.todo__item__elements}>
+    <div className="flex w-full mx-0 my-6 justify-between
+    after:absolute after:block after:h-px after:w-full after:self-end after:bg-[#EDF2F7] after:m-0 after:-mb-6 after:-ml-6">
+      {/* todo__item__elements  */}
       <div className='flex'>
         <div className='flex items-center'>
           <Checkbox color={selectedColor} radius="full" />
         </div>
-        <div className={styles.todo__elements__cotent}>
+        <div className='flex flex-col my-0 mr-14 ml-6'>
+        {/* display: flex;
+            flex-direction: column;
+            margin: 0 56px 0 25px; */}
           <div className='font-semibold'>
             {todoItemData.taskTitleValue}
           </div>
@@ -37,7 +42,11 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData; taskKey: string }> = ({ t
         </div>
       </div>
       <div className='flex'>
-        <div className={styles.todo__elements__info}>
+        <div className="flex flex-col mr-[20px] items-center">
+        {/* display: flex;
+            flex-direction: column;
+            margin-right: 20px;
+            align-items: center; */}
           <div className='font-medium'>
             Deadline
           </div>
