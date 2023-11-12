@@ -39,7 +39,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     setDateValue('');
   };
 
-  const [todoItems, setTodoItems] = useState<React.ReactNode[]>([]);
+  const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
 
   const onPriorityChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedPriority = priorities.find((priority) => priority.value === e.target.value);
@@ -106,8 +106,11 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     setTodoItems(sortedTodoItems);
   };
   
-  type TodoItem = React.ReactElement<{ todoItemData: TodoItemData; key: string }>;
 
+  
+  type TodoItem = React.ReactElement<{ todoItemData: TodoItemData, key: string }>;
+
+  // Sorting functions
   const sortWithDirection = (
     items: TodoItem[],
     accessor: (data: TodoItemData) => number | string,
@@ -115,7 +118,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   ): TodoItem[] => {
     return items
       .filter(
-        item =>
+        (item) =>
           React.isValidElement(item) &&
           item.props.todoItemData &&
           accessor(item.props.todoItemData) !== undefined
@@ -123,114 +126,76 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       .sort((a, b) => {
         const valA = accessor(a.props.todoItemData);
         const valB = accessor(b.props.todoItemData);
-        if (valA && valB) {
-          return direction === 'asc' ? +valA - +valB : +valB - +valA;
+  
+        if (valA !== undefined && valB !== undefined) {
+          if (typeof valA === 'string' && typeof valB === 'string') {
+            return direction === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+          } else {
+            return direction === 'asc' ? +valA - +valB : +valB - +valA;
+          }
         }
         return 0;
       });
   };
-  
+
   const sortByCreatedTimestamp = () => {
-    // Ensure todoItems is of type TodoItem[] and contains valid React.ReactElement items
-    const sortedByTimestamp = sortWithDirection(todoItems, data => data.createdTimestamp, 'asc');
+    const sortedByTimestamp = sortWithDirection(
+      todoItems,
+      (data) => data.createdTimestamp,
+      'asc'
+    );
     setTodoItems(sortedByTimestamp);
   };
-  
+
   const sortByTitle = () => {
-    const sortedByTitle = sortWithDirection(todoItems, data => data.taskTitleValue, 'asc');
+    const sortedByTitle = sortWithDirection(
+      todoItems,
+      (data) => data.taskTitleValue,
+      'asc'
+    );
     setTodoItems(sortedByTitle);
   };
   
   const sortByPriority = () => {
-    const sortedByPriority = sortWithDirection(todoItems, data => data.priorityValue.value, 'asc');
+    const sortedByPriority = sortWithDirection(
+      todoItems,
+      (data) => data.priorityValue.value, // or .value, depending on what needs to be compared
+      'asc'
+    );
     setTodoItems(sortedByPriority);
   };
   
+
   const sortByDate = () => {
-    const sortedByDate = sortWithDirection(todoItems, data => new Date(data.dateValue).getTime(), 'asc');
+    const sortedByDate = sortWithDirection(
+      todoItems,
+      (data) => new Date(data.dateValue).getTime(),
+      'asc'
+    );
     setTodoItems(sortedByDate);
   };
 
-  // const sortByCreatedTimestamp = () => {
-  //   const sortedByTimestamp = todoItems
-  //     .filter(item => React.isValidElement(item) && item.props.todoItemData && item.props.todoItemData.createdTimestamp !== undefined)
-  //     .sort((a, b) => {
-  //       if (
-  //         React.isValidElement(a) &&
-  //         React.isValidElement(b) &&
-  //         a.props.todoItemData &&
-  //         b.props.todoItemData &&
-  //         a.props.todoItemData.createdTimestamp &&
-  //         b.props.todoItemData.createdTimestamp
-  //       ) {
-  //         return a.props.todoItemData.createdTimestamp - b.props.todoItemData.createdTimestamp;
-  //       }
-  //       return 0;
-  //     });
-  //   setTodoItems(sortedByTimestamp);
-  // };
-
-  // const sortByTitle = () => {
-  //   const sortedByTitle = todoItems
-  //     .filter(item => React.isValidElement(item) && item.props.todoItemData && item.props.todoItemData.taskTitleValue !== undefined)
-  //     .sort((a, b) => {
-  //       if (
-  //         React.isValidElement(a) &&
-  //         React.isValidElement(b) &&
-  //         a.props.todoItemData &&
-  //         b.props.todoItemData &&
-  //         a.props.todoItemData.taskTitleValue &&
-  //         b.props.todoItemData.taskTitleValue
-  //       ) {
-  //         return a.props.todoItemData.taskTitleValue.localeCompare(b.props.todoItemData.taskTitleValue);
-  //       }
-  //       return 0;
-  //     });
-  //   setTodoItems(sortedByTitle);
-  // };
+  const sortByCreatedTimestampReverse = () => {
+    const sortedByTimestamp = sortWithDirection(todoItems, (data) => data.createdTimestamp, 'desc');
+    setTodoItems(sortedByTimestamp);
+  };
   
-  // const sortByPriority = () => {
-  //   const sortedByPriority = todoItems
-  //     .filter(item => React.isValidElement(item) && item.props.todoItemData && item.props.todoItemData.priorityValue !== undefined)
-  //     .sort((a, b) => {
-  //       if (
-  //         React.isValidElement(a) &&
-  //         React.isValidElement(b) &&
-  //         a.props.todoItemData &&
-  //         b.props.todoItemData &&
-  //         a.props.todoItemData.priorityValue &&
-  //         b.props.todoItemData.priorityValue
-  //       ) {
-  //         const priorityA = a.props.todoItemData.priorityValue.value;
-  //         const priorityB = b.props.todoItemData.priorityValue.value;
-          
-  //         // Assuming priorities is an array of objects with label and value
-  //         return priorities.findIndex(p => p.value === priorityA) - priorities.findIndex(p => p.value === priorityB);
-  //       }
-  //       return 0;
-  //     });
-  //   setTodoItems(sortedByPriority);
-  // };
+  const sortByTitleReverse = () => {
+    const sortedByTitle = sortWithDirection(todoItems, (data) => data.taskTitleValue, 'desc');
+    setTodoItems(sortedByTitle);
+  };
   
+  // Additional reverse sorting functions...
   
-  // const sortByDate = () => {
-  //   const sortedByDate = todoItems
-  //     .filter(item => React.isValidElement(item) && item.props.todoItemData && item.props.todoItemData.dateValue !== undefined)
-  //     .sort((a, b) => {
-  //       if (
-  //         React.isValidElement(a) &&
-  //         React.isValidElement(b) &&
-  //         a.props.todoItemData &&
-  //         b.props.todoItemData &&
-  //         a.props.todoItemData.dateValue &&
-  //         b.props.todoItemData.dateValue
-  //       ) {
-  //         return new Date(a.props.todoItemData.dateValue).getTime() - new Date(b.props.todoItemData.dateValue).getTime();
-  //       }
-  //       return 0;
-  //     });
-  //   setTodoItems(sortedByDate);
-  // };
+  const sortByPriorityReverse = () => {
+    const sortedByPriority = sortWithDirection(todoItems, (data) => data.priorityValue.value, 'desc');
+    setTodoItems(sortedByPriority);
+  };
+  
+  const sortByDateReverse = () => {
+    const sortedByDate = sortWithDirection(todoItems, (data) => new Date(data.dateValue).getTime(), 'desc');
+    setTodoItems(sortedByDate);
+  };
   
   const handleSortChange = (sortOption: string) => {
     switch (sortOption) {
@@ -246,12 +211,24 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       case 'date':
         sortByDate();
         break;
+      case 'createdTimestampReverse':
+        sortByCreatedTimestampReverse();
+        break;
+      case 'titleReverse':
+        sortByTitleReverse();
+        break;
+      case 'priorityReverse':
+        sortByPriorityReverse();
+        break;
+      case 'dateReverse':
+        sortByDateReverse();
+        break;
       default:
         break;
     }
   };
   
-
+  
   useEffect(() => {
     // Call the refreshTaskList function initially
     refreshTaskList();

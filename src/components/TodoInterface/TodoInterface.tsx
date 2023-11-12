@@ -1,27 +1,45 @@
 "use client"
 
 import React, { useState } from "react";
-import { Pagination, Tabs, Tab, Select, SelectItem } from "@nextui-org/react";
+import { Pagination, Tabs, Tab, Select, SelectItem, Button } from "@nextui-org/react";
 import { useUserContext } from '@/providers/Context/UserContext';
 import styles from '@/styles/Home.module.scss'
 import NewTaskForm from './NewTaskForm/NewTaskForm';
 import { useTaskContext } from '@/providers/Context/TaskContext';
+import { BiSort } from "react-icons/bi";
 
 
 
 
 const TodoInterface = () => {
 
-  const {selectedColor} = useUserContext();
-  const {todoItems, handleTaskAdded, handleSortChange} = useTaskContext();
+  const {selectedColor, selectedTab, handleSelectedTabChange, setSelectedSortingOption} = useUserContext();
+  const {todoItems, handleTaskAdded, handleSortChange } = useTaskContext();
   const [sortOption, setSortOption] = useState(''); // State to track selected sorting option
-  const [activeTab, setActiveTab] = useState('In Progress');
+  const [reversed, setReversed] = useState(false); // State to track sorting direction
+
 
   const handleSortSelection = (selectedOption: string) => {
     setSortOption(selectedOption); // Update the state with the selected sorting option
     handleSortChange(selectedOption); // Call the sorting function from the context based on the selected option
+    setSelectedSortingOption(selectedOption); // Use the setter function
+
   };
 
+  const handleSortToggle = () => {
+    let newSortOption;
+    if (sortOption.endsWith('Reverse')) {
+      // If the current option is reversed, switch to the regular option
+      newSortOption = sortOption.slice(0, -7); // Removing the 'Reverse' at the end
+    } else {
+      // If it's a regular option, switch to the reversed option
+      newSortOption = `${sortOption}Reverse`; // Appending 'Reverse'
+    }
+    setSortOption(newSortOption);
+    handleSortChange(newSortOption);
+    setSelectedSortingOption(newSortOption); // Use the setter function
+  };
+  
     // Filter the items based on their checked status
     const uncheckedItems = todoItems.filter((item) => {
       if (React.isValidElement(item)) {
@@ -54,9 +72,9 @@ const TodoInterface = () => {
               color={selectedColor}
               variant="underlined"
               size="lg"
-              selectedKey={activeTab}
+              selectedKey={selectedTab} // Use context state for selected key
               onSelectionChange={(key: React.Key) => {
-                setActiveTab(key as string);
+                handleSelectedTabChange(key as string); // Update both local and context values
               }}
             >
               <Tab
@@ -70,12 +88,21 @@ const TodoInterface = () => {
             </Tabs>
           </div>
 
+          <div className="flex m-3 items-center">
+          <Button 
+          isIconOnly 
+          color={selectedColor} 
+          className="mr-2"
+          onPress={() => handleSortToggle()} // Utilize the toggle function on button click
+          >
+            <BiSort />
+          </Button>
           <Select
               variant="underlined"
               label="Sort by"
               placeholder="Created Time"
               size="sm"
-              className="max-w-[200px] m-3"
+              className="w-[200px]"
               color={selectedColor}
               onChange={(e) => handleSortSelection(e.target.value)}
             >
@@ -84,6 +111,7 @@ const TodoInterface = () => {
               <SelectItem key="priority" value="priority">Priority</SelectItem>
               <SelectItem key="date" value="date">Date</SelectItem>
           </Select>
+          </div>
         </div>
         
           <div className="flex flex-col relative">
@@ -94,12 +122,12 @@ const TodoInterface = () => {
                 <NewTaskForm onTaskAdded={handleTaskAdded} />
               </>
             </div>
-            {activeTab === 'In Progress' && (
+            {selectedTab === 'In Progress' && (
               <>
               {uncheckedItems} {/* Render the array of TodoItem components */}
               </>
             )}
-            {activeTab === 'Finished' && (
+            {selectedTab === 'Finished' && (
             <>
             {checkedItems}
             </>

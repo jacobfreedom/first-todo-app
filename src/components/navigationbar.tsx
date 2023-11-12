@@ -9,6 +9,13 @@ function Nav() {
 
     const { selectedColor, setSelectedColor } = useUserContext();
 
+    const updateSelectedColor = (color: string) => {
+      setSelectedColor(color);
+      const userSelectedColor = 'primary';
+      localStorage.setItem('user_selectedColor', JSON.stringify(userSelectedColor));
+      };
+    
+
     return (
       
         <Navbar>
@@ -65,7 +72,7 @@ function Nav() {
                     <Button isIconOnly
                         className={`bg-primary-200 hover:bg-primary-300 border-2
                         ${selectedColor == "primary" ? 'border-primary' : 'border-transparent '}`}
-                      onPress={() => setSelectedColor("primary")}
+                      onPress={() => updateSelectedColor("primary")}
                     >
                     </Button>
 
@@ -73,7 +80,7 @@ function Nav() {
                       className={`bg-success-200 hover:bg-success-300 border-2 border-transparent ${cn({
                         'border-success': selectedColor === 'success',
                       })}`}
-                      onPress={() => setSelectedColor("success")}
+                      onPress={() => updateSelectedColor("success")}
                     >
                     </Button> 
 
@@ -81,7 +88,7 @@ function Nav() {
                       className={`bg-warning-200 hover:bg-warning-300 border-2 border-transparent ${cn({
                         'border-warning': selectedColor === 'warning',
                       })}`}
-                      onPress={() => setSelectedColor("warning")}
+                      onPress={() => updateSelectedColor("warning")}
                     >
                     </Button>
                   </div>

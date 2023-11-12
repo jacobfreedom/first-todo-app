@@ -31,7 +31,7 @@ const priorities = [
     statusColorMap: Record<string, any>;
     NewTodoItemSaving: () => void;
     descriptionStringChecker: (descriptionString: string) => string;
-    todoItems: React.ReactNode[];
+    todoItems: React.ReactElement<{ todoItemData: TodoItemData; key: string }>[];
     handleTaskAdded: () => void;
     refreshTaskList: () => void;
     sortByPriority: () => void;
@@ -55,6 +55,8 @@ const priorities = [
     setSelectedSortingOption: (option: string) => void;
     selectedTab: string;
     setSelectedTab: (tab: string) => void;
+    handleSelectedTabChange: (newTab: string) => void;
+    handleSelectedSortingOptionChange: (newSortingOption: string) => void;
   }
 
 // Export all types
