@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, ChangeEvent, ReactNode } from "react";
 import TodoItem from "@/components/TodoInterface/TodoElement/TodoItem";
 import { priorities, TaskContextType, TodoItemData } from "../Types/Types";
+import { useUserContext } from "./UserContext";
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
@@ -74,16 +75,54 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       : descriptionString;
   };
 
+
+
+  // const refreshTaskList = () => {
+  //   const storageKeys = Object.keys(localStorage);
+  //   const newTodoItems: { key: string, todoItemData: TodoItemData }[] = [];
+  
+  //   storageKeys.forEach((key) => {
+  //     const storedItem = localStorage.getItem(key);
+  //     if (storedItem) {
+  //       const storedTodoValues = JSON.parse(storedItem);
+  //       if (storedTodoValues.createdTimestamp) {
+  //         const todoItem = { key, todoItemData: storedTodoValues };
+  //         newTodoItems.push(todoItem);
+  //       }
+  //     } else {
+  //       console.log("Item not found in local storage.");
+  //     }
+  //   });
+  
+  //   newTodoItems.sort((a, b) => {
+  //     // Ensure to check if timestamps exist and handle null values
+  //     const timestampA = a.todoItemData.createdTimestamp || 0;
+  //     const timestampB = b.todoItemData.createdTimestamp || 0;
+  
+  //     return timestampB - timestampA;
+  //   });
+  
+  //   const sortedTodoItems = newTodoItems.map((item) => (
+  //     <TodoItem key={item.key} todoItemData={item.todoItemData} taskKey={item.key} />
+  //   ));
+  
+  //   setTodoItems(sortedTodoItems);
+  // };
+
+
+
   const refreshTaskList = () => {
     const storageKeys = Object.keys(localStorage);
-    const newTodoItems: { key: string, todoItemData: TodoItemData }[] = [];
+    const newTodoItems: TodoItem[] = [];
   
     storageKeys.forEach((key) => {
       const storedItem = localStorage.getItem(key);
       if (storedItem) {
         const storedTodoValues = JSON.parse(storedItem);
         if (storedTodoValues.createdTimestamp) {
-          const todoItem = { key, todoItemData: storedTodoValues };
+          const todoItem = (
+            <TodoItem key={key} todoItemData={storedTodoValues} taskKey={key} />
+          );
           newTodoItems.push(todoItem);
         }
       } else {
@@ -91,22 +130,10 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       }
     });
   
-    newTodoItems.sort((a, b) => {
-      // Ensure to check if timestamps exist and handle null values
-      const timestampA = a.todoItemData.createdTimestamp || 0;
-      const timestampB = b.todoItemData.createdTimestamp || 0;
-  
-      return timestampB - timestampA;
-    });
-  
-    const sortedTodoItems = newTodoItems.map((item) => (
-      <TodoItem key={item.key} todoItemData={item.todoItemData} taskKey={item.key} />
-    ));
-  
-    setTodoItems(sortedTodoItems);
+    setTodoItems(newTodoItems);
   };
   
-
+  const { setSelectedSortingOption } = useUserContext(); // Import the context function
   
   type TodoItem = React.ReactElement<{ todoItemData: TodoItemData, key: string }>;
 
@@ -197,7 +224,50 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     setTodoItems(sortedByDate);
   };
   
+  // const handleSortChange = (sortOption: string) => {
+  //   // Determine the reverse value based on the sortOption
+  //   const reverse = sortOption.endsWith('Reverse') ? 'Reverse' : '';
+  
+  //   // Store the sortOption and reverse separately in local storage
+  //   localStorage.setItem("user_selectedSortingOption", JSON.stringify(sortOption));
+  //   localStorage.setItem("user_sortReverse", JSON.stringify(reverse));
+
+  // const handleSortChange = (sortOption: string) => {
+  //   // Determine the reverse value based on the sortOption
+  //   const reverse = sortOption.endsWith('Reverse') ? 'Reverse' : '';
+  
+  //   // Store the sortOption and reverse separately in local storage
+  //   localStorage.setItem("user_selectedSortingOption", JSON.stringify(sortOption));
+  //   localStorage.setItem("user_sortReverse", JSON.stringify(reverse));
+  
+  //   // Combine sortOption and reverse and store in local storage
+  //   const sorting = `${sortOption}${reverse}`;
+  //   localStorage.setItem("user_Sorting", JSON.stringify(sorting));
+
+  // const handleSortChange = (sortOption: string) => {
+  //   // Determine the reverse value based on the sortOption
+  //   const reverse = sortOption.endsWith('Reverse') ? 'Reverse' : '';
+  
+  //   // Store the sortOption and reverse separately in local storage
+  //   localStorage.setItem("user_selectedSortingOption", JSON.stringify(sortOption));
+  //   localStorage.setItem("user_sortReverse", JSON.stringify(reverse));
+  
+  //   // Combine sortOption and reverse only if sortOption is not ending with "Reverse"
+  //   const sorting = sortOption.endsWith("Reverse") ? sortOption : `${sortOption}${reverse}`;
+  //   localStorage.setItem("user_Sorting", JSON.stringify(sorting));
+
   const handleSortChange = (sortOption: string) => {
+    // Determine the reverse value based on the sortOption
+    const reverse = sortOption.endsWith('Reverse') ? 'Reverse' : '';
+
+    // Store the sortOption and reverse separately in local storage
+    localStorage.setItem("user_selectedSortingOption", JSON.stringify(sortOption));
+    localStorage.setItem("user_sortReverse", JSON.stringify(reverse));
+
+    // Combine sortOption and reverse and store in local storage
+    const sorting = `${sortOption}${reverse}`;
+    localStorage.setItem("user_Sorting", JSON.stringify(sorting));
+  
     switch (sortOption) {
       case 'createdTimestamp':
         sortByCreatedTimestamp();
@@ -227,12 +297,88 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         break;
     }
   };
+
+  // const handleSortChange = (sortOption: string) => {
+    // switch (sortOption) {
+    //   case 'createdTimestamp':
+    //     sortByCreatedTimestamp();
+    //     break;
+    //   case 'title':
+    //     sortByTitle();
+    //     break;
+    //   case 'priority':
+    //     sortByPriority();
+    //     break;
+    //   case 'date':
+    //     sortByDate();
+    //     break;
+    //   case 'createdTimestampReverse':
+    //     sortByCreatedTimestampReverse();
+    //     break;
+    //   case 'titleReverse':
+    //     sortByTitleReverse();
+    //     break;
+    //   case 'priorityReverse':
+    //     sortByPriorityReverse();
+    //     break;
+    //   case 'dateReverse':
+    //     sortByDateReverse();
+    //     break;
+    //   default:
+    //     break;
+    // }
+  // };
   
   
+  // useEffect(() => {
+  //   // Call the refreshTaskList function initially
+  //   refreshTaskList();
+  // }, []);
+
   useEffect(() => {
+    // Retrieve the default sorting option and reverse value from local storage
+    const storedSortingOption = localStorage.getItem("user_Sorting");
+  
+    const defaultSortOptionWithReverse = storedSortingOption ? JSON.parse(storedSortingOption) : 'createdTimestamp';
+  
+    setSelectedSortingOption(defaultSortOptionWithReverse);
+    handleSortChange(defaultSortOptionWithReverse);
     // Call the refreshTaskList function initially
     refreshTaskList();
-  }, []);
+  }, [setSelectedSortingOption]);
+  
+
+  // useEffect(() => {
+  //   // Retrieve the default sorting option and reverse value from local storage
+  //   const storedSortingOption = localStorage.getItem("user_selectedSortingOption");
+  //   const storedSortReverse = localStorage.getItem("user_sortReverse");
+  
+  //   const defaultSortOption = storedSortingOption ? JSON.parse(storedSortingOption) : 'createdTimestamp';
+  //   const defaultSortReverse = storedSortReverse ? JSON.parse(storedSortReverse) : '';
+  
+  //   const defaultSortOptionWithReverse = `${defaultSortOption}${defaultSortReverse}`;
+  
+  //   setSelectedSortingOption(defaultSortOptionWithReverse);
+  //   handleSortChange(defaultSortOptionWithReverse);
+  //   // Call the refreshTaskList function initially
+  //   refreshTaskList();
+  // }, [setSelectedSortingOption]);
+
+  // useEffect(() => {
+  //   // Retrieve the default sorting option from the user context
+  //   const defaultSortingOption = 'createdTimestamp'; // Default value if context value isn't available
+
+  //   if (setSelectedSortingOption) {
+  //     const storedSortingOption = localStorage.getItem("user_selectedSortingOption");
+  //     const defaultOption = storedSortingOption ? JSON.parse(storedSortingOption) : defaultSortingOption;
+
+  //     setSelectedSortingOption(defaultOption); // Set default sorting option in user context
+  //     handleSortChange(defaultOption); // Trigger sorting based on the default option
+  //   }
+    
+  //   // Call the refreshTaskList function initially
+  //   refreshTaskList();
+  // }, [setSelectedSortingOption]);
 
   const handleTaskAdded = () => {
     // Trigger the refresh of the task list

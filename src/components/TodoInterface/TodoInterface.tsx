@@ -8,22 +8,19 @@ import NewTaskForm from './NewTaskForm/NewTaskForm';
 import { useTaskContext } from '@/providers/Context/TaskContext';
 import { BiSort } from "react-icons/bi";
 
-
-
-
 const TodoInterface = () => {
 
-  const {selectedColor, selectedTab, handleSelectedTabChange, setSelectedSortingOption} = useUserContext();
+  const {selectedColor, selectedTab, handleSelectedTabChange } = useUserContext();
   const {todoItems, handleTaskAdded, handleSortChange } = useTaskContext();
   const [sortOption, setSortOption] = useState(''); // State to track selected sorting option
   const [reversed, setReversed] = useState(false); // State to track sorting direction
 
 
   const handleSortSelection = (selectedOption: string) => {
-    setSortOption(selectedOption); // Update the state with the selected sorting option
-    handleSortChange(selectedOption); // Call the sorting function from the context based on the selected option
-    setSelectedSortingOption(selectedOption); // Use the setter function
-
+    // setSortOption(selectedOption); // Update the state with the selected sorting option
+    // handleSortChange(selectedOption); // Call the sorting function from the context based on the selected option
+    // setSelectedSortingOption(selectedOption); // Use the setter function
+    console.log(selectedOption);
   };
 
   const handleSortToggle = () => {
@@ -60,7 +57,7 @@ const TodoInterface = () => {
 
   return (
     <>
-    <div className='mt-10'></div>
+    <div className='mt-10' />
       <div className={styles.todo__interface}>
 
         <div className="flex items-center justify-between relative 

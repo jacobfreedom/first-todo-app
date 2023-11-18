@@ -57,6 +57,7 @@ const priorities = [
     setSelectedTab: (tab: string) => void;
     handleSelectedTabChange: (newTab: string) => void;
     handleSelectedSortingOptionChange: (newSortingOption: string) => void;
+
   }
 
 // Export all types
