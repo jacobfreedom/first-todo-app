@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Checkbox, Chip } from '@nextui-org/react';
 import { useTaskContext } from '@/providers/Context/TaskContext';
 import { useUserContext } from '@/providers/Context/UserContext';
@@ -6,6 +6,8 @@ import { TodoItemData } from '@/providers/Types/Types';
 import TaskViewModal from './Events/TaskViewModal';
 import TaskEditModal from './Events/TaskEditModal';
 import TaskDeleteModal from './Events/TaskDeleteModal';
+import { motion } from "framer-motion";
+
 
 
 
@@ -15,6 +17,7 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData; taskKey: string }> = ({ t
   const {
     descriptionStringChecker,
     statusColorMap,
+    titleStringChecker,
   } = useTaskContext();
 
   const { selectedColor} = useUserContext();
@@ -32,71 +35,83 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData; taskKey: string }> = ({ t
     localStorage.setItem(taskKey, JSON.stringify(storedItem));
   };
 
-  const handleStatusChange = (status: boolean) => {
-      // Update the task status here using your context or state
-      // e.g., updateTaskStatus(taskKey, status);
+  const show = {
+    opacity: 1,
+    display: "block"
+  };
+  
+  const hide = {
+    opacity: 0,
+    transitionEnd: {
+      display: "none"
+    }
   };
 
-  return (
-    <div className="flex w-full my-6 justify-between
-    after:absolute after:block after:h-px after:w-full after:self-end after:bg-[#EDF2F7] after:-mb-6">
-      {/* todo__item__elements  */}
-      <div className='flex ml-6'>
-        <div className='flex items-center'>
-          <Checkbox 
-          color={selectedColor} 
-          radius="full" 
-          isSelected={isChecked} 
-          onValueChange={handleCheckboxChange}
-          />
-        </div>
-        <div className='flex flex-col my-0 mr-14 ml-6'>
-        {/* display: flex;
-            flex-direction: column;
-            margin: 0 56px 0 25px; */}
-          <div className='font-semibold'>
-            {todoItemData.taskTitleValue}
-          </div>
-          <div className='font-extralight text-sm h-13'>
-            {descriptionStringChecker(todoItemData.descriptionValue)}
-          </div>
-        </div>
-      </div>
-      <div className='flex'>
-        <div className="flex flex-col mr-[20px] items-center">
-        {/* display: flex;
-            flex-direction: column;
-            margin-right: 20px;
-            align-items: center; */}
-          <div className='font-medium'>
-            Deadline
-          </div>
-          <div className='font-extralight truncate'>
-            {todoItemData.dateValue}
-          </div>
-          <Chip
-            className='capitalize'
-            color={statusColorMap[todoItemData.priorityValue.value]}
-            size="sm"
-            variant="flat"
-          >
-            {todoItemData.priorityValue.label}
-          </Chip>
-        </div>
-        <div className="flex mr-6">
-          <TaskViewModal   
-          task={todoItemData}
-          onUpdateStatus={(status) => handleCheckboxChange(status)}
-          setIsChecked={setIsChecked}
-          taskKey={taskKey}
-          />
+  const [isVisible, setIsVisible] = useState(true);
 
-          <TaskEditModal task={todoItemData} taskKey={taskKey} />
-            
-          <TaskDeleteModal taskKey={taskKey} />
+  return (
+    <motion.div animate={isVisible ? show : hide}>
+      <div className="flex w-full my-6 justify-between
+        after:absolute after:block after:h-px after:w-full after:self-end after:bg-[#EDF2F7] after:-mb-6">
+        {/* todo__item__elements  */}
+        <div className='flex ml-6'>
+          <div className='flex items-center'>
+            <Checkbox 
+            color={selectedColor} 
+            radius="full" 
+            isSelected={isChecked} 
+            onValueChange={handleCheckboxChange}
+            onClick={() => setIsVisible(!isVisible)}
+            />
+          </div>
+          <div className='flex flex-col my-0 mr-14 ml-6'>
+          {/* display: flex;
+              flex-direction: column;
+              margin: 0 56px 0 25px; */}
+            <div className='font-semibold'>
+              {titleStringChecker(todoItemData.taskTitleValue)}
+            </div>
+            <div className='font-extralight text-sm h-13'>
+              {descriptionStringChecker(todoItemData.descriptionValue)}
+            </div>
+          </div>
+        </div>
+        <div className='flex'>
+          <div className="flex flex-col mr-[20px] items-center">
+          {/* display: flex;
+              flex-direction: column;
+              margin-right: 20px;
+              align-items: center; */}
+            <div className='font-medium'>
+              Deadline
+            </div>
+            <div className='font-extralight truncate'>
+              {todoItemData.dateValue}
+            </div>
+            <Chip
+              className='capitalize'
+              color={statusColorMap[todoItemData.priorityValue.value]}
+              size="sm"
+              variant="flat"
+            >
+              {todoItemData.priorityValue.label}
+            </Chip>
+          </div>
+          <div className="flex mr-6">
+            <TaskViewModal   
+            task={todoItemData}
+            onUpdateStatus={(status) => handleCheckboxChange(status)}
+            setIsChecked={setIsChecked}
+            taskKey={taskKey}
+            />
+
+            <TaskEditModal task={todoItemData} taskKey={taskKey} />
+              
+            <TaskDeleteModal taskKey={taskKey} />
+          </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

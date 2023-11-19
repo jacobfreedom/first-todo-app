@@ -68,6 +68,12 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     localStorage.setItem(key, JSON.stringify(todoValuesWithTimestamp));
   };
 
+  const titleStringChecker = (titleString: string) => {
+    return titleString.length > 40
+      ? `${titleString.substring(0, 40)}...`
+      : titleString;
+  };
+
   const descriptionStringChecker = (descriptionString: string) => {
     return descriptionString.length > 120
       ? `${descriptionString.substring(0, 120)}...`
@@ -169,10 +175,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
-    // Default sorting by 'createdTimestamp' in ascending order
-    sortAndSetItems((data) => data.createdTimestamp, 'asc');
-    
-
     refreshTaskList();
   }, []);
 
@@ -197,6 +199,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         statusColorMap,
         NewTodoItemSaving,
         descriptionStringChecker,
+        titleStringChecker,
         todoItems,
         handleTaskAdded,
         refreshTaskList,

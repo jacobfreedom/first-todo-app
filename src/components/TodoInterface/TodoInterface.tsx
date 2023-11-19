@@ -1,12 +1,19 @@
 "use client"
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Pagination, Tabs, Tab, Select, SelectItem, Button } from "@nextui-org/react";
 import { useUserContext } from '@/providers/Context/UserContext';
 import styles from '@/styles/Home.module.scss'
 import NewTaskForm from './NewTaskForm/NewTaskForm';
 import { useTaskContext } from '@/providers/Context/TaskContext';
 import { BiSort } from "react-icons/bi";
+import {
+  motion,
+  useScroll,
+  useSpring,
+  useTransform,
+  MotionValue
+} from "framer-motion";
 
 const TodoInterface = () => {
 
@@ -38,7 +45,6 @@ const TodoInterface = () => {
     }
     return false;
   });
-
 
   return (
     <>

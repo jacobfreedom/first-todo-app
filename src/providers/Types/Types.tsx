@@ -31,6 +31,7 @@ const priorities = [
     statusColorMap: Record<string, any>;
     NewTodoItemSaving: () => void;
     descriptionStringChecker: (descriptionString: string) => string;
+    titleStringChecker: (titleString: string) => string;
     todoItems: React.ReactElement<{ todoItemData: TodoItemData; key: string }>[];
     handleTaskAdded: () => void;
     refreshTaskList: () => void;
