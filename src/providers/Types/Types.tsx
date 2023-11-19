@@ -34,8 +34,7 @@ const priorities = [
     todoItems: React.ReactElement<{ todoItemData: TodoItemData; key: string }>[];
     handleTaskAdded: () => void;
     refreshTaskList: () => void;
-    sortByPriority: () => void;
-    handleSortChange: (sortOption: string) => void;
+    handleSortChange: (sortOption: string, reversed: boolean) => void;
   }
   
   // Types related to the TodoItem
@@ -47,18 +46,18 @@ const priorities = [
     createdTimestamp: number; // New property for creation timestamp
     taskChecked: boolean;
   }
-  
+
   interface UserContextType {
     selectedColor: any;
     setSelectedColor: (color: string) => void;
-    selectedSortingOption: string;
-    setSelectedSortingOption: (option: string) => void;
+    selectedSortingOption?: string;
+    setSelectedSortingOption?: (option: string) => void;
+    handleSelectedSortingOptionChange?: (newSortingOption: string) => void;
     selectedTab: string;
-    setSelectedTab: (tab: string) => void;
+    setSelectedTab: React.Dispatch<React.SetStateAction<string>>;
     handleSelectedTabChange: (newTab: string) => void;
-    handleSelectedSortingOptionChange: (newSortingOption: string) => void;
-
   }
+  
 
 // Export all types
 export {

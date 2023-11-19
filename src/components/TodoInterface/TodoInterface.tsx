@@ -12,47 +12,32 @@ const TodoInterface = () => {
 
   const {selectedColor, selectedTab, handleSelectedTabChange } = useUserContext();
   const {todoItems, handleTaskAdded, handleSortChange } = useTaskContext();
-  const [sortOption, setSortOption] = useState(''); // State to track selected sorting option
   const [reversed, setReversed] = useState(false); // State to track sorting direction
 
-
-  const handleSortSelection = (selectedOption: string) => {
-    // setSortOption(selectedOption); // Update the state with the selected sorting option
-    // handleSortChange(selectedOption); // Call the sorting function from the context based on the selected option
-    // setSelectedSortingOption(selectedOption); // Use the setter function
-    console.log(selectedOption);
+  const handleSortDirection = () => {
+    setReversed(!reversed);
   };
 
-  const handleSortToggle = () => {
-    let newSortOption;
-    if (sortOption.endsWith('Reverse')) {
-      // If the current option is reversed, switch to the regular option
-      newSortOption = sortOption.slice(0, -7); // Removing the 'Reverse' at the end
-    } else {
-      // If it's a regular option, switch to the reversed option
-      newSortOption = `${sortOption}Reverse`; // Appending 'Reverse'
+  const handleSortSelection = (selectedSortOption: string) => {
+    handleSortChange(selectedSortOption, reversed);
+  };
+
+  // Filter the items based on their checked status
+  const uncheckedItems = todoItems.filter((item) => {
+    if (React.isValidElement(item)) {
+      const todoData = item.props.todoItemData;
+      return todoData && !todoData.taskChecked;
     }
-    setSortOption(newSortOption);
-    handleSortChange(newSortOption);
-    setSelectedSortingOption(newSortOption); // Use the setter function
-  };
-  
-    // Filter the items based on their checked status
-    const uncheckedItems = todoItems.filter((item) => {
-      if (React.isValidElement(item)) {
-        const todoData = item.props.todoItemData;
-        return todoData && !todoData.taskChecked;
-      }
-      return false;
-    });
+    return false;
+  });
 
-    const checkedItems = todoItems.filter((item) => {
-      if (React.isValidElement(item)) {
-        const todoData = item.props.todoItemData;
-        return todoData && todoData.taskChecked;
-      }
-      return false;
-    });
+  const checkedItems = todoItems.filter((item) => {
+    if (React.isValidElement(item)) {
+      const todoData = item.props.todoItemData;
+      return todoData && todoData.taskChecked;
+    }
+    return false;
+  });
 
 
   return (
@@ -90,7 +75,7 @@ const TodoInterface = () => {
           isIconOnly 
           color={selectedColor} 
           className="mr-2"
-          onPress={() => handleSortToggle()} // Utilize the toggle function on button click
+          onPress={() => handleSortDirection()} // Utilize the toggle function on button click
           >
             <BiSort />
           </Button>
