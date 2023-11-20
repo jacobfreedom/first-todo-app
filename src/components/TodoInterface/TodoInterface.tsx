@@ -11,7 +11,11 @@ import { BiSort } from "react-icons/bi";
 const TodoInterface = () => {
 
   const {selectedColor, selectedTab, handleSelectedTabChange } = useUserContext();
-  const {handleTaskAdded, handleSortChange, inProgressItems, finishedItems, itemsToShowInProgress, itemsToShowFinished, loadMoreItems, isLoading, setIsLoading } = useTaskContext();
+  const {
+    handleTaskAdded, handleSortChange, inProgressItems, finishedItems, itemsToShowInProgress, 
+    itemsToShowFinished, loadMoreItems, isLoading, setIsLoading, sortAndSetItems
+  } = useTaskContext();
+
   const [reversed, setReversed] = useState(false); // State to track sorting direction
 
   const handleSortDirection = () => {
@@ -21,44 +25,49 @@ const TodoInterface = () => {
   const handleSortSelection = (selectedSortOption: string) => {
     handleSortChange(selectedSortOption, reversed);
   };
-
-  // // Filter the items based on their checked status
-  // const uncheckedItems = todoItems.filter((item) => {
-  //   if (React.isValidElement(item)) {
-  //     const todoData = item.props.todoItemData;
-  //     return todoData && !todoData.taskChecked;
-  //   }
-  //   return false;
-  // });
-
-  // const checkedItems = todoItems.filter((item) => {
-  //   if (React.isValidElement(item)) {
-  //     const todoData = item.props.todoItemData;
-  //     return todoData && todoData.taskChecked;
-  //   }
-  //   return false;
-  // });
   
   useEffect(() => {
     const handleScroll = () => {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        // User has scrolled to the bottom, load more items based on the selected tab
-        if (selectedTab === 'In Progress' && itemsToShowInProgress < inProgressItems.length) {
-          loadMoreItems('In Progress');
-        } else if (selectedTab === 'Finished' && itemsToShowFinished < finishedItems.length) {
-          loadMoreItems('Finished');
+      if (
+        window.innerHeight + window.scrollY >=
+        document.body.offsetHeight
+      ) {
+        if (
+          selectedTab === "In Progress" &&
+          itemsToShowInProgress < inProgressItems.length
+        ) {
+          loadMoreItems("In Progress");
+        } else if (
+          selectedTab === "Finished" &&
+          itemsToShowFinished < finishedItems.length
+        ) {
+          loadMoreItems("Finished");
         }
       }
-      console.log('scrolling');
     };
-    
-  
-    window.addEventListener('scroll', handleScroll);
-  
+
+    window.addEventListener("scroll", handleScroll);
+
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, [selectedTab, loadMoreItems]);
+
+  const handleSortTabSelection = () => {
+      if (selectedTab === 'In Progress') {
+        sortTabSelectionSender('In Progress');
+      } else if (selectedTab === 'Finished') {
+        sortTabSelectionSender('Finished');
+      }
+  };
+
+  const sortTabSelectionSender = (tab: 'In Progress' | 'Finished') => {
+    // Pass the accessor and sort direction based on your logic
+    const accessor = sortOptions['createdTimestamp']; // Replace with your logic
+    const sortDirection = 'asc'; // Replace with your logic
+
+    sortAndSetItems(accessor, sortDirection, tab);
+  };
   
   // Add this useEffect to handle the updated items
   useEffect(() => {

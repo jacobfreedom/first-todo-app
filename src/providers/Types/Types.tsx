@@ -49,6 +49,11 @@ const priorities = [
     itemsToShow: number;
     isLoading: boolean;
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>; // Fix this line
+    sortAndSetItems: (
+      accessor: (data: TodoItemData) => number | string,
+      sortDirection: 'asc' | 'desc',
+      tab: 'In Progress' | 'Finished'
+    ) => void;
   }
   
   // Types related to the TodoItem

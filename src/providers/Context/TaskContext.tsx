@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, ChangeEvent, ReactNode } from "react";
 import TodoItem from "@/components/TodoInterface/TodoElement/TodoItem";
 import { priorities, TaskContextType, TodoItemData } from "../Types/Types";
+import { select } from "@nextui-org/react";
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
@@ -23,6 +24,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [descriptionValue, setDescriptionValue] = useState<string>('');
   const [priorityValue, setPriorityValue] = useState(priorities[0]);
   const [dateValue, setDateValue] = useState<string>('');
+  const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
 
 
   const todoValues = {
@@ -39,7 +41,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     setDateValue('');
   };
 
-  const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
 
   const onPriorityChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedPriority = priorities.find((priority) => priority.value === e.target.value);
@@ -204,9 +205,22 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       });
   };
 
+  // const sortAndSetItems = (
+  //   accessor: (data: TodoItemData) => number | string,
+  //   sortDirection: 'asc' | 'desc'
+  // ) => {
+  //   const sortedItems = sortWithDirection(
+  //     todoItems,
+  //     (data) => accessor(data),
+  //     sortDirection
+  //   );
+  //   setTodoItems(sortedItems);
+  // };
+
   const sortAndSetItems = (
     accessor: (data: TodoItemData) => number | string,
-    sortDirection: 'asc' | 'desc'
+    sortDirection: 'asc' | 'desc',
+    tab: 'In Progress' | 'Finished'
   ) => {
     const sortedItems = sortWithDirection(
       todoItems,
@@ -214,29 +228,52 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       sortDirection
     );
     setTodoItems(sortedItems);
+    if (tab === 'In Progress') {
+      setInProgressItems(sortedItems);
+    } else if (tab === 'Finished') {
+      setFinishedItems(sortedItems);
+    }
   };
   
 
+  const sortOptions: Record<string, (data: TodoItemData) => number | string> = {
+    createdTimestamp: (data) => data.createdTimestamp,
+    title: (data) => data.taskTitleValue,
+    priority: (data) => data.priorityValue.value,
+    date: (data) => new Date(data.dateValue).getTime(),
+  };
+  
   const handleSortChange = (sortOption: string, reversed: boolean) => {
     const sortDirection = reversed ? 'desc' : 'asc';
-  
-    switch (sortOption) {
-      case 'createdTimestamp':
-        sortAndSetItems((data) => data.createdTimestamp, sortDirection);
-        break;
-      case 'title':
-        sortAndSetItems((data) => data.taskTitleValue, sortDirection);
-        break;
-      case 'priority':
-        sortAndSetItems((data) => data.priorityValue.value, sortDirection);
-        break;
-      case 'date':
-        sortAndSetItems((data) => new Date(data.dateValue).getTime(), sortDirection);
-        break;
-      default:
-        break;
+    const accessor = sortOptions[sortOption];
+    
+    if (accessor) {
+      const currentTab = tab; // Replace with the actual way you get the current tab value
+      sortAndSetItems(accessor, sortDirection, currentTab);
     }
   };
+  
+
+  // const handleSortChange = (sortOption: string, reversed: boolean) => {
+  //   const sortDirection = reversed ? 'desc' : 'asc';
+  
+  //   switch (sortOption) {
+  //     case 'createdTimestamp':
+  //       sortAndSetItems((data) => data.createdTimestamp, sortDirection);
+  //       break;
+  //     case 'title':
+  //       sortAndSetItems((data) => data.taskTitleValue, sortDirection);
+  //       break;
+  //     case 'priority':
+  //       sortAndSetItems((data) => data.priorityValue.value, sortDirection);
+  //       break;
+  //     case 'date':
+  //       sortAndSetItems((data) => new Date(data.dateValue).getTime(), sortDirection);
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // };
 
   useEffect(() => {
     refreshTaskList();
@@ -275,7 +312,8 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         itemsToShowFinished,
         itemsToShow,
         isLoading,
-        setIsLoading
+        setIsLoading,
+        sortAndSetItems
       }}
     >
       {children}
