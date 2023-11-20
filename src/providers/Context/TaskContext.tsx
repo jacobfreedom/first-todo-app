@@ -99,14 +99,78 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       }
     });
   
-    const sortedItems = sortWithDirection(
-      newTodoItems,
-      (data) => data.createdTimestamp,
-      'asc'
+    const inProgressItems = newTodoItems.filter(
+      (item) =>
+        React.isValidElement(item) &&
+        item.props.todoItemData &&
+        !item.props.todoItemData.taskChecked
+    );
+    const finishedItems = newTodoItems.filter(
+      (item) =>
+        React.isValidElement(item) &&
+        item.props.todoItemData &&
+        item.props.todoItemData.taskChecked
     );
   
-    setTodoItems(sortedItems);
+    setInProgressItems(sortWithDirection(inProgressItems, (data) => data.createdTimestamp, 'asc'));
+    setFinishedItems(sortWithDirection(finishedItems, (data) => data.createdTimestamp, 'asc'));
   };
+  
+
+  const [itemsToShow, setItemsToShow] = useState<number>(5);
+  const [itemsToShowInProgress, setItemsToShowInProgress] = useState<number>(5);
+  const [itemsToShowFinished, setItemsToShowFinished] = useState<number>(5);
+
+  const [inProgressItems, setInProgressItems] = useState<TodoItem[]>([]);
+  const [finishedItems, setFinishedItems] = useState<TodoItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false); // Add this line
+
+
+  const loadMoreItems = (tab: 'In Progress' | 'Finished') => {
+    // Check if the loading animation is already in progress
+    if (isLoading) {
+      return;
+    }
+  
+    setIsLoading(true);
+    setTimeout(() => {
+      let currentItemsToShow: number = 0;
+      let setItemsToShowFunction: React.Dispatch<React.SetStateAction<number>> = setItemsToShow;
+  
+      if (tab === 'In Progress') {
+        currentItemsToShow = itemsToShowInProgress;
+        setItemsToShowFunction = setItemsToShowInProgress;
+      } else if (tab === 'Finished') {
+        currentItemsToShow = itemsToShowFinished;
+        setItemsToShowFunction = setItemsToShowFinished;
+      }
+  
+      const maxItemsToShow = tab === 'In Progress' ? inProgressItems.length : finishedItems.length;
+  
+      console.log('Current Items To Show:', currentItemsToShow);
+      console.log('Max Items To Show:', maxItemsToShow);
+      console.log('In Progress Items:', inProgressItems);
+      console.log('Finished Items:', finishedItems);
+  
+      // Increment the number of items to show by 5 until it reaches the maximum
+      setItemsToShowFunction((prev) => {
+        const newItemsToShow = Math.min(prev + 5, maxItemsToShow);
+        console.log('New Items To Show:', newItemsToShow);
+        return newItemsToShow;
+      });
+  
+      // Check if the user has scrolled to the bottom again during the loading delay
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        // If scrolled to the bottom again, continue loading (do not set loading state to false)
+        loadMoreItems(tab);
+      } else {
+        // If not scrolled to the bottom again, set loading state to false
+        setIsLoading(false);
+      }
+    }, 1000); // Simulated loading delay of 1 second
+  };
+  
+  
   
   
   
@@ -203,7 +267,15 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         todoItems,
         handleTaskAdded,
         refreshTaskList,
-        handleSortChange
+        handleSortChange,
+        inProgressItems,
+        finishedItems,
+        loadMoreItems,
+        itemsToShowInProgress,
+        itemsToShowFinished,
+        itemsToShow,
+        isLoading,
+        setIsLoading
       }}
     >
       {children}

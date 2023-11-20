@@ -18,6 +18,7 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData; taskKey: string }> = ({ t
     descriptionStringChecker,
     statusColorMap,
     titleStringChecker,
+    refreshTaskList
   } = useTaskContext();
 
   const { selectedColor} = useUserContext();
@@ -27,13 +28,25 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData; taskKey: string }> = ({ t
     return storedItem ? JSON.parse(storedItem).taskChecked : false;
   });
 
+  const [isVisible, setIsVisible] = useState(true);
+
   const handleCheckboxChange = (checked: boolean) => {
     setIsChecked(checked);
+
     const storedItemString = localStorage.getItem(taskKey);
     const storedItem = storedItemString ? JSON.parse(storedItemString) : {};
     storedItem.taskChecked = checked;
     localStorage.setItem(taskKey, JSON.stringify(storedItem));
+
+    // Trigger the animation to hide the item
+    setIsVisible(false);
   };
+
+  const onAnimationComplete = () => {
+    // Animation is complete, now refresh the task list
+    refreshTaskList();
+  };
+  
 
   const show = {
     opacity: 1,
@@ -47,10 +60,8 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData; taskKey: string }> = ({ t
     }
   };
 
-  const [isVisible, setIsVisible] = useState(true);
-
   return (
-    <motion.div animate={isVisible ? show : hide}>
+    <motion.div animate={isVisible ? show : hide} onAnimationComplete={onAnimationComplete}>
       <div className="flex w-full my-6 justify-between
         after:absolute after:block after:h-px after:w-full after:self-end after:bg-[#EDF2F7] after:-mb-6">
         {/* todo__item__elements  */}

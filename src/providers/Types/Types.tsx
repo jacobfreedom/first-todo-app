@@ -1,5 +1,6 @@
 import { ChangeEvent } from "react";
 
+
 // Define your priorities
 const priorities = [
     { label: "🤷 None", value: "none" },
@@ -10,6 +11,10 @@ const priorities = [
   
   // Common types
   type Priority = { label: string; value: string };
+
+  type TodoItem = React.ReactElement<{ todoItemData: TodoItemData, key: string }>;
+
+
   
   // Types related to the TaskContext
   interface TaskContextType {
@@ -36,6 +41,14 @@ const priorities = [
     handleTaskAdded: () => void;
     refreshTaskList: () => void;
     handleSortChange: (sortOption: string, reversed: boolean) => void;
+    inProgressItems: TodoItem[];  // Add this line
+    finishedItems: TodoItem[];   // Add this line
+    loadMoreItems: (tab: 'In Progress' | 'Finished') => void;
+    itemsToShowInProgress: number;
+    itemsToShowFinished: number;
+    itemsToShow: number;
+    isLoading: boolean;
+    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>; // Fix this line
   }
   
   // Types related to the TodoItem
@@ -68,6 +81,6 @@ export {
 export type {
   TaskContextType,
   UserContextType,
-  TodoItemData
+  TodoItemData,
 };
   

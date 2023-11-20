@@ -1,24 +1,17 @@
 "use client"
 
-import React, { useState, useRef } from "react";
-import { Pagination, Tabs, Tab, Select, SelectItem, Button } from "@nextui-org/react";
+import React, { useState, useRef, useEffect } from "react";
+import { Tabs, Tab, Select, SelectItem, Button, CircularProgress } from "@nextui-org/react";
 import { useUserContext } from '@/providers/Context/UserContext';
 import styles from '@/styles/Home.module.scss'
 import NewTaskForm from './NewTaskForm/NewTaskForm';
 import { useTaskContext } from '@/providers/Context/TaskContext';
 import { BiSort } from "react-icons/bi";
-import {
-  motion,
-  useScroll,
-  useSpring,
-  useTransform,
-  MotionValue
-} from "framer-motion";
 
 const TodoInterface = () => {
 
   const {selectedColor, selectedTab, handleSelectedTabChange } = useUserContext();
-  const {todoItems, handleTaskAdded, handleSortChange } = useTaskContext();
+  const {handleTaskAdded, handleSortChange, inProgressItems, finishedItems, itemsToShowInProgress, itemsToShowFinished, loadMoreItems, isLoading, setIsLoading } = useTaskContext();
   const [reversed, setReversed] = useState(false); // State to track sorting direction
 
   const handleSortDirection = () => {
@@ -29,26 +22,64 @@ const TodoInterface = () => {
     handleSortChange(selectedSortOption, reversed);
   };
 
-  // Filter the items based on their checked status
-  const uncheckedItems = todoItems.filter((item) => {
-    if (React.isValidElement(item)) {
-      const todoData = item.props.todoItemData;
-      return todoData && !todoData.taskChecked;
-    }
-    return false;
-  });
+  // // Filter the items based on their checked status
+  // const uncheckedItems = todoItems.filter((item) => {
+  //   if (React.isValidElement(item)) {
+  //     const todoData = item.props.todoItemData;
+  //     return todoData && !todoData.taskChecked;
+  //   }
+  //   return false;
+  // });
 
-  const checkedItems = todoItems.filter((item) => {
-    if (React.isValidElement(item)) {
-      const todoData = item.props.todoItemData;
-      return todoData && todoData.taskChecked;
-    }
-    return false;
-  });
+  // const checkedItems = todoItems.filter((item) => {
+  //   if (React.isValidElement(item)) {
+  //     const todoData = item.props.todoItemData;
+  //     return todoData && todoData.taskChecked;
+  //   }
+  //   return false;
+  // });
+  
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        // User has scrolled to the bottom, load more items based on the selected tab
+        if (selectedTab === 'In Progress' && itemsToShowInProgress < inProgressItems.length) {
+          loadMoreItems('In Progress');
+        } else if (selectedTab === 'Finished' && itemsToShowFinished < finishedItems.length) {
+          loadMoreItems('Finished');
+        }
+      }
+      console.log('scrolling');
+    };
+    
+  
+    window.addEventListener('scroll', handleScroll);
+  
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [selectedTab, loadMoreItems]);
+  
+  // Add this useEffect to handle the updated items
+  useEffect(() => {
+    console.log('In Progress Items:', inProgressItems);
+    console.log('Finished Items:', finishedItems);
+  }, [inProgressItems, finishedItems]);
+  
+  useEffect(() => {
+    console.log('In Progress Items:', inProgressItems);
+    console.log('Finished Items:', finishedItems);
+  }, [inProgressItems, finishedItems]);
+
+  // Add this useEffect to reset loading state when items are refreshed
+  useEffect(() => {
+    setIsLoading(false);
+  }, [inProgressItems, finishedItems]);
+  
 
   return (
     <>
-    <div className='mt-10' />
+    <div className='my-10'>
       <div className={styles.todo__interface}>
 
         <div className="flex items-center justify-between relative 
@@ -112,18 +143,23 @@ const TodoInterface = () => {
             </div>
             {selectedTab === 'In Progress' && (
               <>
-              {uncheckedItems} {/* Render the array of TodoItem components */}
+                {inProgressItems.slice(0, itemsToShowInProgress)}
+                {isLoading && itemsToShowInProgress < inProgressItems.length && 
+                <CircularProgress label="Loading..." className="self-center my-6" color={selectedColor}/>}
               </>
             )}
             {selectedTab === 'Finished' && (
-            <>
-            {checkedItems}
-            </>
+              <>
+                {finishedItems.slice(0, itemsToShowFinished)}
+                {isLoading && itemsToShowFinished < finishedItems.length && 
+                <CircularProgress label="Loading..." className="self-center my-6" color={selectedColor}/>}
+              </>
             )}
           </div>
         <div className='flex items-center justify-center m-3'>
-          <Pagination loop showControls color={selectedColor} total={5} initialPage={1} />
+          <Button>Load More</Button>
         </div>
+      </div>
     </div>
     </ >
   );
