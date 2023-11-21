@@ -10,7 +10,7 @@ import { TaskProvider } from '@/providers/Context/TaskContext';
 export default function Home() {
 
   return (
-    <main className="container flex flex-col mx-auto my-0 p-0">
+    <main className="max-w-[1000px] px-[25px] flex flex-col mx-auto my-0 p-0">
       {/* .container {
     display: flex;
     min-height: 100vh;

@@ -1,8 +1,9 @@
 "use client"
 
+import React from "react";
 import { AcmeLogo } from "@/icons/AcmeLogo";
 import { Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, 
-    Link, Navbar, NavbarBrand, NavbarContent, NavbarItem, cn } from "@nextui-org/react";
+    Link, Navbar, NavbarBrand, NavbarContent, NavbarItem, cn, NavbarMenuToggle, NavbarMenu, NavbarMenuItem } from "@nextui-org/react";
 import { useUserContext } from "@/providers/Context/UserContext";
 
 function Nav() {
@@ -14,18 +15,38 @@ function Nav() {
       const userSelectedColor = 'primary';
       localStorage.setItem('user_selectedColor', JSON.stringify(userSelectedColor));
       };
+
+    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     
 
     return (
       
-        <Navbar>
+        <Navbar onMenuOpenChange={setIsMenuOpen}>
+
+        <NavbarMenuToggle
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          className="sm:hidden"
+        />
+
+        <NavbarMenu>
+            <NavbarMenuItem className="flex flex-col gap-2 w-full">
+            <Link href="#" aria-current="page" color={selectedColor}>
+              To-Do App
+            </Link>
+            <Link color="foreground" href="#">
+              About project
+            </Link>
+            </NavbarMenuItem>
+        </NavbarMenu>
+
         <NavbarBrand>
           <AcmeLogo />
           <p className="font-bold text-inherit">ACME</p>
 
         </NavbarBrand>
 
-        <NavbarContent className="hidden sm:flex gap-8" justify="center">
+
+        <NavbarContent className="hidden sm:block sm:flex gap-8" justify="center">
           <NavbarItem isActive>
             <Link href="#" aria-current="page" color={selectedColor}>
               To-Do App
@@ -39,7 +60,7 @@ function Nav() {
         </NavbarContent>
 
         <NavbarContent as="div" justify="end">
-          <p className='text-sm font-thin'>
+          <p className='text-sm font-thin hidden lg:block'>
             <span className='font-bold'>
               👋 {selectedColor}
             </span>

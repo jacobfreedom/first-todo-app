@@ -7,7 +7,7 @@ import styles from '@/styles/Home.module.scss'
 import NewTaskForm from './NewTaskForm/NewTaskForm';
 import { useTaskContext } from '@/providers/Context/TaskContext';
 import { FaSortAmountDownAlt, FaSortAmountUp } from "react-icons/fa";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 const TodoInterface = () => {
 
@@ -49,6 +49,8 @@ const TodoInterface = () => {
 
     window.addEventListener("scroll", handleScroll);
 
+    setIsLoading(false);
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -62,27 +64,18 @@ const TodoInterface = () => {
       }
   };
   
-  // Add this useEffect to handle the updated items
-  useEffect(() => {
-    console.log('In Progress Items:', inProgressItems);
-    console.log('Finished Items:', finishedItems);
-  }, [inProgressItems, finishedItems]);
-  
-  useEffect(() => {
-    console.log('In Progress Items:', inProgressItems);
-    console.log('Finished Items:', finishedItems);
-  }, [inProgressItems, finishedItems]);
 
-  // Add this useEffect to reset loading state when items are refreshed
-  useEffect(() => {
-    setIsLoading(false);
-  }, [inProgressItems, finishedItems]);
+  // // Add this useEffect to reset loading state when items are refreshed
+  // useEffect(() => {
+  //   setIsLoading(false);
+  // }, [inProgressItems, finishedItems]);
   
 
   return (
-    <div className="flex flex-col rounded-3xl border-solid border-1 border-[#EDF2F7] my-10 self-center
-    mx-4 sm:mx-0
-    w-4/5 sm:w-screen lg:w-3xl xl:w-4xl">
+    <div className="flex flex-col self-center 
+    rounded-3xl border-solid border-1 border-[#EDF2F7] 
+    w-full
+    mt-10 mb-0 md:mb-10">
       {/* .todo__interface {
       display: flex;
       flex-direction: column;
@@ -123,7 +116,7 @@ const TodoInterface = () => {
         className="mr-2"
         onPress={() => handleSortDirection()} // Utilize the toggle function on button click
         >
-        <AnimatePresence>
+        {/* <AnimatePresence> */}
           <motion.div
               initial={{ y: -10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -133,7 +126,7 @@ const TodoInterface = () => {
             <FaSortAmountDownAlt />
           </motion.div>
 
-          <motion.div
+          {/* <motion.div
               initial={{ y: 10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -10, opacity: 0 }}
@@ -141,7 +134,7 @@ const TodoInterface = () => {
           >
             <FaSortAmountUp />
           </motion.div>
-        </AnimatePresence>
+        </AnimatePresence> */}
         </Button>
         <Select
             variant="underlined"

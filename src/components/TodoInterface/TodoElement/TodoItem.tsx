@@ -23,7 +23,7 @@ const TodoItemElement: React.FC<{ todoItemData: TodoItemData; taskKey: string }>
 
   const { selectedColor} = useUserContext();
 
-  const [isChecked, setIsChecked] = React.useState(() => {
+  const [isChecked, setIsChecked] = useState(() => {
     const storedItem = localStorage.getItem(taskKey);
     return storedItem ? JSON.parse(storedItem).taskChecked : false;
   });

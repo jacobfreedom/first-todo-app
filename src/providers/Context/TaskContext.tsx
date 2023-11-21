@@ -100,14 +100,27 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         console.log("Item not found in local storage.");
       }
     });
+
+    const sortedItems = sortWithDirection(
+      newTodoItems,
+      (data) => data.createdTimestamp,
+      'asc'
+    );
   
-    const inProgressItems = newTodoItems.filter(
+
+
+    setTodoItems(sortedItems);
+    itemDivider();
+  };
+
+  const itemDivider = () => {
+    const inProgressItems = todoItems.filter(
       (item) =>
         React.isValidElement(item) &&
         item.props.todoItemData &&
         !item.props.todoItemData.taskChecked
     );
-    const finishedItems = newTodoItems.filter(
+    const finishedItems = todoItems.filter(
       (item) =>
         React.isValidElement(item) &&
         item.props.todoItemData &&
@@ -116,7 +129,9 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   
     setInProgressItems(sortWithDirection(inProgressItems, (data) => data.createdTimestamp, 'asc'));
     setFinishedItems(sortWithDirection(finishedItems, (data) => data.createdTimestamp, 'asc'));
+
   };
+
   
 
   const [itemsToShow, setItemsToShow] = useState<number>(5);
