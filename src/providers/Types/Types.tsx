@@ -54,6 +54,7 @@ const priorities = [
       sortDirection: 'asc' | 'desc',
       tab: 'In Progress' | 'Finished'
     ) => void;
+    setSelectedTabContext: React.Dispatch<React.SetStateAction<string>>;
   }
   
   // Types related to the TodoItem

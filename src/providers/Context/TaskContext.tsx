@@ -1,7 +1,7 @@
 "use client"
 
 import React, { createContext, useContext, useState, useEffect, ChangeEvent, ReactNode } from "react";
-import TodoItem from "@/components/TodoInterface/TodoElement/TodoItem";
+import TodoItemElement from "@/components/TodoInterface/TodoElement/TodoItem";
 import { priorities, TaskContextType, TodoItemData } from "../Types/Types";
 import { select } from "@nextui-org/react";
 
@@ -25,6 +25,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [priorityValue, setPriorityValue] = useState(priorities[0]);
   const [dateValue, setDateValue] = useState<string>('');
   const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
+  const [selectedTabContext, setSelectedTabContext] = useState<string>('In Progress');
 
 
   const todoValues = {
@@ -91,7 +92,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         const storedTodoValues: TodoItemData = JSON.parse(storedItem);
         if (storedTodoValues.createdTimestamp) {
           const todoItem = (
-            <TodoItem key={key} todoItemData={storedTodoValues} taskKey={key} />
+            <TodoItemElement key={key} todoItemData={storedTodoValues} taskKey={key} />
           );
           newTodoItems.push(todoItem);
         }
@@ -220,19 +221,19 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const sortAndSetItems = (
     accessor: (data: TodoItemData) => number | string,
     sortDirection: 'asc' | 'desc',
-    tab: 'In Progress' | 'Finished'
   ) => {
+    // const tab = selectedTabContext;
     const sortedItems = sortWithDirection(
       todoItems,
       (data) => accessor(data),
       sortDirection
     );
     setTodoItems(sortedItems);
-    if (tab === 'In Progress') {
-      setInProgressItems(sortedItems);
-    } else if (tab === 'Finished') {
-      setFinishedItems(sortedItems);
-    }
+    // if (tab === 'In Progress') {
+    //   setInProgressItems(sortedItems);
+    // } else if (tab === 'Finished') {
+    //   setFinishedItems(sortedItems);
+    // }
   };
   
 
@@ -248,8 +249,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     const accessor = sortOptions[sortOption];
     
     if (accessor) {
-      const currentTab = tab; // Replace with the actual way you get the current tab value
-      sortAndSetItems(accessor, sortDirection, currentTab);
+      sortAndSetItems(accessor, sortDirection);
     }
   };
   
@@ -313,7 +313,8 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         itemsToShow,
         isLoading,
         setIsLoading,
-        sortAndSetItems
+        sortAndSetItems,
+        setSelectedTabContext
       }}
     >
       {children}

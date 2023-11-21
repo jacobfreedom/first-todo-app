@@ -10,7 +10,15 @@ import { TaskProvider } from '@/providers/Context/TaskContext';
 export default function Home() {
 
   return (
-    <main className={styles.container}>
+    <main className="container flex flex-col mx-auto my-0 p-0">
+      {/* .container {
+    display: flex;
+    min-height: 100vh;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0;
+    flex-direction: column;
+} */}
       <Nav />
       <TaskProvider>
         <TodoInterface />

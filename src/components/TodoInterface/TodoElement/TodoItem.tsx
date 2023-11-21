@@ -11,7 +11,7 @@ import { motion } from "framer-motion";
 
 
 
-const TodoItem: React.FC<{ todoItemData: TodoItemData; taskKey: string }> = ({ todoItemData, taskKey }) => {
+const TodoItemElement: React.FC<{ todoItemData: TodoItemData; taskKey: string }> = ({ todoItemData, taskKey }) => {
 
 
   const {
@@ -126,4 +126,4 @@ const TodoItem: React.FC<{ todoItemData: TodoItemData; taskKey: string }> = ({ t
   );
 };
 
-export default TodoItem;
+export default TodoItemElement;
