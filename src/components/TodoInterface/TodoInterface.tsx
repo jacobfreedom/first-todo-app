@@ -8,16 +8,24 @@ import NewTaskForm from './NewTaskForm/NewTaskForm';
 import { useTaskContext } from '@/providers/Context/TaskContext';
 import { FaSortAmountDownAlt, FaSortAmountUp } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { TodoItemData } from "@/providers/Types/Types";
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const TodoInterface = () => {
 
   const {selectedColor, selectedTab, handleSelectedTabChange } = useUserContext();
   const {
-    handleTaskAdded, handleSortChange, inProgressItems, finishedItems, itemsToShowInProgress, 
-    itemsToShowFinished, loadMoreItems, isLoading, setIsLoading, sortAndSetItems, setSelectedTabContext
+    handleTaskAdded, handleSortChange, todoItems,
   } = useTaskContext();
 
   const [reversed, setReversed] = useState(false); // State to track sorting direction
+  const [isLoading, setIsLoading] = useState(false); 
+
+
+
+  const [itemsToShow, setItemsToShow] = useState(5); // Change the initial value as needed
+
+
 
   const handleSortDirection = () => {
     setReversed(!reversed);
@@ -26,49 +34,87 @@ const TodoInterface = () => {
   const handleSortSelection = (selectedSortOption: string) => {
     handleSortChange(selectedSortOption, reversed);
   };
-  
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + window.scrollY >=
-        document.body.offsetHeight
-      ) {
-        if (
-          selectedTab === "In Progress" &&
-          itemsToShowInProgress < inProgressItems.length
-        ) {
-          loadMoreItems("In Progress");
-        } else if (
-          selectedTab === "Finished" &&
-          itemsToShowFinished < finishedItems.length
-        ) {
-          loadMoreItems("Finished");
-        }
+
+
+
+  const filterTodoItems = (items: React.ReactNode[], condition: (todoData: TodoItemData) => boolean) => {
+    return items.filter((item) => {
+      if (React.isValidElement(item)) {
+        const todoData = item.props.todoItemData;
+        return todoData && condition(todoData);
       }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    setIsLoading(false);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [selectedTab, loadMoreItems]);
-
-  const handleSortTabSelection = () => {
-      if (selectedTab === 'In Progress') {
-        setSelectedTabContext('In Progress');
-      } else if (selectedTab === 'Finished') {
-        setSelectedTabContext('Finished');
-      }
+      return false;
+    });
   };
-  
 
-  // // Add this useEffect to reset loading state when items are refreshed
-  // useEffect(() => {
-  //   setIsLoading(false);
-  // }, [inProgressItems, finishedItems]);
+  // Function to render filtered todo items
+//   const renderFilteredItems = (filterCondition: (todoData: TodoItemData) => boolean, itemsToShowPar: number) => {
+//     const filteredItems = filterTodoItems(todoItems, filterCondition);
+
+//   return (
+//     <motion.div
+//       key={selectedTab}
+//       initial={{ y: 10, opacity: 0 }}
+//       animate={{ y: 0, opacity: 1 }}
+//       exit={{ y: -10, opacity: 0 }}
+//       transition={{ duration: 0.4 }}
+//       className="flex flex-col relative"
+//     >
+//       {filteredItems.slice(0, itemsToShowPar)}
+//       {isLoading && itemsToShowPar < filteredItems.length && (
+//         <CircularProgress
+//           label="Loading..."
+//           className="self-center my-6"
+//           color={selectedColor}
+//         />
+//       )}
+//     </motion.div>
+//   );
+// };
+
+
+
+const renderFilteredItems = (filterCondition: (todoData: TodoItemData) => boolean, itemsToShowPar: number) => {
+  const filteredItems = filterTodoItems(todoItems, filterCondition);
+
+  const fetchMoreData = () => {
+
+    // if (filteredItems.length >= filteredItems.length) {
+    //   // this.setState({ hasMore: false });
+    //   return;
+    // }
+    // a fake async api call like which sends
+    // 20 more records in 1.5 secs
+    setTimeout(() => {
+      setItemsToShow(itemsToShow + 5)
+    }, 1500);
+  };
+
+  return (
+    <InfiniteScroll
+      dataLength={itemsToShow}
+      next={fetchMoreData} // Increase the number of items to show on scroll
+      hasMore={itemsToShowPar < filteredItems.length}
+      style={{ display: 'flex', flexDirection: 'column' }} 
+      loader={<CircularProgress label="Loading..." className="self-center my-6" color={selectedColor} />}
+    >
+      <motion.div
+        key={selectedTab}
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: -10, opacity: 0 }}
+        transition={{ duration: 0.4 }}
+        className="flex flex-col relative"
+      >
+        {filteredItems.slice(0, itemsToShowPar)}
+      </motion.div>
+    </InfiniteScroll>
+  );
+};
+
+
+
+
   
 
   return (
@@ -161,34 +207,9 @@ const TodoInterface = () => {
             <NewTaskForm onTaskAdded={handleTaskAdded} />
           </>
         </div>
-          {selectedTab === 'In Progress' && (
-            <motion.div
-            key={selectedTab}
-            initial={{ y: 10, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -10, opacity: 0 }}
-            transition={{ duration: 0.4 }}
-            className="flex flex-col relative"
-            >
-              {inProgressItems.slice(0, itemsToShowInProgress)}
-              {isLoading && itemsToShowInProgress < inProgressItems.length && 
-              <CircularProgress label="Loading..." className="self-center my-6" color={selectedColor}/>}
-            </motion.div>
-          )}
-          {selectedTab === 'Finished' && (
-            <motion.div
-            key={selectedTab}
-            initial={{ y: 10, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -10, opacity: 0 }}
-            transition={{ duration: 0.4 }}
-            className="flex flex-col relative"
-            >
-              {finishedItems.slice(0, itemsToShowFinished)}
-              {isLoading && itemsToShowFinished < finishedItems.length && 
-              <CircularProgress label="Loading..." className="self-center my-6" color={selectedColor}/>}
-            </motion.div>
-          )}
+
+        {selectedTab === 'In Progress' && renderFilteredItems((todoData) => !todoData.taskChecked, itemsToShow)}
+        {selectedTab === 'Finished' && renderFilteredItems((todoData) => todoData.taskChecked, itemsToShow)}
       </div>
 
       <div className='flex items-center justify-center m-3'>

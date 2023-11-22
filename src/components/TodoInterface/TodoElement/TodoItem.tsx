@@ -44,7 +44,7 @@ const TodoItemElement: React.FC<{ todoItemData: TodoItemData; taskKey: string }>
 
   const onAnimationComplete = () => {
     // Animation is complete, now refresh the task list
-    refreshTaskList();
+    // refreshTaskList();
   };
   
 

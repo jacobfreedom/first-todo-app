@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useState, useEffect, ChangeEvent, ReactNode } from "react";
 import TodoItemElement from "@/components/TodoInterface/TodoElement/TodoItem";
 import { priorities, TaskContextType, TodoItemData } from "../Types/Types";
-import { select } from "@nextui-org/react";
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
@@ -25,7 +24,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [priorityValue, setPriorityValue] = useState(priorities[0]);
   const [dateValue, setDateValue] = useState<string>('');
   const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
-  const [selectedTabContext, setSelectedTabContext] = useState<string>('In Progress');
 
 
   const todoValues = {
@@ -110,27 +108,41 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 
 
     setTodoItems(sortedItems);
-    itemDivider();
   };
 
-  const itemDivider = () => {
-    const inProgressItems = todoItems.filter(
-      (item) =>
-        React.isValidElement(item) &&
-        item.props.todoItemData &&
-        !item.props.todoItemData.taskChecked
-    );
-    const finishedItems = todoItems.filter(
-      (item) =>
-        React.isValidElement(item) &&
-        item.props.todoItemData &&
-        item.props.todoItemData.taskChecked
-    );
+  // const itemDivider = () => {
+  //   const inProgressItems = todoItems.filter(
+  //     (item) =>
+  //       item.props.todoItemData &&
+  //       !item.props.todoItemData.taskChecked
+  //   );
   
-    setInProgressItems(sortWithDirection(inProgressItems, (data) => data.createdTimestamp, 'asc'));
-    setFinishedItems(sortWithDirection(finishedItems, (data) => data.createdTimestamp, 'asc'));
+  //   const finishedItems = todoItems.filter(
+  //     (item) =>
+  //       item.props.todoItemData &&
+  //       item.props.todoItemData.taskChecked
+  //   );
+  
+  //   setInProgressItems(sortWithDirection(inProgressItems, (data) => data.createdTimestamp, 'asc'));
+  //   setFinishedItems(sortWithDirection(finishedItems, (data) => data.createdTimestamp, 'asc'));
+  // };
+  
+    // // Filter the items based on their checked status
+    // const inProgressItems = todoItems.filter((item) => {
+    //   if (React.isValidElement(item)) {
+    //     const todoData = item.props.todoItemData;
+    //     return todoData && !todoData.taskChecked;
+    //   }
+    //   return false;
+    // });
 
-  };
+    // const finishedItems = todoItems.filter((item) => {
+    //   if (React.isValidElement(item)) {
+    //     const todoData = item.props.todoItemData;
+    //     return todoData && todoData.taskChecked;
+    //   }
+    //   return false;
+    // });
 
   
 
@@ -143,49 +155,70 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false); // Add this line
 
 
-  const loadMoreItems = (tab: 'In Progress' | 'Finished') => {
-    // Check if the loading animation is already in progress
-    if (isLoading) {
-      return;
-    }
+  // const loadMoreItems = (tab: 'In Progress' | 'Finished') => {
+  //   // Check if the loading animation is already in progress
+  //   if (isLoading) {
+  //     return;
+  //   }
   
-    setIsLoading(true);
-    setTimeout(() => {
-      let currentItemsToShow: number = 0;
-      let setItemsToShowFunction: React.Dispatch<React.SetStateAction<number>> = setItemsToShow;
+  //   setIsLoading(true);
+  //   setTimeout(() => {
+  //     let currentItemsToShow: number = 0;
+  //     let setItemsToShowFunction: React.Dispatch<React.SetStateAction<number>> = setItemsToShow;
   
-      if (tab === 'In Progress') {
-        currentItemsToShow = itemsToShowInProgress;
-        setItemsToShowFunction = setItemsToShowInProgress;
-      } else if (tab === 'Finished') {
-        currentItemsToShow = itemsToShowFinished;
-        setItemsToShowFunction = setItemsToShowFinished;
-      }
+  //     if (tab === 'In Progress') {
+  //       currentItemsToShow = itemsToShowInProgress;
+  //       setItemsToShowFunction = setItemsToShowInProgress;
+  //     } else if (tab === 'Finished') {
+  //       currentItemsToShow = itemsToShowFinished;
+  //       setItemsToShowFunction = setItemsToShowFinished;
+  //     }
   
-      const maxItemsToShow = tab === 'In Progress' ? inProgressItems.length : finishedItems.length;
+  //     const maxItemsToShow = tab === 'In Progress' ? inProgressItems.length : finishedItems.length;
   
-      console.log('Current Items To Show:', currentItemsToShow);
-      console.log('Max Items To Show:', maxItemsToShow);
-      console.log('In Progress Items:', inProgressItems);
-      console.log('Finished Items:', finishedItems);
+  //     console.log('Current Items To Show:', currentItemsToShow);
+  //     console.log('Max Items To Show:', maxItemsToShow);
+  //     console.log('In Progress Items:', inProgressItems);
+  //     console.log('Finished Items:', finishedItems);
   
-      // Increment the number of items to show by 5 until it reaches the maximum
-      setItemsToShowFunction((prev) => {
-        const newItemsToShow = Math.min(prev + 5, maxItemsToShow);
-        console.log('New Items To Show:', newItemsToShow);
-        return newItemsToShow;
-      });
+  //     // Increment the number of items to show by 5 until it reaches the maximum
+  //     setItemsToShowFunction((prev) => {
+  //       const newItemsToShow = Math.min(prev + 5, maxItemsToShow);
+  //       console.log('New Items To Show:', newItemsToShow);
+  //       return newItemsToShow;
+  //     });
   
-      // Check if the user has scrolled to the bottom again during the loading delay
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        // If scrolled to the bottom again, continue loading (do not set loading state to false)
-        loadMoreItems(tab);
-      } else {
-        // If not scrolled to the bottom again, set loading state to false
-        setIsLoading(false);
-      }
-    }, 1000); // Simulated loading delay of 1 second
-  };
+  //     // Check if the user has scrolled to the bottom again during the loading delay
+  //     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+  //       // If scrolled to the bottom again, continue loading (do not set loading state to false)
+  //       loadMoreItems(tab);
+  //     } else {
+  //       // If not scrolled to the bottom again, set loading state to false
+  //       setIsLoading(false);
+  //     }
+  //   }, 1000); // Simulated loading delay of 1 second
+  // };
+
+
+  
+    // const loadMoreItems = (tab: 'In Progress' | 'Finished') => {
+    //   // Determine the appropriate state and function based on the selected tab
+    //   const itemsToShowState = tab === 'In Progress' ? itemsToShowInProgress : itemsToShowFinished;
+    //   const setItemsToShowState = tab === 'In Progress' ? setIsLoading : setItemsToShowFinished; // Adjust this line as needed
+  
+    //   // Increase the number of items to show (e.g., load 10 more items)
+    //   setItemsToShowState(itemsToShowState + 10);
+  
+    //   // Add a delay to simulate an asynchronous data fetch
+    //   setTimeout(() => {
+    //     // Update the loading state to false after a delay (simulating data fetching completion)
+    //     setIsLoading(false);
+    //   }, 1000); // Adjust the delay as needed
+  
+    //   // You can also trigger any additional logic related to data fetching here
+    // };
+
+  
   
   
   
@@ -221,35 +254,35 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       });
   };
 
-  // const sortAndSetItems = (
-  //   accessor: (data: TodoItemData) => number | string,
-  //   sortDirection: 'asc' | 'desc'
-  // ) => {
-  //   const sortedItems = sortWithDirection(
-  //     todoItems,
-  //     (data) => accessor(data),
-  //     sortDirection
-  //   );
-  //   setTodoItems(sortedItems);
-  // };
-
   const sortAndSetItems = (
     accessor: (data: TodoItemData) => number | string,
-    sortDirection: 'asc' | 'desc',
+    sortDirection: 'asc' | 'desc'
   ) => {
-    // const tab = selectedTabContext;
     const sortedItems = sortWithDirection(
       todoItems,
       (data) => accessor(data),
       sortDirection
     );
     setTodoItems(sortedItems);
-    // if (tab === 'In Progress') {
-    //   setInProgressItems(sortedItems);
-    // } else if (tab === 'Finished') {
-    //   setFinishedItems(sortedItems);
-    // }
   };
+
+  // const sortAndSetItems = (
+  //   accessor: (data: TodoItemData) => number | string,
+  //   sortDirection: 'asc' | 'desc',
+  // ) => {
+  //   // const tab = selectedTabContext;
+  //   const sortedItems = sortWithDirection(
+  //     todoItems,
+  //     (data) => accessor(data),
+  //     sortDirection
+  //   );
+  //   setTodoItems(sortedItems);
+  //   // if (tab === 'In Progress') {
+  //   //   setInProgressItems(sortedItems);
+  //   // } else if (tab === 'Finished') {
+  //   //   setFinishedItems(sortedItems);
+  //   // }
+  // };
   
 
   const sortOptions: Record<string, (data: TodoItemData) => number | string> = {
@@ -322,14 +355,13 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         handleSortChange,
         inProgressItems,
         finishedItems,
-        loadMoreItems,
+        // loadMoreItems,
         itemsToShowInProgress,
         itemsToShowFinished,
         itemsToShow,
         isLoading,
         setIsLoading,
         sortAndSetItems,
-        setSelectedTabContext
       }}
     >
       {children}
