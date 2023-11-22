@@ -41,14 +41,6 @@ const priorities = [
     handleTaskAdded: () => void;
     refreshTaskList: () => void;
     handleSortChange: (sortOption: string, reversed: boolean) => void;
-    inProgressItems: TodoItem[];  // Add this line
-    finishedItems: TodoItem[];   // Add this line
-    // loadMoreItems: (tab: 'In Progress' | 'Finished') => void;
-    itemsToShowInProgress: number;
-    itemsToShowFinished: number;
-    itemsToShow: number;
-    isLoading: boolean;
-    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>; // Fix this line
     sortAndSetItems: (
       accessor: (data: TodoItemData) => number | string,
       sortDirection: 'asc' | 'desc',
@@ -58,6 +50,7 @@ const priorities = [
   
   // Types related to the TodoItem
   interface TodoItemData {
+    key: string;
     taskTitleValue: string;
     descriptionValue: string;
     priorityValue: Priority;

@@ -60,11 +60,11 @@ function Nav() {
         </NavbarContent>
 
         <NavbarContent as="div" justify="end">
-          <p className='text-sm font-thin hidden lg:block'>
+          <p className='text-sm font-thin'>
             <span className='font-bold'>
-              👋 {selectedColor}
+              👋&nbsp;{selectedColor}
             </span>
-            , happy to see you here!
+            , welcome!
           </p>
           <Dropdown placement="bottom-end">
             <DropdownTrigger>

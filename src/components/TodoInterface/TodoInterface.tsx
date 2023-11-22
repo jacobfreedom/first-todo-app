@@ -19,10 +19,6 @@ const TodoInterface = () => {
   } = useTaskContext();
 
   const [reversed, setReversed] = useState(false); // State to track sorting direction
-  const [isLoading, setIsLoading] = useState(false); 
-
-
-
   const [itemsToShow, setItemsToShow] = useState(5); // Change the initial value as needed
 
 
@@ -37,6 +33,7 @@ const TodoInterface = () => {
 
 
 
+  //filters the checked and unchecked todoitems for splitting inbetween tabs
   const filterTodoItems = (items: React.ReactNode[], condition: (todoData: TodoItemData) => boolean) => {
     return items.filter((item) => {
       if (React.isValidElement(item)) {
@@ -47,75 +44,44 @@ const TodoInterface = () => {
     });
   };
 
-  // Function to render filtered todo items
-//   const renderFilteredItems = (filterCondition: (todoData: TodoItemData) => boolean, itemsToShowPar: number) => {
-//     const filteredItems = filterTodoItems(todoItems, filterCondition);
+  // Rendinring of filtered items + infinite scroll component setup
+  const renderFilteredItems = (filterCondition: (todoData: TodoItemData) => boolean) => {
+    const filteredItems = filterTodoItems(todoItems, filterCondition);
 
-//   return (
-//     <motion.div
-//       key={selectedTab}
-//       initial={{ y: 10, opacity: 0 }}
-//       animate={{ y: 0, opacity: 1 }}
-//       exit={{ y: -10, opacity: 0 }}
-//       transition={{ duration: 0.4 }}
-//       className="flex flex-col relative"
-//     >
-//       {filteredItems.slice(0, itemsToShowPar)}
-//       {isLoading && itemsToShowPar < filteredItems.length && (
-//         <CircularProgress
-//           label="Loading..."
-//           className="self-center my-6"
-//           color={selectedColor}
-//         />
-//       )}
-//     </motion.div>
-//   );
-// };
+    const fetchMoreData = () => {
+      setTimeout(() => {
+        setItemsToShow(itemsToShow + 5)
+      }, 1500);
+    };
 
-
-
-const renderFilteredItems = (filterCondition: (todoData: TodoItemData) => boolean, itemsToShowPar: number) => {
-  const filteredItems = filterTodoItems(todoItems, filterCondition);
-
-  const fetchMoreData = () => {
-
-    // if (filteredItems.length >= filteredItems.length) {
-    //   // this.setState({ hasMore: false });
-    //   return;
-    // }
-    // a fake async api call like which sends
-    // 20 more records in 1.5 secs
-    setTimeout(() => {
-      setItemsToShow(itemsToShow + 5)
-    }, 1500);
+    return (
+      <InfiniteScroll
+        dataLength={itemsToShow}
+        next={fetchMoreData} // Increase the number of items to show on scroll
+        hasMore={itemsToShow < filteredItems.length} //if itemstoshow is lower than the lenght of filtered items the loader button will be show
+        className="flex flex-col"
+        loader={<CircularProgress label="Loading..." className="self-center my-6" color={selectedColor} />}
+      >
+        <motion.div
+          key={selectedTab}
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -10, opacity: 0 }}
+          transition={{ duration: 0.4 }}
+          className="flex flex-col relative"
+        >
+          {filteredItems.slice(0, itemsToShow)}
+        </motion.div>
+      </InfiniteScroll>
+    );
   };
 
-  return (
-    <InfiniteScroll
-      dataLength={itemsToShow}
-      next={fetchMoreData} // Increase the number of items to show on scroll
-      hasMore={itemsToShowPar < filteredItems.length}
-      style={{ display: 'flex', flexDirection: 'column' }} 
-      loader={<CircularProgress label="Loading..." className="self-center my-6" color={selectedColor} />}
-    >
-      <motion.div
-        key={selectedTab}
-        initial={{ y: 10, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: -10, opacity: 0 }}
-        transition={{ duration: 0.4 }}
-        className="flex flex-col relative"
-      >
-        {filteredItems.slice(0, itemsToShowPar)}
-      </motion.div>
-    </InfiniteScroll>
-  );
-};
+  //saves the selected tab to localstorage and also sets the itemstoshow to the default value in oder to trigger the loading animation again
+  const handleTabChange = (selectedTab: React.Key) => {
+    setItemsToShow(5);
 
-
-
-
-  
+    handleSelectedTabChange(selectedTab as string);
+  };
 
   return (
     <div className="flex flex-col self-center 
@@ -140,9 +106,10 @@ const renderFilteredItems = (filterCondition: (todoData: TodoItemData) => boolea
             variant="underlined"
             size="lg"
             selectedKey={selectedTab} // Use context state for selected key
-            onSelectionChange={(key: React.Key) => {
-              handleSelectedTabChange(key as string); // Update both local and context values
-            }}
+            // onSelectionChange={(key: React.Key) => {
+            //   handleSelectedTabChange(key as string); // Update both local and context values
+            // }}
+            onSelectionChange={(key: React.Key) => handleTabChange(key)}
           >
             <Tab
               key="In Progress"
@@ -208,8 +175,10 @@ const renderFilteredItems = (filterCondition: (todoData: TodoItemData) => boolea
           </>
         </div>
 
-        {selectedTab === 'In Progress' && renderFilteredItems((todoData) => !todoData.taskChecked, itemsToShow)}
-        {selectedTab === 'Finished' && renderFilteredItems((todoData) => todoData.taskChecked, itemsToShow)}
+        {/* rendering of filtedered items based on selected tab */}
+        {selectedTab === 'In Progress' && renderFilteredItems((todoData) => !todoData.taskChecked)}
+        {selectedTab === 'Finished' && renderFilteredItems((todoData) => todoData.taskChecked)}
+
       </div>
 
       <div className='flex items-center justify-center m-3'>
