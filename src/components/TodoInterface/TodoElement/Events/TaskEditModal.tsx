@@ -65,11 +65,11 @@ const TaskEditModal: React.FC<{ task: TodoItemData; taskKey: string }> = ({ task
       <EditIcon className={selectedColor}/>
     </Button>
 
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} backdrop='blur'>
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} backdrop='blur' placement='center'>
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader className="flex flex-col gap-1 items-center">Your New Task</ModalHeader>
+            <ModalHeader className="flex flex-col gap-1 items-center">Edit Your Task</ModalHeader>
             <ModalBody>
               <div className="flex flex-col gap-6">
                 <Input

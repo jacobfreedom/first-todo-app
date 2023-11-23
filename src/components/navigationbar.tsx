@@ -59,7 +59,7 @@ function Nav() {
         </NavbarContent>
 
         <NavbarContent as="div" justify="end">
-          <p className='text-sm font-thin'>
+          <p className='text-sm font-thin text-right'>
             <span className='font-bold'>
               👋&nbsp;{selectedColor}
             </span>

@@ -31,7 +31,7 @@ const TaskDeleteModal: React.FC<{ taskKey: string, onDelete: () => void }> = ({ 
       <DeleteIcon />
     </Button>
 
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} backdrop='blur' size='xs'>
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} backdrop='blur' size='xs' placement='center'>
       <ModalContent>
       {(onClose) => (
           <>

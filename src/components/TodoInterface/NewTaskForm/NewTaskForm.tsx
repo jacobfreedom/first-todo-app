@@ -12,9 +12,17 @@ import {
   Button,
   useDisclosure
 } from "@nextui-org/react";
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { useUserContext } from '@/providers/Context/UserContext';
 import { useTaskContext } from '@/providers/Context/TaskContext';
 import { NewTaskIcon } from '@/icons/NewTaskIcon';
+
+interface FormInput {
+  taskTitle: string;
+  description: string;
+  priority: string;
+  date: string;
+}
 
 const NewTaskForm: React.FC = () => {
 
@@ -30,19 +38,27 @@ const NewTaskForm: React.FC = () => {
     NewTodoItemSaving,
     resetTodoValues
   } = useTaskContext();
-  
+
   const { selectedColor } = useUserContext();
   const { refreshTaskList } = useTaskContext();
 
   const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
+
+  const {
+    handleSubmit,
+    register,
+    formState: { errors }
+  } = useForm<FormInput>();
 
   const CloseModal = () => {
     onClose();
     resetTodoValues();
   }
 
-  const handleAddTask = async () => {
-    await NewTodoItemSaving(); // Wait for the new task to be saved
+  const onSubmit: SubmitHandler<FormInput> = async (data) => {
+    // Handle form submission here
+    console.log(data);
+    await NewTodoItemSaving();
     refreshTaskList();
     CloseModal();
   };
@@ -54,7 +70,7 @@ const NewTaskForm: React.FC = () => {
     >
       New Task
     </Button>
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} backdrop='blur'>
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} backdrop='blur' placement='center'>
       <ModalContent>
         {(CloseModal) => (
           <>
@@ -67,9 +83,12 @@ const NewTaskForm: React.FC = () => {
                   label="Title"
                   labelPlacement="outside"
                   placeholder="What's the goal?"
+                  isInvalid={!!errors.taskTitle}
+                  errorMessage={errors.taskTitle?.message || ""}
                   className='mt-8'
                   value={taskTitleValue}
                   onValueChange={setTaskTitleValue}
+                  {...register('taskTitle', { required: 'Title is required' })}
                 />
 
                 <Textarea
@@ -79,8 +98,11 @@ const NewTaskForm: React.FC = () => {
                   label="Description"
                   labelPlacement="outside"
                   placeholder="What is it about? (Min rows 2)"
+                  isInvalid={!!errors.description}
+                  errorMessage={errors.description?.message || ""}
                   value={descriptionValue}
                   onValueChange={setDescriptionValue}
+                  {...register('description', { required: 'Description is required' })}
                 />
 
                 <Select
@@ -101,17 +123,19 @@ const NewTaskForm: React.FC = () => {
                   label="Date"
                   labelPlacement="outside"
                   placeholder="DD/MM/YYYY"
+                  isInvalid={!!errors.date}
+                  errorMessage={errors.date?.message || ""}
                   value={dateValue}
                   onValueChange={setDateValue}
+                  {...register('date', { required: 'Date is required' })}
                 />
-                <p className="text-small text-default-500">Selected: {dateValue}</p>
               </div>
             </ModalBody>
             <ModalFooter>
               <Button color="danger" variant="light" onPress={CloseModal}>
                 Discard
               </Button>
-              <Button color={selectedColor} onPress={handleAddTask}>
+              <Button color={selectedColor} onPress={handleSubmit(onSubmit)}>
                 Add
               </Button>
             </ModalFooter>

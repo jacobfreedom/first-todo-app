@@ -4,6 +4,8 @@ import { Button, Chip, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader,
 import { EyeIcon } from '@/icons/EyeIcon';
 import { useTaskContext } from '@/providers/Context/TaskContext';
 import { useUserContext } from '@/providers/Context/UserContext';
+import { MdOutlineDateRange } from "react-icons/md";
+
 
 const TaskViewModal: React.FC<{
     task: TodoItemData;
@@ -53,6 +55,11 @@ const TaskViewModal: React.FC<{
               
               <ModalBody>
                 <div className='flex justify-between'>
+                  <div className='flex items-center'>
+                  <MdOutlineDateRange />
+                  {task?.dateValue}
+                  </div>
+
                   <Chip
                     className='capitalize'
                     color={statusColorMap[task?.priorityValue.value]}
@@ -61,7 +68,6 @@ const TaskViewModal: React.FC<{
                   >
                     {task?.priorityValue.label}
                   </Chip>
-                  {task?.dateValue}
                 </div>
 
                 {task?.descriptionValue}

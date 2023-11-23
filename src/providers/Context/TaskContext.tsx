@@ -1,7 +1,7 @@
 "use client"
 
 import React, { createContext, useContext, useState, useEffect, ChangeEvent, ReactNode } from "react";
-import TodoItemElement from "@/components/TodoInterface/TodoElement/TodoItem";
+import TodoItemElement from "@/components/TodoInterface/TodoElement/TodoItemElement";
 import { priorities, TaskContextType, TodoItemData } from "../Types/Types";
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
@@ -70,14 +70,14 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   };
 
   const titleStringChecker = (titleString: string) => {
-    return titleString.length > 40
-      ? `${titleString.substring(0, 40)}...`
+    return titleString.length > 32
+      ? `${titleString.substring(0, 32)}...`
       : titleString;
   };
 
   const descriptionStringChecker = (descriptionString: string) => {
     return descriptionString.length > 120
-      ? `${descriptionString.substring(0, 120)}...`
+      ? `${descriptionString.substring(0, 96)}...`
       : descriptionString;
   };
 
@@ -169,7 +169,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const sortOptions: Record<string, (data: TodoItemData) => number | string> = {
     createdTimestamp: (data) => -data.createdTimestamp,
     title: (data) => data.taskTitleValue,
-    priority: (data) => data.priorityValue.id,
+    priority: (data) => -data.priorityValue.id,
     date: (data) => new Date(data.dateValue).getTime(),
   };
   
