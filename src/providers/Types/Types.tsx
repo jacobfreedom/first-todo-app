@@ -1,16 +1,16 @@
-import { ChangeEvent, Key } from "react";
+import { ChangeEvent } from "react";
 
 
 // Define your priorities
-const priorities = [
-    { label: "🤷 None", value: "none" },
-    { label: "😴 Low", value: "low" },
-    { label: "🎭 Medium", value: "medium" },
-    { label: "🔥 High", value: "high" },
-  ];
+const priorities: Priority[] = [
+  { id: 0, label: "🤷 None", value: "none" },
+  { id: 1, label: "😴 Low", value: "low" },
+  { id: 2, label: "🎭 Medium", value: "medium" },
+  { id: 3, label: "🔥 High", value: "high" },
+];
   
   // Common types
-  type Priority = { label: string; value: string };
+  type Priority = { id: number, label: string; value: string };
 
   type TodoItem = React.ReactElement<{ todoItemData: TodoItemData, key: string }>;
 

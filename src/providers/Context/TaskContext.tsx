@@ -40,11 +40,12 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     setDateValue('');
   };
 
-
   const onPriorityChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedPriority = priorities.find((priority) => priority.value === e.target.value);
+    // selectedPriority now contains id, label, and value
     setPriorityValue(selectedPriority!);
   };
+  
 
   const statusColorMap: Record<string, string> = {
     none: "default",
@@ -99,7 +100,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       }
     });
 
-    const sortedItems = sortWithDirection(newTodoItems,(data) => data.createdTimestamp,'asc');
+    const sortedItems = sortWithDirection(newTodoItems,(data) => data.createdTimestamp,'desc');
   
     setTodoItems(sortedItems);
   };
@@ -166,9 +167,9 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   
 
   const sortOptions: Record<string, (data: TodoItemData) => number | string> = {
-    createdTimestamp: (data) => data.createdTimestamp,
+    createdTimestamp: (data) => -data.createdTimestamp,
     title: (data) => data.taskTitleValue,
-    priority: (data) => data.priorityValue.value,
+    priority: (data) => data.priorityValue.id,
     date: (data) => new Date(data.dateValue).getTime(),
   };
   

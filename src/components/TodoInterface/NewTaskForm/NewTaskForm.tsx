@@ -56,7 +56,7 @@ const NewTaskForm: React.FC = () => {
     </Button>
     <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} backdrop='blur'>
       <ModalContent>
-        {(onClose) => (
+        {(CloseModal) => (
           <>
             <ModalHeader className="flex flex-col gap-1 items-center">Your New Task</ModalHeader>
             <ModalBody>
