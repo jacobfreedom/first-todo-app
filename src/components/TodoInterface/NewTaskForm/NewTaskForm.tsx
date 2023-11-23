@@ -16,11 +16,7 @@ import { useUserContext } from '@/providers/Context/UserContext';
 import { useTaskContext } from '@/providers/Context/TaskContext';
 import { NewTaskIcon } from '@/icons/NewTaskIcon';
 
-interface NewTaskFormProps {
-  onTaskAdded: () => void; // Define the prop as a function that takes no arguments and returns void
-}
-
-const NewTaskForm: React.FC<NewTaskFormProps> = ({ onTaskAdded }) => {
+const NewTaskForm: React.FC = () => {
 
   const {
     taskTitleValue,
@@ -36,6 +32,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onTaskAdded }) => {
   } = useTaskContext();
   
   const { selectedColor } = useUserContext();
+  const { refreshTaskList } = useTaskContext();
 
   const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
 
@@ -46,7 +43,7 @@ const NewTaskForm: React.FC<NewTaskFormProps> = ({ onTaskAdded }) => {
 
   const handleAddTask = async () => {
     await NewTodoItemSaving(); // Wait for the new task to be saved
-    onTaskAdded(); // Notify the parent component that a task has been added
+    refreshTaskList();
     CloseModal();
   };
 

@@ -13,14 +13,13 @@ const TaskViewModal: React.FC<{
   }> = ({ task, onUpdateStatus, setIsChecked, taskKey }) => {
 
   const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
-  const {statusColorMap, handleTaskAdded} = useTaskContext();
+  const {statusColorMap, refreshTaskList} = useTaskContext();
   const {selectedColor} = useUserContext();
 
   const handleStatusChange = () => {
     const updatedStatus = !task.taskChecked;
     onUpdateStatus(updatedStatus);
     setIsChecked(updatedStatus);
-    handleTaskAdded(); // This triggers the refresh after an edit
     onClose();
   };
   

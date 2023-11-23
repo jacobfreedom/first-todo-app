@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { Tabs, Tab, Select, SelectItem, Button, CircularProgress } from "@nextui-org/react";
 import { useUserContext } from '@/providers/Context/UserContext';
-import styles from '@/styles/Home.module.scss'
 import NewTaskForm from './NewTaskForm/NewTaskForm';
 import { useTaskContext } from '@/providers/Context/TaskContext';
 import { FaSortAmountDownAlt, FaSortAmountUp } from "react-icons/fa";
@@ -14,24 +13,23 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 const TodoInterface = () => {
 
   const {selectedColor, selectedTab, handleSelectedTabChange } = useUserContext();
-  const {
-    handleTaskAdded, handleSortChange, todoItems,
-  } = useTaskContext();
+  const { handleSortChange, todoItems, refreshTaskList } = useTaskContext();
 
   const [reversed, setReversed] = useState(false); // State to track sorting direction
   const [itemsToShow, setItemsToShow] = useState(5); // Change the initial value as needed
+  const [selectedSort, setSelectedSort] = useState("createdTimestamp");
 
 
 
   const handleSortDirection = () => {
     setReversed(!reversed);
+    handleSortChange(selectedSort, !reversed); 
   };
 
   const handleSortSelection = (selectedSortOption: string) => {
+    setSelectedSort(selectedSortOption);
     handleSortChange(selectedSortOption, reversed);
   };
-
-
 
   //filters the checked and unchecked todoitems for splitting inbetween tabs
   const filterTodoItems = (items: React.ReactNode[], condition: (todoData: TodoItemData) => boolean) => {
@@ -79,8 +77,12 @@ const TodoInterface = () => {
   //saves the selected tab to localstorage and also sets the itemstoshow to the default value in oder to trigger the loading animation again
   const handleTabChange = (selectedTab: React.Key) => {
     setItemsToShow(5);
-
     handleSelectedTabChange(selectedTab as string);
+
+    // Reset the selectedSort state and the Select component
+    setSelectedSort("createdTimestamp");
+
+    refreshTaskList();
   };
 
   return (
@@ -106,9 +108,6 @@ const TodoInterface = () => {
             variant="underlined"
             size="lg"
             selectedKey={selectedTab} // Use context state for selected key
-            // onSelectionChange={(key: React.Key) => {
-            //   handleSelectedTabChange(key as string); // Update both local and context values
-            // }}
             onSelectionChange={(key: React.Key) => handleTabChange(key)}
           >
             <Tab
@@ -150,6 +149,8 @@ const TodoInterface = () => {
         </AnimatePresence> */}
         </Button>
         <Select
+            defaultSelectedKeys={["createdTimestamp"]}
+            selectedKeys={[selectedSort]}
             variant="underlined"
             label="Sort by"
             placeholder="Created Time"
@@ -171,7 +172,7 @@ const TodoInterface = () => {
         <div className="flex w-full my-6 justify-between
         after:absolute after:block after:h-px after:w-full after:self-end after:bg-[#EDF2F7] after:-mb-6">
           <>
-            <NewTaskForm onTaskAdded={handleTaskAdded} />
+            <NewTaskForm />
           </>
         </div>
 

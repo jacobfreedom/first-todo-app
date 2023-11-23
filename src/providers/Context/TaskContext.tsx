@@ -99,15 +99,27 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       }
     });
 
-    const sortedItems = sortWithDirection(
-      newTodoItems,
-      (data) => data.createdTimestamp,
-      'asc'
-    );
+    const sortedItems = sortWithDirection(newTodoItems,(data) => data.createdTimestamp,'asc');
   
-
-
     setTodoItems(sortedItems);
+  };
+
+  const updateTask = (key: string, updatedTask: TodoItemData) => {
+    // Update local storage
+    localStorage.setItem(key, JSON.stringify(updatedTask));
+
+    // Update state
+    setTodoItems((prevTodoItems) => {
+      const updatedItems = prevTodoItems.map((item) => {
+        if (item.key === key) {
+          // Update the item with the new task data
+          return <TodoItemElement key={key} todoItemData={updatedTask} taskKey={key} />;
+        }
+        return item;
+      });
+
+      return updatedItems;
+    });
   };
   
   type TodoItem = React.ReactElement<{ todoItemData: TodoItemData, key: string }>;
@@ -140,18 +152,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       });
   };
 
-  // const sortAndSetItems = (
-  //   accessor: (data: TodoItemData) => number | string,
-  //   sortDirection: 'asc' | 'desc'
-  // ) => {
-  //   const sortedItems = sortWithDirection(
-  //     todoItems,
-  //     (data) => accessor(data),
-  //     sortDirection
-  //   );
-  //   setTodoItems(sortedItems);
-  // };
-
   const sortAndSetItems = (
     accessor: (data: TodoItemData) => number | string,
     sortDirection: 'asc' | 'desc',
@@ -174,6 +174,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   
   const handleSortChange = (sortOption: string, reversed: boolean) => {
     const sortDirection = reversed ? 'desc' : 'asc';
+
     const accessor = sortOptions[sortOption];
     
     if (accessor) {
@@ -185,11 +186,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   useEffect(() => {
     refreshTaskList();
   }, []);
-
-  const handleTaskAdded = () => {
-    // Trigger the refresh of the task list
-    refreshTaskList();
-  };
 
   return (
     <TaskContext.Provider
@@ -209,10 +205,10 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         descriptionStringChecker,
         titleStringChecker,
         todoItems,
-        handleTaskAdded,
         refreshTaskList,
         handleSortChange,
         sortAndSetItems,
+        updateTask
       }}
     >
       {children}

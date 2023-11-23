@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Checkbox, Chip } from '@nextui-org/react';
 import { useTaskContext } from '@/providers/Context/TaskContext';
 import { useUserContext } from '@/providers/Context/UserContext';
@@ -18,7 +18,6 @@ const TodoItemElement: React.FC<{ todoItemData: TodoItemData; taskKey: string }>
     descriptionStringChecker,
     statusColorMap,
     titleStringChecker,
-    refreshTaskList
   } = useTaskContext();
 
   const { selectedColor} = useUserContext();
@@ -41,12 +40,11 @@ const TodoItemElement: React.FC<{ todoItemData: TodoItemData; taskKey: string }>
     // Trigger the animation to hide the item
     setIsVisible(false);
   };
-
-  const onAnimationComplete = () => {
-    // Animation is complete, now refresh the task list
-    // refreshTaskList();
-  };
   
+  const handleDelete = () => {
+    // Trigger the animation to hide the item
+    setIsVisible(false);
+  };
 
   const show = {
     opacity: 1,
@@ -61,7 +59,7 @@ const TodoItemElement: React.FC<{ todoItemData: TodoItemData; taskKey: string }>
   };
 
   return (
-    <motion.div animate={isVisible ? show : hide} onAnimationComplete={onAnimationComplete}>
+    <motion.div animate={isVisible ? show : hide}>
       <div className="flex w-full my-6 justify-between
         after:absolute after:block after:h-px after:w-full after:self-end after:bg-[#EDF2F7] after:-mb-6">
         {/* todo__item__elements  */}
@@ -118,7 +116,7 @@ const TodoItemElement: React.FC<{ todoItemData: TodoItemData; taskKey: string }>
 
             <TaskEditModal task={todoItemData} taskKey={taskKey} />
               
-            <TaskDeleteModal taskKey={taskKey} />
+            <TaskDeleteModal taskKey={taskKey} onDelete={handleDelete}/>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import React from "react";
 import { AcmeLogo } from "@/icons/AcmeLogo";
@@ -16,8 +16,7 @@ function Nav() {
       localStorage.setItem('user_selectedColor', JSON.stringify(userSelectedColor));
       };
 
-    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-    
+    const [isMenuOpen, setIsMenuOpen] = React.useState(false);    
 
     return (
       
@@ -46,14 +45,14 @@ function Nav() {
         </NavbarBrand>
 
 
-        <NavbarContent className="hidden sm:block sm:flex gap-8" justify="center">
+        <NavbarContent className="hidden sm:flex gap-8" justify="center">
           <NavbarItem isActive>
-            <Link href="#" aria-current="page" color={selectedColor}>
+            <Link href="/" aria-current="page" color={selectedColor}>
               To-Do App
             </Link>
           </NavbarItem>
           <NavbarItem>
-            <Link color="foreground" href="#">
+            <Link href="/about" color="foreground">
               About project
             </Link>
           </NavbarItem>

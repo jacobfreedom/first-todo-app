@@ -4,18 +4,20 @@ import { useTaskContext } from '@/providers/Context/TaskContext';
 import { useUserContext } from '@/providers/Context/UserContext';
 import { DeleteIcon } from '@/icons/DeleteIcon';
 
-const TaskDeleteModal: React.FC<{ taskKey: string }> = ({ taskKey }) => {
+const TaskDeleteModal: React.FC<{ taskKey: string, onDelete: () => void }> = ({ taskKey, onDelete }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const { handleTaskAdded } = useTaskContext();
+  const { refreshTaskList } = useTaskContext();
   const { selectedColor } = useUserContext();
 
-    const onDeleteTask = () => {
-        if (taskKey) {
-        localStorage.removeItem(taskKey); // Remove the task using its specific key
-        handleTaskAdded(); // Refresh the tasks list after deletion
-        onClose();
-        }
-    };
+  const onDeleteTask = () => {
+    if (taskKey) {
+      localStorage.removeItem(taskKey); // Remove the task using its specific key
+      onClose();
+      
+      // Call the onDelete callback to trigger the animation
+      onDelete();
+    }
+  };
 
   return (
     <>

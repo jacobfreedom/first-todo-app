@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, Key } from "react";
 
 
 // Define your priorities
@@ -38,7 +38,6 @@ const priorities = [
     descriptionStringChecker: (descriptionString: string) => string;
     titleStringChecker: (titleString: string) => string;
     todoItems: React.ReactElement<{ todoItemData: TodoItemData; key: string }>[];
-    handleTaskAdded: () => void;
     refreshTaskList: () => void;
     handleSortChange: (sortOption: string, reversed: boolean) => void;
     sortAndSetItems: (
@@ -46,11 +45,12 @@ const priorities = [
       sortDirection: 'asc' | 'desc',
       tab: 'In Progress' | 'Finished'
     ) => void;
+    updateTask: (key: string, updatedTask: TodoItemData) => void;
+
   }
   
   // Types related to the TodoItem
   interface TodoItemData {
-    key: string;
     taskTitleValue: string;
     descriptionValue: string;
     priorityValue: Priority;

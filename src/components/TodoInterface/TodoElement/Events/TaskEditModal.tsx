@@ -8,13 +8,12 @@ import { priorities } from '@/providers/Types/Types';
 
 const TaskEditModal: React.FC<{ task: TodoItemData; taskKey: string }> = ({ task, taskKey }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const { handleTaskAdded } = useTaskContext();
+  const { updateTask } = useTaskContext();
   const { selectedColor } = useUserContext();
 
   const onSaveChanges = async () => {
     if (editedTask) {
-      localStorage.setItem(taskKey, JSON.stringify(editedTask)); // Update the task using its specific key
-      handleTaskAdded(); // This triggers the refresh after an edit
+      updateTask(taskKey, editedTask); // Update the task using its specific key
       onClose();
     }
   };
