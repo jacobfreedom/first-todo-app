@@ -123,24 +123,14 @@ const TodoInterface = () => {
           onPress={() => handleSortDirection()} // Utilize the toggle function on button click
           >
           {/* <AnimatePresence> */}
-            <motion.div
-                initial={{ y: -10, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 10, opacity: 0 }}
-                transition={{ duration: 0.4 }}
-            >
-              <FaSortAmountDownAlt />
-            </motion.div>
-
-            {/* <motion.div
-                initial={{ y: 10, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: -10, opacity: 0 }}
-                transition={{ duration: 0.4 }}
-            >
-              <FaSortAmountUp />
-            </motion.div>
-          </AnimatePresence> */}
+          <motion.div
+            initial={{ y: -10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 10, opacity: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            {reversed ? <FaSortAmountUp /> : <FaSortAmountDownAlt />}
+          </motion.div>
           </Button>
           <Select
               defaultSelectedKeys={["createdTimestamp"]}
@@ -152,6 +142,7 @@ const TodoInterface = () => {
               className="mr-2 w-52"
               color={selectedColor}
               onChange={(e) => handleSortSelection(e.target.value)}
+              disabledKeys={[selectedSort]}
             >
               <SelectItem key="createdTimestamp" value="createdTimestamp">Created Time</SelectItem>
               <SelectItem key="title" value="title">Title</SelectItem>

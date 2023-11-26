@@ -5,6 +5,7 @@ import { AcmeLogo } from "@/icons/AcmeLogo";
 import { Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, 
     Link, Navbar, NavbarBrand, NavbarContent, NavbarItem, cn, NavbarMenuToggle, NavbarMenu, NavbarMenuItem } from "@nextui-org/react";
 import { useUserContext } from "@/providers/Context/UserContext";
+import { usePathname } from "next/navigation";
 
 function Nav() {
 
@@ -16,7 +17,8 @@ function Nav() {
       localStorage.setItem('user_selectedColor', JSON.stringify(userSelectedColor));
       };
 
-    const [isMenuOpen, setIsMenuOpen] = React.useState(false);    
+    const [isMenuOpen, setIsMenuOpen] = React.useState(false);   
+    const pathname = usePathname(); 
 
     return (
       
@@ -26,15 +28,20 @@ function Nav() {
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="sm:hidden"
         />
-
         <NavbarMenu>
             <NavbarMenuItem className="flex flex-col gap-2 w-full">
-            <Link href="#" aria-current="page" color={selectedColor}>
-              To-Do App
-            </Link>
-            <Link color="foreground" href="#">
-              About project
-            </Link>
+            <Link
+            href="/"
+            color={pathname === '/' ? selectedColor : "foreground"}
+          >
+            To-Do App
+          </Link>
+          <Link
+            href="/about"
+            color={pathname === '/about' ? selectedColor : "foreground"}
+          >
+            About project
+          </Link>
             </NavbarMenuItem>
         </NavbarMenu>
 
@@ -46,13 +53,21 @@ function Nav() {
 
 
         <NavbarContent className="hidden sm:flex gap-8" justify="center">
-          <NavbarItem isActive>
-            <Link href="/" aria-current="page" color={selectedColor}>
+          <NavbarItem isActive={pathname === '/'}>
+            <Link
+              href="/"
+              color={pathname === '/' ? selectedColor : "foreground"}
+              aria-current={pathname === '/' ? 'page' : undefined}
+            >
               To-Do App
             </Link>
           </NavbarItem>
-          <NavbarItem>
-            <Link href="/about" color="foreground">
+          <NavbarItem isActive={pathname === '/about'}>
+            <Link
+              href="/about"
+              color={pathname === '/about' ? selectedColor : "foreground"}
+              aria-current={pathname === '/about' ? 'page' : undefined}
+            >
               About project
             </Link>
           </NavbarItem>

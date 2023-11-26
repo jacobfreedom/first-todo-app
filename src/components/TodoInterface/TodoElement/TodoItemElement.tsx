@@ -86,11 +86,6 @@ const TodoItemElement: React.FC<{ todoItemData: TodoItemData; taskKey: string }>
 
             <div className='flex self-center ml-0 sm:ml-6'>
               <div className="flex flex-col items-center justify-center mt-2 sm:mt-0 gap-2">
-                <div className='flex flex-row font-extralight truncate items-center'>
-                  <MdOutlineDateRange /> 
-                  {new Date(todoItemData.dateValue).toLocaleDateString('en-GB', { month: 'numeric', day: 'numeric', year: 'numeric' })}
-                </div>
-
                 <Chip
                   className='capitalize mx-6'
                   color={statusColorMap[todoItemData.priorityValue.value]}
@@ -99,6 +94,12 @@ const TodoItemElement: React.FC<{ todoItemData: TodoItemData; taskKey: string }>
                 >
                   {todoItemData.priorityValue.label}
                 </Chip>
+                <div className='flex flex-row font-extralight truncate items-center'>
+                  <MdOutlineDateRange /> 
+                  {new Date(todoItemData.dateValue).toLocaleDateString('en-GB', { month: 'numeric', day: 'numeric', year: 'numeric' })}
+                </div>
+
+
                 
               </div>
 

@@ -47,12 +47,14 @@ const NewTaskForm: React.FC = () => {
   const {
     handleSubmit,
     register,
-    formState: { errors }
+    formState: { errors },
+    clearErrors
   } = useForm<FormInput>();
 
   const CloseModal = () => {
     onClose();
     resetTodoValues();
+    clearErrors();
   }
 
   const onSubmit: SubmitHandler<FormInput> = async (data) => {
@@ -72,7 +74,7 @@ const NewTaskForm: React.FC = () => {
     </Button>
     <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} backdrop='blur' placement='center'>
       <ModalContent>
-        {(CloseModal) => (
+        {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1 items-center">Your New Task</ModalHeader>
             <ModalBody>
@@ -83,6 +85,7 @@ const NewTaskForm: React.FC = () => {
                   label="Title"
                   labelPlacement="outside"
                   placeholder="What's the goal?"
+                  autoComplete='off'
                   isInvalid={!!errors.taskTitle}
                   errorMessage={errors.taskTitle?.message || ""}
                   className='mt-8'
@@ -98,6 +101,7 @@ const NewTaskForm: React.FC = () => {
                   label="Description"
                   labelPlacement="outside"
                   placeholder="What is it about? (Min rows 2)"
+                  autoComplete='off'
                   isInvalid={!!errors.description}
                   errorMessage={errors.description?.message || ""}
                   value={descriptionValue}
@@ -123,6 +127,7 @@ const NewTaskForm: React.FC = () => {
                   label="Date"
                   labelPlacement="outside"
                   placeholder="DD/MM/YYYY"
+                  autoComplete='off'
                   isInvalid={!!errors.date}
                   errorMessage={errors.date?.message || ""}
                   value={dateValue}
