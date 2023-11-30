@@ -1,6 +1,13 @@
 "use client"
 
-import React, { createContext, useContext, useState, useEffect, ChangeEvent, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ChangeEvent,
+  ReactNode,
+} from "react";
 import TodoItemElement from "@/components/TodoInterface/TodoElement/TodoItemElement";
 import { priorities, TaskContextType, TodoItemData } from "../Types/Types";
 
@@ -19,12 +26,11 @@ interface TaskProviderProps {
 }
 
 export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
-  const [taskTitleValue, setTaskTitleValue] = useState<string>('');
-  const [descriptionValue, setDescriptionValue] = useState<string>('');
+  const [taskTitleValue, setTaskTitleValue] = useState<string>("");
+  const [descriptionValue, setDescriptionValue] = useState<string>("");
   const [priorityValue, setPriorityValue] = useState(priorities[0]);
-  const [dateValue, setDateValue] = useState<string>('');
+  const [dateValue, setDateValue] = useState<string>("");
   const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
-
 
   const todoValues = {
     taskTitleValue: taskTitleValue,
@@ -34,18 +40,19 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   };
 
   const resetTodoValues = () => {
-    setTaskTitleValue('');
-    setDescriptionValue('');
+    setTaskTitleValue("");
+    setDescriptionValue("");
     setPriorityValue(priorities[0]);
-    setDateValue('');
+    setDateValue("");
   };
 
   const onPriorityChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const selectedPriority = priorities.find((priority) => priority.value === e.target.value);
+    const selectedPriority = priorities.find(
+      (priority) => priority.value === e.target.value,
+    );
     // selectedPriority now contains id, label, and value
     setPriorityValue(selectedPriority!);
   };
-  
 
   const statusColorMap: Record<string, string> = {
     none: "default",
@@ -84,14 +91,18 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const refreshTaskList = () => {
     const storageKeys = Object.keys(localStorage);
     const newTodoItems: TodoItem[] = [];
-  
+
     storageKeys.forEach((key) => {
       const storedItem = localStorage.getItem(key);
       if (storedItem) {
         const storedTodoValues: TodoItemData = JSON.parse(storedItem);
         if (storedTodoValues.createdTimestamp) {
           const todoItem = (
-            <TodoItemElement key={key} todoItemData={storedTodoValues} taskKey={key} />
+            <TodoItemElement
+              key={key}
+              todoItemData={storedTodoValues}
+              taskKey={key}
+            />
           );
           newTodoItems.push(todoItem);
         }
@@ -100,8 +111,12 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       }
     });
 
-    const sortedItems = sortWithDirection(newTodoItems,(data) => data.createdTimestamp,'desc');
-  
+    const sortedItems = sortWithDirection(
+      newTodoItems,
+      (data) => data.createdTimestamp,
+      "desc",
+    );
+
     setTodoItems(sortedItems);
   };
 
@@ -114,7 +129,13 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       const updatedItems = prevTodoItems.map((item) => {
         if (item.key === key) {
           // Update the item with the new task data
-          return <TodoItemElement key={key} todoItemData={updatedTask} taskKey={key} />;
+          return (
+            <TodoItemElement
+              key={key}
+              todoItemData={updatedTask}
+              taskKey={key}
+            />
+          );
         }
         return item;
       });
@@ -122,31 +143,36 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       return updatedItems;
     });
   };
-  
-  type TodoItem = React.ReactElement<{ todoItemData: TodoItemData, key: string }>;
+
+  type TodoItem = React.ReactElement<{
+    todoItemData: TodoItemData;
+    key: string;
+  }>;
 
   // Sorting functions
   const sortWithDirection = (
     items: TodoItem[],
     accessor: (data: TodoItemData) => number | string,
-    direction: 'asc' | 'desc'
+    direction: "asc" | "desc",
   ): TodoItem[] => {
     return items
       .filter(
         (item) =>
           React.isValidElement(item) &&
           item.props.todoItemData &&
-          accessor(item.props.todoItemData) !== undefined
+          accessor(item.props.todoItemData) !== undefined,
       )
       .sort((a, b) => {
         const valA = accessor(a.props.todoItemData);
         const valB = accessor(b.props.todoItemData);
-  
+
         if (valA !== undefined && valB !== undefined) {
-          if (typeof valA === 'string' && typeof valB === 'string') {
-            return direction === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+          if (typeof valA === "string" && typeof valB === "string") {
+            return direction === "asc"
+              ? valA.localeCompare(valB)
+              : valB.localeCompare(valA);
           } else {
-            return direction === 'asc' ? +valA - +valB : +valB - +valA;
+            return direction === "asc" ? +valA - +valB : +valB - +valA;
           }
         }
         return 0;
@@ -155,16 +181,15 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 
   const sortAndSetItems = (
     accessor: (data: TodoItemData) => number | string,
-    sortDirection: 'asc' | 'desc',
+    sortDirection: "asc" | "desc",
   ) => {
     const sortedItems = sortWithDirection(
       todoItems,
       (data) => accessor(data),
-      sortDirection
+      sortDirection,
     );
     setTodoItems(sortedItems);
   };
-  
 
   const sortOptions: Record<string, (data: TodoItemData) => number | string> = {
     createdTimestamp: (data) => -data.createdTimestamp,
@@ -172,17 +197,16 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     priority: (data) => -data.priorityValue.id,
     date: (data) => new Date(data.dateValue).getTime(),
   };
-  
+
   const handleSortChange = (sortOption: string, reversed: boolean) => {
-    const sortDirection = reversed ? 'desc' : 'asc';
+    const sortDirection = reversed ? "desc" : "asc";
 
     const accessor = sortOptions[sortOption];
-    
+
     if (accessor) {
       sortAndSetItems(accessor, sortDirection);
     }
   };
-
 
   useEffect(() => {
     refreshTaskList();
@@ -209,7 +233,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         refreshTaskList,
         handleSortChange,
         sortAndSetItems,
-        updateTask
+        updateTask,
       }}
     >
       {children}

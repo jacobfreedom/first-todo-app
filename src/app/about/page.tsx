@@ -1,58 +1,30 @@
-import Nav from '@/components/NavigationBar';
-import React from 'react';
-import TechCards from './components/Cards/cards';
+import Nav from "@/components/NavigationBar";
+import React from "react";
+import TechStacks from "./components/Techstacks/techstacks";
 
 const AboutPage: React.FC = () => {
-
-
   return (
-    <main className='flex flex-col mx-auto my-0 w-full'> 
+    <main className="flex flex-col my-0 w-full">
       <Nav />
 
-      <div className='flex flex-col w-10/12 mx-auto'>
-        <h1 className='mt-6 font-semibold'>This project was built with:</h1>
+      <div className="flex flex-col w-full md:w-[90%] lg:w-[80%] xl:w-[70%] 2xl:w-[60%] mx-auto px-1 md:px-4 items-center">
+        <h1 className="mt-6 font-semibold text-center">
+          This project was built by
+          <a
+            href="https://www.linkedin.com/in/jsvob/"
+            target="_blank"
+            className="text-blue-600"
+          >
+            {" "}
+            Jakub{" "}
+          </a>
+          and is driven by 👇
+        </h1>
 
-        <TechCards />
-
-      
-      Next.js https://nextjs.org/
-      Typescript https://www.typescriptlang.org/
-      NextUI library for UI https://nextui.org/docs/guide/introduction
-      Framer Motion for animations https://www.framer.com/motion/
-      react hook form https://react-hook-form.com/
-      react infinite scroll component https://github.com/ankeetmaini/react-infinite-scroll-component
-      react icons https://react-icons.github.io/react-icons/
-      
-      by Jakub as my first CRUD app to learn React. 
-
-      And a project to land a Frontend Developer job with.
-
-      Button - Let me share my story
-
-      I'll make this basic part quick for you.
-
-      Name: Jakub Svoboda
-      Age: 26
-      Additional skills: interest and basics of UX/UI, Figma, Adobe Photoshop, Premiere, After Effects
-      Hobbies: at the end as a bonus emoji
+        <TechStacks />
       </div>
     </main>
-
-    // {/* <div className={styles.logos}>
-    // <div className={styles.logos__logo}>
-    //   <Image src="/Nextjs.png" alt='Next.js logo' layout='fill' className={'image'}/>
-    // <div className={styles.logos__logo}>
-    //   <Image src="/Typescript.png" alt='Tailwind logo' layout='fill' className={'image'}></Image>
-    // </div>
-    // <div className={styles.logos__logo}>
-    //   <Image src="/Tailwind.png" alt='Tailwind logo' layout='fill' className={'image'}></Image>
-    // </div>
-    // </div> */}
   );
 };
 
 export default AboutPage;
-
-
-
-
