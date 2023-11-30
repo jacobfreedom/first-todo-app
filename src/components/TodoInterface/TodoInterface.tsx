@@ -4,16 +4,15 @@ import React, { useState } from "react";
 import { Tabs, Tab, Select, SelectItem, Button, CircularProgress } from "@nextui-org/react";
 import { useUserContext } from '@/providers/Context/UserContext';
 import NewTaskForm from './NewTaskForm/NewTaskForm';
+import TodoList from "./TodoList/TodoList";
 import { useTaskContext } from '@/providers/Context/TaskContext';
 import { FaSortAmountDownAlt, FaSortAmountUp } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { TodoItemData } from "@/providers/Types/Types";
-import InfiniteScroll from 'react-infinite-scroll-component';
 
 const TodoInterface = () => {
 
   const {selectedColor, selectedTab, handleSelectedTabChange } = useUserContext();
-  const { handleSortChange, todoItems, refreshTaskList } = useTaskContext();
+  const { handleSortChange, refreshTaskList } = useTaskContext();
 
   const [reversed, setReversed] = useState(false); // State to track sorting direction
   const [itemsToShow, setItemsToShow] = useState(10); // Change the initial value as needed
@@ -21,58 +20,19 @@ const TodoInterface = () => {
 
 
 
-  const handleSortDirection = () => {
-    setReversed(!reversed);
-    handleSortChange(selectedSort, !reversed); 
-  };
+
 
   const handleSortSelection = (selectedSortOption: string) => {
     setSelectedSort(selectedSortOption);
     handleSortChange(selectedSortOption, reversed);
   };
 
-  //filters the checked and unchecked todoitems for splitting inbetween tabs
-  const filterTodoItems = (items: React.ReactNode[], condition: (todoData: TodoItemData) => boolean) => {
-    return items.filter((item) => {
-      if (React.isValidElement(item)) {
-        const todoData = item.props.todoItemData;
-        return todoData && condition(todoData);
-      }
-      return false;
-    });
+  const handleSortDirection = () => {
+    setReversed(!reversed);
+    handleSortChange(selectedSort, !reversed);
   };
 
-  // Rendinring of filtered items + infinite scroll component setup
-  const renderFilteredItems = (filterCondition: (todoData: TodoItemData) => boolean) => {
-    const filteredItems = filterTodoItems(todoItems, filterCondition);
 
-    const fetchMoreData = () => {
-      setTimeout(() => {
-        setItemsToShow(itemsToShow + 5)
-      }, 1500);
-    };
-
-    return (
-      <InfiniteScroll
-        dataLength={itemsToShow}
-        next={fetchMoreData} // Increase the number of items to show on scroll
-        hasMore={itemsToShow < filteredItems.length} //if itemstoshow is lower than the lenght of filtered items the loader button will be show
-        className="flex flex-col"
-        loader={<CircularProgress label="Loading..." className="self-center my-6" color={selectedColor} />}
-      >
-        <motion.div
-          key={selectedTab}
-          initial={{ y: 10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -10, opacity: 0 }}
-          transition={{ duration: 0.4 }}
-          className="flex flex-col relative"
-        >
-          {filteredItems.slice(0, itemsToShow)}
-        </motion.div>
-      </InfiniteScroll>
-    );
-  };
 
   //saves the selected tab to localstorage and also sets the itemstoshow to the default value in oder to trigger the loading animation again
   const handleTabChange = (selectedTab: React.Key) => {
@@ -101,7 +61,7 @@ const TodoInterface = () => {
             color={selectedColor}
             variant="underlined"
             size="lg"
-            selectedKey={selectedTab} // Use context state for selected key
+            selectedKey={selectedTab}
             onSelectionChange={(key: React.Key) => handleTabChange(key)}
           >
             <Tab
@@ -120,9 +80,8 @@ const TodoInterface = () => {
           isIconOnly 
           color={selectedColor} 
           className="mr-2"
-          onPress={() => handleSortDirection()} // Utilize the toggle function on button click
+          onPress={() => handleSortDirection()}
           >
-          {/* <AnimatePresence> */}
           <motion.div
             initial={{ y: -10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -161,9 +120,7 @@ const TodoInterface = () => {
           </>
         </div>
 
-        {/* rendering of filtedered items based on selected tab */}
-        {selectedTab === 'In Progress' && renderFilteredItems((todoData) => !todoData.taskChecked)}
-        {selectedTab === 'Finished' && renderFilteredItems((todoData) => todoData.taskChecked)}
+        <TodoList itemsToShow={itemsToShow} setItemsToShow={setItemsToShow} />
 
       </div>
 

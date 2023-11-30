@@ -50,7 +50,6 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     const selectedPriority = priorities.find(
       (priority) => priority.value === e.target.value,
     );
-    // selectedPriority now contains id, label, and value
     setPriorityValue(selectedPriority!);
   };
 

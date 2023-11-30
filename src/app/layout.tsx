@@ -3,8 +3,8 @@ import type { Metadata } from 'next'
 import { Providers } from '@/providers/providers'
 
 export const metadata: Metadata = {
-  title: 'First To-Do App',
-  description: 'Learning NextJS and other techstacks in the progress',
+  title: 'Todo App by Jakub',
+  description: 'First App Ever',
 }
 
 export default function RootLayout({
