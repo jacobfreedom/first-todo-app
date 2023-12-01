@@ -36,7 +36,6 @@ const TodoInterface = () => {
 
   //saves the selected tab to localstorage and also sets the itemstoshow to the default value in oder to trigger the loading animation again
   const handleTabChange = (selectedTab: React.Key) => {
-    console.log("handletabchange rend");
     setItemsToShow(10);
     setSelectedTab(selectedTab as string);
 
@@ -58,11 +57,9 @@ const TodoInterface = () => {
 
         <div className="m-3">
           <Tabs 
-            aria-label="Options"
             color={selectedColor}
             variant="underlined"
             size="lg"
-            selectedKey={selectedTab}
             onSelectionChange={(key: React.Key) => handleTabChange(key)}
           >
             <Tab
