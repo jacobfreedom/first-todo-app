@@ -6,8 +6,8 @@ import { TodoItemData } from "@/providers/Types/Types";
 import { useUserContext } from "@/providers/Context/UserContext";
 import { useTaskContext } from "@/providers/Context/TaskContext";
 
-const TodoList: React.FC<{ itemsToShow: number; setItemsToShow: React.Dispatch<React.SetStateAction<number>> }> = ({ itemsToShow, setItemsToShow }) => {
-    const { selectedColor, selectedTab } = useUserContext();
+const TodoList: React.FC<{ itemsToShow: number; setItemsToShow: React.Dispatch<React.SetStateAction<number>>, selectedTab: string }> = ({ itemsToShow, setItemsToShow, selectedTab }) => {
+    const { selectedColor } = useUserContext();
   const { todoItems } = useTaskContext(); // Ensure that useTaskContext returns the expected structure
 
 

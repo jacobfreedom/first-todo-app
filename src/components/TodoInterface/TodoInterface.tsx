@@ -11,14 +11,14 @@ import { motion } from "framer-motion";
 
 const TodoInterface = () => {
 
-  const { selectedColor } = useUserContext();
+  const {selectedColor } = useUserContext();
   const { handleSortChange, refreshTaskList } = useTaskContext();
 
   const [reversed, setReversed] = useState(false); // State to track sorting direction
   const [itemsToShow, setItemsToShow] = useState(10); // Change the initial value as needed
   const [selectedSort, setSelectedSort] = useState("createdTimestamp");
+  const [selectedTab, setSelectedTab] = useState("In Progress");
 
-  const [selectedTab] = useState("")
 
 
 
@@ -34,11 +34,11 @@ const TodoInterface = () => {
     handleSortChange(selectedSort, !reversed);
   };
 
-
-
   //saves the selected tab to localstorage and also sets the itemstoshow to the default value in oder to trigger the loading animation again
   const handleTabChange = (selectedTab: React.Key) => {
+    console.log("handletabchange rend");
     setItemsToShow(10);
+    setSelectedTab(selectedTab as string);
 
     // Reset the selectedSort state and the Select component
     setSelectedSort("createdTimestamp");
@@ -121,7 +121,7 @@ const TodoInterface = () => {
           </>
         </div>
 
-        <TodoList itemsToShow={itemsToShow} setItemsToShow={setItemsToShow} />
+        <TodoList itemsToShow={itemsToShow} setItemsToShow={setItemsToShow} selectedTab={selectedTab}/>
 
       </div>
 

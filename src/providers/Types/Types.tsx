@@ -61,9 +61,6 @@ interface UserContextType {
   selectedSortingOption?: string;
   setSelectedSortingOption?: (option: string) => void;
   handleSelectedSortingOptionChange?: (newSortingOption: string) => void;
-  selectedTab: string;
-  setSelectedTab: React.Dispatch<React.SetStateAction<string>>;
-  handleSelectedTabChange: (newTab: string) => void;
 }
 
 // Export all types
