@@ -1,12 +1,18 @@
 "use client";
 import { Image, Link } from "@nextui-org/react";
 import React from "react";
+import { motion } from "framer-motion";
 
 const TechStacks = () => {
   return (
     <div className="flex flex-col gap-6 my-6 items-center">
       <div className="flex gap-4">
-        <div className="flex flex-col p-2 rounded-md border-1 w-fit">
+        <motion.div
+          initial={{ x: -30, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="flex flex-col p-2 rounded-md border-1 w-fit"
+        >
           <Image
             alt="Next.JS"
             className="object-cover rounded-xl p-2"
@@ -17,9 +23,14 @@ const TechStacks = () => {
             Next.js
           </Link>
           <p>Framework used.</p>
-        </div>
+        </motion.div>
 
-        <div className="flex flex-col p-2 rounded-md border-1 w-fit">
+        <motion.div
+          initial={{ x: 30, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="flex flex-col p-2 rounded-md border-1 w-fit"
+        >
           <Image
             alt="Typescript"
             className="object-cover rounded-xl p-2"
@@ -30,12 +41,17 @@ const TechStacks = () => {
             Typescript
           </Link>
           <p>For type safety.</p>
-        </div>
+        </motion.div>
       </div>
 
       <h2 className="font-semibold">Libraries:</h2>
       <div className="flex gap-4">
-        <div className="flex flex-col p-2 rounded-md border-1 w-fit">
+        <motion.div
+          initial={{ x: -30, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="flex flex-col p-2 rounded-md border-1 w-fit"
+        >
           <Image
             alt="NextUI"
             className="object-cover rounded-xl p-2"
@@ -46,9 +62,14 @@ const TechStacks = () => {
             NextUI
           </Link>
           <p>As an UI library.</p>
-        </div>
+        </motion.div>
 
-        <div className="flex flex-col p-2 rounded-md border-1 w-fit">
+        <motion.div
+          initial={{ y: 30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="flex flex-col p-2 rounded-md border-1 w-fit"
+        >
           <Image
             alt="Framer Motion"
             className="object-cover rounded-xl p-4"
@@ -59,9 +80,14 @@ const TechStacks = () => {
             Framer Motion
           </Link>
           <p>For Animations.</p>
-        </div>
+        </motion.div>
 
-        <div className="flex flex-col p-2 rounded-md border-1 w-fit">
+        <motion.div
+          initial={{ x: 30, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="flex flex-col p-2 rounded-md border-1 w-fit"
+        >
           <Image
             alt="Reack Hook Form"
             className="object-cover p-2 rounded-3xl"
@@ -72,7 +98,7 @@ const TechStacks = () => {
             React Hook Form
           </Link>
           <p>For Forms.</p>
-        </div>
+        </motion.div>
       </div>
 
       <h2 className="font-semibold text-center">Additionaly:</h2>
