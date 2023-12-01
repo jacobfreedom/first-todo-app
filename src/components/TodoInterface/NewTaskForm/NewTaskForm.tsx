@@ -1,23 +1,21 @@
 import React from "react";
 import {
-  Button,
   Modal,
   ModalContent,
-  ModalFooter,
   ModalHeader,
-  useDisclosure,
-  Input,
-  Select,
   ModalBody,
+  ModalFooter,
+  Input,
   Textarea,
+  Select,
   SelectItem,
+  Button,
+  useDisclosure,
 } from "@nextui-org/react";
-import { useTaskContext } from "@/providers/Context/TaskContext";
-import { TodoItemData } from "@/providers/Types/Types";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { useUserContext } from "@/providers/Context/UserContext";
-import { EditIcon } from "@/icons/EditIcon";
-import { priorities } from "@/providers/Types/Types";
-import { useForm } from "react-hook-form";
+import { useTaskContext } from "@/providers/Context/TaskContext";
+import { NewTaskIcon } from "@/icons/NewTaskIcon";
 
 interface FormInput {
   taskTitle: string;
@@ -26,13 +24,25 @@ interface FormInput {
   date: string;
 }
 
-const TaskEditModal: React.FC<{ task: TodoItemData; taskKey: string }> = ({
-  task,
-  taskKey,
-}) => {
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const { updateTask } = useTaskContext();
+const NewTaskForm: React.FC = () => {
+  const {
+    taskTitleValue,
+    setTaskTitleValue,
+    descriptionValue,
+    setDescriptionValue,
+    priorities,
+    onPriorityChange,
+    dateValue,
+    setDateValue,
+    NewTodoItemSaving,
+    resetTodoValues,
+  } = useTaskContext();
+
   const { selectedColor } = useUserContext();
+  const { refreshTaskList } = useTaskContext();
+
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+
   const {
     handleSubmit,
     register,
@@ -40,74 +50,29 @@ const TaskEditModal: React.FC<{ task: TodoItemData; taskKey: string }> = ({
     clearErrors,
   } = useForm<FormInput>();
 
-  const [editedTask, setEditedTask] = React.useState<TodoItemData | null>(task);
-
-  const initialTaskValues = { ...task }; // Save the initial values of the task
-
-  // Function to update the editedTask object locally
-  const handleTaskTitleChange = (newValue: string) => {
-    if (editedTask) {
-      setEditedTask({ ...editedTask, taskTitleValue: newValue });
-    }
-  };
-
-  // Function to update the description
-  const handleDescriptionChange = (newValue: string) => {
-    if (editedTask) {
-      setEditedTask({ ...editedTask, descriptionValue: newValue });
-    }
-  };
-
-  // Function to update the date
-  const handleDateChange = (newValue: string) => {
-    if (editedTask) {
-      setEditedTask({ ...editedTask, dateValue: newValue });
-    }
-  };
-
-  const handlePriorityChange = (newValue: string) => {
-    if (editedTask) {
-      const selectedPriority = priorities.find(
-        (priority) => priority.value === newValue,
-      );
-
-      if (selectedPriority) {
-        const updatedTask = { ...editedTask, priorityValue: selectedPriority };
-        setEditedTask(updatedTask);
-      }
-    }
-  };
-
-  // Function to reset editedTask to its initial values
-  const resetEditedTask = () => {
-    setEditedTask({ ...initialTaskValues });
-  };
-
   const CloseModal = () => {
     onClose();
-    resetEditedTask();
+    resetTodoValues();
     clearErrors();
   };
 
-  const onSaveChanges = async () => {
-    if (editedTask) {
-      await updateTask(taskKey, editedTask); // Update the task using its specific key
-      onClose();
-    }
+  const onSubmit: SubmitHandler<FormInput> = async (data) => {
+    await NewTodoItemSaving();
+    refreshTaskList();
+    CloseModal();
   };
 
   return (
     <>
       <Button
-        isIconOnly
-        variant="light"
-        color={selectedColor}
-        className="text-lg"
+        fullWidth
         onPress={onOpen}
+        variant="light"
+        className="border-1 border-content3 text-default-400 py-6 mx-6"
+        startContent={<NewTaskIcon />}
       >
-        <EditIcon className={selectedColor} />
+        New Task
       </Button>
-
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
@@ -119,7 +84,7 @@ const TaskEditModal: React.FC<{ task: TodoItemData; taskKey: string }> = ({
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1 items-center">
-                Edit Your Task
+                Your New Task
               </ModalHeader>
               <ModalBody>
                 <div className="flex flex-col gap-6">
@@ -128,13 +93,13 @@ const TaskEditModal: React.FC<{ task: TodoItemData; taskKey: string }> = ({
                     type="text"
                     label="Title"
                     labelPlacement="outside"
-                    defaultValue={task?.taskTitleValue}
-                    className="mt-8"
+                    placeholder="What's the goal?"
                     autoComplete="off"
                     isInvalid={!!errors.taskTitle}
                     errorMessage={errors.taskTitle?.message || ""}
-                    value={editedTask?.taskTitleValue}
-                    onValueChange={(value) => handleTaskTitleChange(value)}
+                    className="mt-8"
+                    value={taskTitleValue}
+                    onValueChange={setTaskTitleValue}
                     {...register("taskTitle", {
                       required: "Title is required",
                     })}
@@ -146,12 +111,12 @@ const TaskEditModal: React.FC<{ task: TodoItemData; taskKey: string }> = ({
                     type="text"
                     label="Description"
                     labelPlacement="outside"
-                    defaultValue={task?.descriptionValue}
+                    placeholder="What is it about? (Min rows 2)"
                     autoComplete="off"
                     isInvalid={!!errors.description}
                     errorMessage={errors.description?.message || ""}
-                    value={editedTask?.descriptionValue}
-                    onValueChange={(value) => handleDescriptionChange(value)}
+                    value={descriptionValue}
+                    onValueChange={setDescriptionValue}
                     {...register("description", {
                       required: "Description is required",
                     })}
@@ -159,8 +124,8 @@ const TaskEditModal: React.FC<{ task: TodoItemData; taskKey: string }> = ({
 
                   <Select
                     label="Priority"
-                    placeholder={task?.priorityValue.label}
-                    onChange={(e) => handlePriorityChange(e.target.value)}
+                    placeholder={priorities[0].label}
+                    onChange={(e) => onPriorityChange(e)}
                   >
                     {priorities.map((priority) => (
                       <SelectItem key={priority.value} value={priority.value}>
@@ -178,8 +143,8 @@ const TaskEditModal: React.FC<{ task: TodoItemData; taskKey: string }> = ({
                     autoComplete="off"
                     isInvalid={!!errors.date}
                     errorMessage={errors.date?.message || ""}
-                    value={editedTask?.dateValue}
-                    onValueChange={(value) => handleDateChange(value)}
+                    value={dateValue}
+                    onValueChange={setDateValue}
                     {...register("date", { required: "Date is required" })}
                   />
                 </div>
@@ -188,11 +153,8 @@ const TaskEditModal: React.FC<{ task: TodoItemData; taskKey: string }> = ({
                 <Button color="danger" variant="light" onPress={CloseModal}>
                   Discard
                 </Button>
-                <Button
-                  color={selectedColor}
-                  onPress={handleSubmit(onSaveChanges)}
-                >
-                  Save
+                <Button color={selectedColor} onClick={handleSubmit(onSubmit)}>
+                  Add
                 </Button>
               </ModalFooter>
             </>
@@ -203,4 +165,4 @@ const TaskEditModal: React.FC<{ task: TodoItemData; taskKey: string }> = ({
   );
 };
 
-export default TaskEditModal;
+export default NewTaskForm;

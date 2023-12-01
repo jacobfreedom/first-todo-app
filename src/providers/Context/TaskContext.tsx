@@ -8,7 +8,7 @@ import React, {
   ChangeEvent,
   ReactNode,
 } from "react";
-import TodoItemElement from "@/_components/TodoInterface/TodoElement/TodoItemElement";
+import TodoItemElement from "@/components/TodoInterface/TodoElement/TodoItemElement";
 import { priorities, TaskContextType, TodoItemData } from "../Types/Types";
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);

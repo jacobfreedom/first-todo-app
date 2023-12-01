@@ -13,12 +13,12 @@ function Nav() {
 
     const updateSelectedColor = (color: string) => {
       setSelectedColor(color);
-      const userSelectedColor = 'primary';
-      localStorage.setItem('user_selectedColor', JSON.stringify(userSelectedColor));
+      localStorage.setItem('user_selectedColor', JSON.stringify(color));
       };
 
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);   
     const pathname = usePathname(); 
+
 
     return (
       
@@ -76,7 +76,7 @@ function Nav() {
         <NavbarContent as="div" justify="end">
           <p className='text-sm font-thin text-right'>
             <span className='font-bold'>
-              👋&nbsp;{selectedColor}
+              👋 User Name
             </span>
             , welcome!
           </p>

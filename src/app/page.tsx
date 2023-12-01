@@ -1,5 +1,5 @@
-import Nav from '@/_components/NavigationBar';
-import TodoInterface from '@/_components/TodoInterface/TodoInterface';
+import Nav from '@/components/NavigationBar';
+import TodoInterface from '@/components/TodoInterface/TodoInterface';
 import { TaskProvider } from '@/providers/Context/TaskContext';
 
 export default function Home() {

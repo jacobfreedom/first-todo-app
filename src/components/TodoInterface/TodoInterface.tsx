@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react";
-import { Tabs, Tab, Select, SelectItem, Button, CircularProgress } from "@nextui-org/react";
+import { Tabs, Tab, Select, SelectItem, Button } from "@nextui-org/react";
 import { useUserContext } from '@/providers/Context/UserContext';
 import NewTaskForm from './NewTaskForm/NewTaskForm';
 import TodoList from "./TodoList/TodoList";
@@ -11,12 +11,14 @@ import { motion } from "framer-motion";
 
 const TodoInterface = () => {
 
-  const {selectedColor, selectedTab, handleSelectedTabChange } = useUserContext();
+  const { selectedColor } = useUserContext();
   const { handleSortChange, refreshTaskList } = useTaskContext();
 
   const [reversed, setReversed] = useState(false); // State to track sorting direction
   const [itemsToShow, setItemsToShow] = useState(10); // Change the initial value as needed
   const [selectedSort, setSelectedSort] = useState("createdTimestamp");
+
+  const [selectedTab] = useState("")
 
 
 
@@ -37,7 +39,6 @@ const TodoInterface = () => {
   //saves the selected tab to localstorage and also sets the itemstoshow to the default value in oder to trigger the loading animation again
   const handleTabChange = (selectedTab: React.Key) => {
     setItemsToShow(10);
-    handleSelectedTabChange(selectedTab as string);
 
     // Reset the selectedSort state and the Select component
     setSelectedSort("createdTimestamp");

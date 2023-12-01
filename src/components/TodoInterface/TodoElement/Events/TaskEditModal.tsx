@@ -1,21 +1,23 @@
 import React from "react";
 import {
+  Button,
   Modal,
   ModalContent,
-  ModalHeader,
-  ModalBody,
   ModalFooter,
-  Input,
-  Textarea,
-  Select,
-  SelectItem,
-  Button,
+  ModalHeader,
   useDisclosure,
+  Input,
+  Select,
+  ModalBody,
+  Textarea,
+  SelectItem,
 } from "@nextui-org/react";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { useUserContext } from "@/providers/Context/UserContext";
 import { useTaskContext } from "@/providers/Context/TaskContext";
-import { NewTaskIcon } from "@/icons/NewTaskIcon";
+import { TodoItemData } from "@/providers/Types/Types";
+import { useUserContext } from "@/providers/Context/UserContext";
+import { EditIcon } from "@/icons/EditIcon";
+import { priorities } from "@/providers/Types/Types";
+import { useForm } from "react-hook-form";
 
 interface FormInput {
   taskTitle: string;
@@ -24,25 +26,13 @@ interface FormInput {
   date: string;
 }
 
-const NewTaskForm: React.FC = () => {
-  const {
-    taskTitleValue,
-    setTaskTitleValue,
-    descriptionValue,
-    setDescriptionValue,
-    priorities,
-    onPriorityChange,
-    dateValue,
-    setDateValue,
-    NewTodoItemSaving,
-    resetTodoValues,
-  } = useTaskContext();
-
-  const { selectedColor } = useUserContext();
-  const { refreshTaskList } = useTaskContext();
-
+const TaskEditModal: React.FC<{ task: TodoItemData; taskKey: string }> = ({
+  task,
+  taskKey,
+}) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-
+  const { updateTask } = useTaskContext();
+  const { selectedColor } = useUserContext();
   const {
     handleSubmit,
     register,
@@ -50,29 +40,74 @@ const NewTaskForm: React.FC = () => {
     clearErrors,
   } = useForm<FormInput>();
 
+  const [editedTask, setEditedTask] = React.useState<TodoItemData | null>(task);
+
+  const initialTaskValues = { ...task }; // Save the initial values of the task
+
+  // Function to update the editedTask object locally
+  const handleTaskTitleChange = (newValue: string) => {
+    if (editedTask) {
+      setEditedTask({ ...editedTask, taskTitleValue: newValue });
+    }
+  };
+
+  // Function to update the description
+  const handleDescriptionChange = (newValue: string) => {
+    if (editedTask) {
+      setEditedTask({ ...editedTask, descriptionValue: newValue });
+    }
+  };
+
+  // Function to update the date
+  const handleDateChange = (newValue: string) => {
+    if (editedTask) {
+      setEditedTask({ ...editedTask, dateValue: newValue });
+    }
+  };
+
+  const handlePriorityChange = (newValue: string) => {
+    if (editedTask) {
+      const selectedPriority = priorities.find(
+        (priority) => priority.value === newValue,
+      );
+
+      if (selectedPriority) {
+        const updatedTask = { ...editedTask, priorityValue: selectedPriority };
+        setEditedTask(updatedTask);
+      }
+    }
+  };
+
+  // Function to reset editedTask to its initial values
+  const resetEditedTask = () => {
+    setEditedTask({ ...initialTaskValues });
+  };
+
   const CloseModal = () => {
     onClose();
-    resetTodoValues();
+    resetEditedTask();
     clearErrors();
   };
 
-  const onSubmit: SubmitHandler<FormInput> = async (data) => {
-    await NewTodoItemSaving();
-    refreshTaskList();
-    CloseModal();
+  const onSaveChanges = async () => {
+    if (editedTask) {
+      await updateTask(taskKey, editedTask); // Update the task using its specific key
+      onClose();
+    }
   };
 
   return (
     <>
       <Button
-        fullWidth
-        onPress={onOpen}
+        isIconOnly
         variant="light"
-        className="border-1 border-content3 text-default-400 py-6 mx-6"
-        startContent={<NewTaskIcon />}
+        color={selectedColor}
+        className="text-lg"
+        onPress={onOpen}
       >
-        New Task
+        <EditIcon className={selectedColor} />
       </Button>
+
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
@@ -84,7 +119,7 @@ const NewTaskForm: React.FC = () => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1 items-center">
-                Your New Task
+                Edit Your Task
               </ModalHeader>
               <ModalBody>
                 <div className="flex flex-col gap-6">
@@ -93,13 +128,13 @@ const NewTaskForm: React.FC = () => {
                     type="text"
                     label="Title"
                     labelPlacement="outside"
-                    placeholder="What's the goal?"
+                    defaultValue={task?.taskTitleValue}
+                    className="mt-8"
                     autoComplete="off"
                     isInvalid={!!errors.taskTitle}
                     errorMessage={errors.taskTitle?.message || ""}
-                    className="mt-8"
-                    value={taskTitleValue}
-                    onValueChange={setTaskTitleValue}
+                    value={editedTask?.taskTitleValue}
+                    onValueChange={(value) => handleTaskTitleChange(value)}
                     {...register("taskTitle", {
                       required: "Title is required",
                     })}
@@ -111,12 +146,12 @@ const NewTaskForm: React.FC = () => {
                     type="text"
                     label="Description"
                     labelPlacement="outside"
-                    placeholder="What is it about? (Min rows 2)"
+                    defaultValue={task?.descriptionValue}
                     autoComplete="off"
                     isInvalid={!!errors.description}
                     errorMessage={errors.description?.message || ""}
-                    value={descriptionValue}
-                    onValueChange={setDescriptionValue}
+                    value={editedTask?.descriptionValue}
+                    onValueChange={(value) => handleDescriptionChange(value)}
                     {...register("description", {
                       required: "Description is required",
                     })}
@@ -124,8 +159,8 @@ const NewTaskForm: React.FC = () => {
 
                   <Select
                     label="Priority"
-                    placeholder={priorities[0].label}
-                    onChange={(e) => onPriorityChange(e)}
+                    placeholder={task?.priorityValue.label}
+                    onChange={(e) => handlePriorityChange(e.target.value)}
                   >
                     {priorities.map((priority) => (
                       <SelectItem key={priority.value} value={priority.value}>
@@ -143,8 +178,8 @@ const NewTaskForm: React.FC = () => {
                     autoComplete="off"
                     isInvalid={!!errors.date}
                     errorMessage={errors.date?.message || ""}
-                    value={dateValue}
-                    onValueChange={setDateValue}
+                    value={editedTask?.dateValue}
+                    onValueChange={(value) => handleDateChange(value)}
                     {...register("date", { required: "Date is required" })}
                   />
                 </div>
@@ -153,8 +188,11 @@ const NewTaskForm: React.FC = () => {
                 <Button color="danger" variant="light" onPress={CloseModal}>
                   Discard
                 </Button>
-                <Button color={selectedColor} onPress={handleSubmit(onSubmit)}>
-                  Add
+                <Button
+                  color={selectedColor}
+                  onClick={handleSubmit(onSaveChanges)}
+                >
+                  Save
                 </Button>
               </ModalFooter>
             </>
@@ -165,4 +203,4 @@ const NewTaskForm: React.FC = () => {
   );
 };
 
-export default NewTaskForm;
+export default TaskEditModal;

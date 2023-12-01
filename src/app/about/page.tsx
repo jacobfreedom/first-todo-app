@@ -1,5 +1,5 @@
 import React from "react";
-import Nav from "@/_components/NavigationBar";
+import Nav from "@/components/NavigationBar";
 import TechStacks from "./components/Techstacks/techstacks";
 
 const AboutPage: React.FC = () => {
