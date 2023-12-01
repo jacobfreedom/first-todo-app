@@ -17,17 +17,16 @@ const AboutPage: React.FC = () => {
           >
             {" ("}GitHub repository{") "}
           </a>
-           was built by
+          was built by
           <a
             href="https://www.linkedin.com/in/jsvob/"
             target="_blank"
             className="text-blue-600"
           >
-            {" "}Jakub{" "}
+            {" "}
+            Jakub{" "}
           </a>
           and is driven by 👇
-
-
         </h1>
 
         <TechStacks />

@@ -12,19 +12,21 @@ export function useUserContext() {
 }
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
-
   const [selectedColor, setSelectedColor] = useState("foreground");
 
   useEffect(() => {
     const storedColor = localStorage.getItem("user_selectedColor");
-    if (storedColor){
-      setSelectedColor(JSON.parse(localStorage.getItem("user_selectedColor") as string));
+    if (storedColor) {
+      setSelectedColor(
+        JSON.parse(localStorage.getItem("user_selectedColor") as string),
+      );
     } else {
-      setSelectedColor("primary")};
+      setSelectedColor("primary");
+    }
   }, []);
 
   return (
-    <UserContext.Provider 
+    <UserContext.Provider
       value={{
         selectedColor,
         setSelectedColor,
