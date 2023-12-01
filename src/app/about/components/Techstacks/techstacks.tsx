@@ -4,7 +4,7 @@ import React from "react";
 
 const TechStacks = () => {
   return (
-    <div className="flex flex-col gap-6 mt-6 items-center">
+    <div className="flex flex-col gap-6 my-6 items-center">
       <div className="flex gap-4">
         <div className="flex flex-col p-2 rounded-md border-1 w-fit">
           <Image
