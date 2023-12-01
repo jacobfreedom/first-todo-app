@@ -5,7 +5,7 @@ import { TaskProvider } from '@/providers/Context/TaskContext';
 export default function Home() {
 
   return (
-    <main className="flex flex-col mx-auto my-0 w-full scale-0">
+    <main className="flex flex-col mx-auto my-0 w-full">
       <Nav />
       <TaskProvider>
         <TodoInterface />
