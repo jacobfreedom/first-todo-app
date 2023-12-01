@@ -8,11 +8,11 @@ export const metadata: Metadata = {
   description: "First App Ever",
 };
 
-export const viewpor: Viewport = {
+export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  userScalable: true,
+  userScalable: false,
 };
 
 export default function RootLayout({
